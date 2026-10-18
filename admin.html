@@ -148,6 +148,21 @@ legend{padding:0 6px;font-size:.74rem;letter-spacing:.09em;text-transform:upperc
 .danger{border-top:1px solid var(--line);padding-top:12px}
 .danger .btn.quiet{color:var(--sold);padding-inline:0}
 .rmc{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:.9rem}
+
+/* site text tab */
+.txsec{border-top:1px solid var(--line)}
+.txsec > summary{cursor:pointer;font-family:var(--serif);font-size:1.3rem;padding:14px 0;display:flex;align-items:baseline;gap:10px}
+.txsec > summary small{font-family:var(--sans);font-size:.8rem;color:var(--soft)}
+.txbody{padding:4px 0 14px;max-width:700px}
+.txf{display:flex;flex-direction:column;gap:5px;margin:0 0 18px}
+.txf .th{display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:28px}
+.txf label{font-size:.74rem;letter-spacing:.09em;text-transform:uppercase;color:var(--soft);font-weight:600}
+.txf.chg label::after{content:" · edited";color:var(--ink);text-transform:none;letter-spacing:0;font-weight:500}
+.txf input,.txf textarea{border:1px solid var(--line);background:var(--panel);padding:9px 10px;border-radius:0;width:100%;min-width:0;font:inherit}
+.txf textarea{resize:vertical;line-height:1.5}
+.txf.chg input,.txf.chg textarea{border-color:var(--ink)}
+.txf .rs{padding:2px 8px;font-size:.84rem}
+@media (max-width:640px){.tabs{gap:14px}.tabs button{font-size:1.05rem;white-space:nowrap}}
 </style>
 </head>
 <body>
@@ -183,6 +198,7 @@ legend{padding:0 6px;font-size:.74rem;letter-spacing:.09em;text-transform:upperc
   <div class="tabs" role="tablist" aria-label="Sections">
     <button role="tab" id="tabP" aria-selected="true" aria-controls="viewP" type="button">Paintings</button>
     <button role="tab" id="tabB" aria-selected="false" aria-controls="viewB" type="button">Cover banner</button>
+    <button role="tab" id="tabT" aria-selected="false" aria-controls="viewT" type="button">Site text</button>
     <button role="tab" id="tabS" aria-selected="false" aria-controls="viewS" type="button">Settings</button>
   </div>
 
@@ -205,6 +221,12 @@ legend{padding:0 6px;font-size:.74rem;letter-spacing:.09em;text-transform:upperc
     <div class="mosaic" id="mosaic" aria-label="Rough preview of the banner"></div>
     <p class="sub">Add to the banner</p>
     <div class="addlist" id="addlist"></div>
+  </section>
+
+  <section id="viewT" role="tabpanel" aria-labelledby="tabT" hidden>
+    <p class="hint">Change any wording on the website: headings, menu, descriptions, group names, buttons and your contact details. Type over the text, then press Publish changes. “Reset” puts the original wording back. Words in curly brackets, like {shipsTo}, are filled in automatically, so leave them as they are.</p>
+    <div class="tools"><label for="tq" class="vh">Find some text</label><input id="tq" type="search" placeholder="Find some text, e.g. Delivery"></div>
+    <div id="txList"></div>
   </section>
 
   <section id="viewS" role="tabpanel" aria-labelledby="tabS" hidden>
@@ -300,6 +322,7 @@ legend{padding:0 6px;font-size:.74rem;letter-spacing:.09em;text-transform:upperc
 <div class="toast" id="toast" hidden role="status"></div>
 
 <script src="config.js"></script>
+<script src="texts.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 <script>
 (function(){
@@ -307,6 +330,11 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const GROUPS = (window.THEMES || []).map(t => ({id: t.id, label: t.label}));
+const BASE_LABEL = Object.fromEntries(GROUPS.map(g => [g.id, g.label]));
+const TX = () => window.TEXTS || [];
+const txDef = t => typeof t.def === "function" ? t.def() : (t.def == null ? "" : t.def);
+const txSet = v => typeof v === "string" && v.trim() !== "";
+function syncGroups(){ GROUPS.forEach(g => { const o = S && S.text && S.text["group_" + g.id + "_label"]; g.label = txSet(o) ? o : BASE_LABEL[g.id]; }); }
 const CFG = Object.assign({owner: "", repo: "", branch: "main"}, window.ADMIN || {});
 if(/^YOUR-/.test(CFG.owner)) CFG.owner = "";   // placeholder not filled in yet
 const LS = {
@@ -367,6 +395,7 @@ async function load(){
   let d = JSON.parse(textFromB64(f.content));
   if(Array.isArray(d)) d = {banner: d.filter(a => a.featured).map(a => a.id), paintings: d};
   d.banner = d.banner || [];
+  d.text = (d.text && typeof d.text === "object" && !Array.isArray(d.text)) ? d.text : {};
   ORIG = clone(d);
   S = clone(d);
   try{
@@ -376,10 +405,12 @@ async function load(){
       const ids = new Set(ORIG.paintings.map(a => a.id));
       dr.data.paintings = dr.data.paintings.filter(a => ids.has(a.id));
       dr.data.banner = dr.data.banner.filter(id => ids.has(id));
+      dr.data.text = dr.data.text || {};
       S = dr.data;
       if(changes().length) toast("Your unpublished changes from last time are still here");
     } else LS.del("draft");
   }catch(_){}
+  syncGroups();
 }
 
 /* ---------- sizes ---------- */
@@ -418,6 +449,10 @@ function changes(){
     if(n.join() !== w.join() && n.slice().sort().join() === w.slice().sort().join()) out.push(`${g.label}: new order`);
   }
   if(S.banner.join() !== ORIG.banner.join()) out.push(`Cover banner: ${S.banner.length} paintings, new selection or order`);
+  const ot = ORIG.text || {}, nt = S.text || {};
+  const tl = Object.keys(Object.assign({}, ot, nt)).filter(k => (txSet(ot[k]) ? ot[k] : "") !== (txSet(nt[k]) ? nt[k] : ""));
+  if(tl.length > 6) out.push(`Website text: ${tl.length} pieces of wording changed`);
+  else tl.forEach(k => { const t = TX().find(x => x.k === k); out.push(`Website text: ${t ? t.label : k}`); });
   return out;
 }
 const changedIds = () => { const o = origById(); return new Set(S.paintings.filter(a => !o[a.id] || pendingImg[a.id] || Object.keys(FIELDS).some(k => JSON.stringify(a[k] ?? "") !== JSON.stringify(o[a.id][k] ?? ""))).map(a => a.id)); };
@@ -512,12 +547,57 @@ addEventListener("resize", () => { if(S && !$("viewB").hidden) drawMosaic(); });
 
 /* ---------- tabs ---------- */
 function setTab(t){
-  [["p", "tabP", "viewP"], ["b", "tabB", "viewB"], ["s", "tabS", "viewS"]].forEach(([k, tb, v]) => { $(tb).setAttribute("aria-selected", t === k); $(v).hidden = t !== k; });
+  [["p", "tabP", "viewP"], ["b", "tabB", "viewB"], ["t", "tabT", "viewT"], ["s", "tabS", "viewS"]].forEach(([k, tb, v]) => { $(tb).setAttribute("aria-selected", t === k); $(v).hidden = t !== k; });
+  if(t === "p"){ syncGroups(); renderGroups(); }
   if(t === "b") renderBanner();
+  if(t === "t") renderText();
   if(t === "s") renderSettings();
   LS.set("tab", t);
 }
-$("tabP").onclick = () => setTab("p"); $("tabB").onclick = () => setTab("b"); $("tabS").onclick = () => setTab("s");
+$("tabP").onclick = () => setTab("p"); $("tabB").onclick = () => setTab("b"); $("tabT").onclick = () => setTab("t"); $("tabS").onclick = () => setTab("s");
+
+/* ---------- site text tab ---------- */
+function renderText(){
+  const q = $("tq").value.trim().toLowerCase(), secs = new Map();
+  TX().forEach(t => {
+    const v = txSet(S.text[t.k]) ? S.text[t.k] : txDef(t);
+    if(q && !(t.label.toLowerCase().includes(q) || v.toLowerCase().includes(q))) return;
+    if(!secs.has(t.section)) secs.set(t.section, []);
+    secs.get(t.section).push(t);
+  });
+  let first = true;
+  $("txList").innerHTML = [...secs].map(([name, list]) => {
+    const body = list.map(t => {
+      const edited = txSet(S.text[t.k]), v = edited ? S.text[t.k] : txDef(t);
+      const field = t.multi ? `<textarea id="tx_${t.k}" rows="${t.tall ? 7 : 2}" spellcheck="true">${esc(v)}</textarea>` : `<input type="text" id="tx_${t.k}" value="${esc(v)}" spellcheck="true">`;
+      return `<div class="txf${edited ? " chg" : ""}" data-k="${t.k}"><div class="th"><label for="tx_${t.k}">${esc(t.label)}</label><button class="btn quiet rs" type="button" data-rs="${t.k}"${edited ? "" : " hidden"}>Reset</button></div>${field}${t.hint ? `<span class="out">${esc(t.hint)}</span>` : ""}</div>`;
+    }).join("");
+    const open = q || first; first = false;
+    return `<details class="txsec"${open ? " open" : ""}><summary>${esc(name)} <small>${list.length}</small></summary><div class="txbody">${body}</div></details>`;
+  }).join("") || `<p class="hint">Nothing matches that search.</p>`;
+}
+$("tq").addEventListener("input", () => renderText());
+$("txList").addEventListener("input", e => {
+  const f = e.target.closest(".txf"); if(!f) return;
+  const k = f.dataset.k, t = TX().find(x => x.k === k), v = e.target.value;
+  if(!v.trim() || v === txDef(t)) delete S.text[k]; else S.text[k] = v;
+  const on = txSet(S.text[k]);
+  f.classList.toggle("chg", on); f.querySelector(".rs").hidden = !on;
+  if(/^group_.+_label$/.test(k)) syncGroups();
+  touched();
+});
+$("txList").addEventListener("focusout", e => {   // an emptied box goes back to the original wording
+  const f = e.target.closest(".txf"); if(!f || e.target.value.trim()) return;
+  e.target.value = txDef(TX().find(x => x.k === f.dataset.k));
+});
+$("txList").addEventListener("click", e => {
+  const b = e.target.closest("[data-rs]"); if(!b) return;
+  const k = b.dataset.rs, f = b.closest(".txf"), t = TX().find(x => x.k === k);
+  delete S.text[k]; f.querySelector("input,textarea").value = txDef(t);
+  f.classList.remove("chg"); b.hidden = true;
+  if(/^group_.+_label$/.test(k)) syncGroups();
+  touched();
+});
 
 /* ---------- images ---------- */
 function loadImage(file){
@@ -642,6 +722,8 @@ $("pubYes").onclick = async () => {
     }
     $("pubYes").textContent = "Saving…";
     const out = {banner: S.banner, paintings: S.paintings};
+    const text = {}; Object.keys(S.text).forEach(k => { if(txSet(S.text[k])) text[k] = S.text[k]; });
+    if(Object.keys(text).length) out.text = text;
     const r = await putFile("artworks.json", b64text(JSON.stringify(out, null, 2) + "\n"), `Update paintings (${changes().length} changes)`, SHA);
     SHA = r.content.sha;
     for(const id of ids){ URL.revokeObjectURL(pendingImg[id].url); delete pendingImg[id]; }
@@ -657,8 +739,8 @@ let armed = 0;
 $("discardBtn").onclick = () => {
   if(Date.now() - armed > 4000){ armed = Date.now(); $("discardBtn").textContent = "Tap again to discard"; setTimeout(() => $("discardBtn").textContent = "Discard changes", 4000); return; }
   armed = 0; $("discardBtn").textContent = "Discard changes";
-  S = clone(ORIG); for(const id in pendingImg) delete pendingImg[id]; LS.del("draft");
-  refreshStatus(); renderGroups(); if(!$("viewB").hidden) renderBanner(); toast("Changes discarded");
+  S = clone(ORIG); for(const id in pendingImg) delete pendingImg[id]; LS.del("draft"); syncGroups();
+  refreshStatus(); renderGroups(); if(!$("viewB").hidden) renderBanner(); if(!$("viewT").hidden) renderText(); toast("Changes discarded");
 };
 addEventListener("beforeunload", e => { if(Object.keys(pendingImg).length){ e.preventDefault(); e.returnValue = ""; } });
 
@@ -699,7 +781,7 @@ async function start(){
   try{ await load(); }
   catch(e){ showSignin(friendly(e)); return; }
   $("app").hidden = false; refreshStatus(); renderGroups();
-  const t = LS.get("tab"); if(t === "b" || t === "s") setTab(t);
+  const t = LS.get("tab"); if(t === "b" || t === "t" || t === "s") setTab(t);
 }
 $("signForm").addEventListener("submit", async e => {
   e.preventDefault();

@@ -135,41 +135,41 @@ dt{color:var(--soft)} dd{margin:0}
 <body>
 <header>
   <div class="wrap bar">
-    <a class="brand" href="#top" data-bind="artistName">Carelyn Madaschi</a>
+    <a class="brand" href="#top" data-tx="artistName">Carelyn Madaschi</a>
     <nav aria-label="Main">
-      <a href="#work">Work</a>
-      <a href="#available" id="navAvail">Available</a>
-      <a href="#about">About</a>
-      <a href="#commissions">Commissions</a>
+      <a href="#work" data-tx="navWork">Work</a>
+      <a href="#available" id="navAvail" data-tx="navAvail">Available</a>
+      <a href="#about" data-tx="navAbout">About</a>
+      <a href="#commissions" data-tx="navCommissions">Commissions</a>
     </nav>
   </div>
 </header>
 
 <main id="top">
   <div class="wrap intro" id="intro">
-    <h1 data-bind="artistName">Carelyn Madaschi</h1>
+    <h1 data-tx="artistName">Carelyn Madaschi</h1>
     <div>
-      <p class="theme">Quiet moments, vivid colour.</p>
-      <p class="sub" data-bind="tagline"></p>
+      <p class="theme" data-tx="theme">Quiet moments, vivid colour.</p>
+      <p class="sub" data-tx="tagline"></p>
     </div>
   </div>
   <div class="wrap" id="bannerWrap"><div class="banner" id="banner" role="group" aria-label="Signature paintings"></div></div>
   <div class="wrap bn-foot" id="bnFoot">
-    <p>Children and families, seen from behind, looking out at the sea, the rain and the moon. Come and sit beside them.</p>
-    <a class="link" href="#work">View all work</a>
+    <p data-tx="bannerNote">Children and families, seen from behind, looking out at the sea, the rain and the moon. Come and sit beside them.</p>
+    <a class="link" href="#work" data-tx="bannerLink">View all work</a>
   </div>
 
   <section class="signature" aria-label="Style"><div class="wrap">
-    <p class="sig-k">What you'll recognise in my work</p>
+    <p class="sig-k" data-tx="sigKicker">What you'll recognise in my work</p>
     <div class="sig-grid">
-      <div><h3>Layered texture</h3><p>Thick acrylic built up in layers, often with a palette knife, so the surface catches the light.</p></div>
-      <div><h3>The colour of in-between hours</h3><p>Saturated purples, pinks and blues warmed with gold: dusk, mist, rain and first light.</p></div>
-      <div><h3>A shared viewpoint</h3><p>Figures are often seen from behind, looking out, so you stand beside them and share the view.</p></div>
+      <div><h3 data-tx="sig1Title">Layered texture</h3><p data-tx="sig1Text">Thick acrylic built up in layers, often with a palette knife, so the surface catches the light.</p></div>
+      <div><h3 data-tx="sig2Title">The colour of in-between hours</h3><p data-tx="sig2Text">Saturated purples, pinks and blues warmed with gold: dusk, mist, rain and first light.</p></div>
+      <div><h3 data-tx="sig3Title">A shared viewpoint</h3><p data-tx="sig3Text">Figures are often seen from behind, looking out, so you stand beside them and share the view.</p></div>
     </div></div></section>
 
   <section id="work">
     <div class="wrap">
-      <h2>Work</h2>
+      <h2 data-tx="workHeading">Work</h2>
       <div class="tabs" id="tabs" role="tablist" aria-label="View"></div>
       <div class="filters" id="filters" role="group" aria-label="Filter paintings"></div>
       <div id="groups"></div>
@@ -179,7 +179,7 @@ dt{color:var(--soft)} dd{margin:0}
   <section id="about" class="rule">
     <div class="wrap about solo" id="aboutBox">
       <div class="ph" id="aboutPhoto" hidden><img alt="Carelyn Madaschi in her studio"></div>
-      <div><h2>About</h2><div id="bio"></div></div>
+      <div><h2 data-tx="aboutHeading">About</h2><div id="bio"></div></div>
     </div>
   </section>
 
@@ -187,15 +187,15 @@ dt{color:var(--soft)} dd{margin:0}
     <div class="wrap rule" style="padding-top:clamp(40px,7vw,80px)">
       <div class="cm">
         <div>
-          <h2>Commissions and prints</h2>
-          <p>A painting of a place you love, your family, or colours to suit a particular room. Send a note with what you have in mind and the size you're after, and I'll reply with a quote and timeline. If an original has sold, a print is often available, and I'm happy to talk about custom print sizes.</p>
+          <h2 data-tx="cmHeading">Commissions and prints</h2>
+          <p data-tx="cmText">A painting of a place you love, your family, or colours to suit a particular room. Send a note with what you have in mind and the size you're after, and I'll reply with a quote and timeline. If an original has sold, a print is often available, and I'm happy to talk about custom print sizes.</p>
         </div>
-        <div><a class="btn" id="commissionBtn" href="#" style="margin:0">Email about a commission</a></div>
+        <div><a class="btn" id="commissionBtn" href="#" style="margin:0" data-tx="cmButton">Email about a commission</a></div>
       </div>
       <div class="info">
-        <div><h3>Payment</h3><p>Checkout is handled by Stripe, so you can pay by card, Apple Pay or Google Pay.</p></div>
-        <div><h3>Delivery</h3><p id="shipping"></p></div>
-        <div><h3>Questions</h3><p>Not sure about a size or how a piece will look in your room? <a id="askLink" href="#">Send me an email</a>.</p></div>
+        <div><h3 data-tx="payHeading">Payment</h3><p data-tx="payText">Checkout is handled by Stripe, so you can pay by card, Apple Pay or Google Pay.</p></div>
+        <div><h3 data-tx="delHeading">Delivery</h3><p id="shipping"></p></div>
+        <div><h3 data-tx="quesHeading">Questions</h3><p><span data-tx="quesText">Not sure about a size or how a piece will look in your room?</span> <a id="askLink" href="#" data-tx="quesLink">Send me an email</a>.</p></div>
       </div>
     </div>
   </section>
@@ -222,6 +222,7 @@ dt{color:var(--soft)} dd{margin:0}
 </dialog>
 
 <script src="config.js"></script>
+<script src="texts.js"></script>
 <script>
 (async function(){
   const S = window.SITE, T = window.THEMES;
@@ -231,17 +232,31 @@ dt{color:var(--soft)} dd{margin:0}
   const $ = id => document.getElementById(id);
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const mail = subject => `mailto:${S.email}?subject=${encodeURIComponent(subject)}`;
+
+  // Wording: the starting text lives in texts.js; changes made in the admin are saved in artworks.json under "text".
+  let OV = {};
+  const DEFS = Object.fromEntries((window.TEXTS || []).map(t => [t.k, t]));
+  const raw = k => { const o = OV[k]; if(typeof o === "string" && o.trim()) return o; const d = DEFS[k] && DEFS[k].def; return typeof d === "function" ? d() : (d == null ? "" : d); };
+  const tx = (k, extra) => { const v = Object.assign({ year: new Date().getFullYear(), artistName: raw("artistName"), location: raw("location"), shipsTo: raw("shipsTo"), instagram: raw("instagram") }, extra || {}); return raw(k).replace(/\{(\w+)\}/g, (m, n) => v[n] === undefined ? m : v[n]); };
   const hasPrints = a => a.prints && a.prints.available;
 
-  document.querySelectorAll("[data-bind]").forEach(el => el.textContent = S[el.dataset.bind]);
-  $("bio").innerHTML = S.bio.map(p => `<p>${esc(p)}</p>`).join("");
-  $("commissionBtn").href = mail("Commission enquiry");
-  $("askLink").href = mail("Question about a painting");
-  $("mailLink").href = mail("Hello");
-  $("igLink").href = `https://instagram.com/${S.instagram}`;
-  $("igLink").textContent = `@${S.instagram}`;
-  $("shipping").textContent = `Originals and prints are carefully packed and posted ${S.shipsTo}. Local pickup from ${S.location} is welcome.`;
-  $("copy").textContent = `© ${new Date().getFullYear()} ${S.artistName}. ${S.location}.`;
+  function applyStatic(){
+    ["artistName", "tagline", "location", "email", "instagram", "shipsTo"].forEach(k => { if(DEFS[k]) S[k] = raw(k); });
+    if(DEFS.bio) S.bio = raw("bio").split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
+    document.querySelectorAll("[data-tx]").forEach(el => { if(DEFS[el.dataset.tx]) el.textContent = tx(el.dataset.tx); });
+    $("bio").innerHTML = S.bio.map(p => `<p>${esc(p)}</p>`).join("");
+    $("commissionBtn").href = mail("Commission enquiry");
+    $("askLink").href = mail("Question about a painting");
+    $("mailLink").href = mail("Hello");
+    $("igLink").href = `https://instagram.com/${S.instagram}`;
+    $("igLink").textContent = DEFS.igText ? tx("igText") : `@${S.instagram}`;
+    if(DEFS.mailText) $("mailLink").textContent = tx("mailText");
+    if(DEFS.delText) $("shipping").textContent = tx("delText");
+    if(DEFS.footerCopy) $("copy").textContent = tx("footerCopy");
+    if(DEFS.pageTitle) document.title = tx("pageTitle");
+    T.forEach(t => { if(DEFS["group_" + t.id + "_label"]){ t.label = tx("group_" + t.id + "_label"); t.blurb = tx("group_" + t.id + "_blurb"); themeLabel[t.id] = t.label; } });
+  }
+  applyStatic();
 
   // Optional About photo: uploaded from admin.html as images/about.jpg
   const ap = new Image();
@@ -257,9 +272,12 @@ dt{color:var(--soft)} dd{margin:0}
   // artworks.json holds { banner: [ids in order], paintings: [...] }
   if(A && !Array.isArray(A)){
     const ord = A.banner || [];
+    OV = A.text || {};
     window.BANNER_ORDER = ord;
     A = (A.paintings || []).map(a => Object.assign({}, a, { featured: ord.includes(a.id) }));
   }
+
+  applyStatic();
 
   // Banner: the paintings marked featured, in the order set by BANNER_ORDER (else data order)
   const order = window.BANNER_ORDER || [];
@@ -321,12 +339,12 @@ dt{color:var(--soft)} dd{margin:0}
     const used = new Set(A.map(a => a.theme));
     const anyPrints = A.some(hasPrints), anySold = A.some(a => a.sold);
     const pressed = (on) => `aria-pressed="${on}"`;
-    let html = `<button data-t="all" ${pressed(theme==="all")}>All</button>` +
+    let html = `<button data-t="all" ${pressed(theme==="all")}>${esc(tx("filterAll"))}</button>` +
       T.filter(t => used.has(t.id)).map(t => `<button data-t="${t.id}" ${pressed(theme===t.id)}>${esc(t.label)}</button>`).join("");
     if(anyPrints || anySold){
       html += `<span class="grp r"></span>` +
-        `<button class="r" data-v="available" ${pressed(show==="available")}>Available</button>` +
-        (anyPrints ? `<button data-v="prints" ${pressed(show==="prints")}>Prints</button>` : "");
+        `<button class="r" data-v="available" ${pressed(show==="available")}>${esc(tx("filterAvailable"))}</button>` +
+        (anyPrints ? `<button data-v="prints" ${pressed(show==="prints")}>${esc(tx("filterPrints"))}</button>` : "");
     }
     $("filters").innerHTML = html;
   }
@@ -341,8 +359,8 @@ dt{color:var(--soft)} dd{margin:0}
   function renderTabs(){
     const n = A.filter(a => !a.sold).length;
     $("tabs").innerHTML =
-      `<button role="tab" data-view="all" aria-selected="${view === "all"}">All work</button>` +
-      `<button role="tab" data-view="available" aria-selected="${view === "available"}">Available originals<sup>${n}</sup></button>`;
+      `<button role="tab" data-view="all" aria-selected="${view === "all"}">${esc(tx("tabAll"))}</button>` +
+      `<button role="tab" data-view="available" aria-selected="${view === "available"}">${esc(tx("tabAvail"))}<sup>${n}</sup></button>`;
   }
   function setView(v, scroll){
     view = v; renderTabs(); render();
@@ -360,7 +378,7 @@ dt{color:var(--soft)} dd{margin:0}
     const okShow = a => show === "all" || (show === "available" && !a.sold) || (show === "prints" && hasPrints(a));
     const known = new Set(T.map(t => t.id));
     const card = a => {
-      const right = a.sold ? `<span>Original sold${hasPrints(a) ? " · Prints" : ""}</span>` : (a.price ? `<span>${money(a.price)}</span>` : (hasPrints(a) ? `<span>Prints</span>` : `<span>Available</span>`));
+      const right = a.sold ? `<span>${esc(tx("cardSold"))}${hasPrints(a) ? " · " + esc(tx("cardPrints")) : ""}</span>` : (a.price ? `<span>${money(a.price)}</span>` : (hasPrints(a) ? `<span>${esc(tx("cardPrints"))}</span>` : `<span>${esc(tx("cardAvailable"))}</span>`));
       return `<a class="work" href="#art/${a.id}">
         <div class="p"><img src="${esc(a.thumb || a.image)}" alt="${esc(a.title)}" loading="lazy" decoding="async"></div>
         <div class="m"><span><i>${esc(a.title)}</i>${a.size ? "<br>" + esc(a.size) : ""}${view === "available" ? `<small class="g">${esc(themeLabel[a.theme] || "")}</small>` : ""}</span>${right}</div>
@@ -368,7 +386,7 @@ dt{color:var(--soft)} dd{margin:0}
     };
     if(view === "available"){
       const list = A.filter(a => !a.sold);
-      $("groups").innerHTML = `<p class="avail-intro">${list.length} originals ready for a new home, in group order. Open a painting for its size and framing, or to enquire.</p><div class="grid">${list.map(card).join("")}</div>`;
+      $("groups").innerHTML = `<p class="avail-intro">${esc(tx("availIntro", { n: list.length }))}</p><div class="grid">${list.map(card).join("")}</div>`;
       return;
     }
     const secs = T.filter(t => theme === "all" || t.id === theme).map(t => {
@@ -377,7 +395,7 @@ dt{color:var(--soft)} dd{margin:0}
       if(!list.length) return "";
       return `<section class="gsec" aria-labelledby="g-${t.id}"><h3 id="g-${t.id}">${esc(t.label)}</h3>${t.blurb ? `<p class="blurb">${esc(t.blurb)}</p>` : ""}<div class="grid">${list.map(card).join("")}</div></section>`;
     }).join("");
-    $("groups").innerHTML = secs || `<p class="empty">Nothing matches right now. Choose "All" or ask about a commission.</p>`;
+    $("groups").innerHTML = secs || `<p class="empty">${esc(tx("emptyFilter"))}</p>`;
   }
   renderTabs(); renderFilters(); render();
   if(location.hash === "#available") setView("available", true);
@@ -390,28 +408,28 @@ dt{color:var(--soft)} dd{margin:0}
     $("dlgImg").src = a.image; $("dlgImg").alt = a.title;
     $("dlgTitle").textContent = a.title;
     $("dlgDesc").textContent = a.description || ""; $("dlgDesc").hidden = !a.description;
-    const rows = [["Medium", a.medium], ["Size", a.size], ["Painted", a.painted], ["Framing", a.remarks], ["Group", themeLabel[a.theme]]].filter(r => r[1]);
+    const rows = [[tx("lblMedium"), a.medium], [tx("lblSize"), a.size], [tx("lblPainted"), a.painted], [tx("lblFraming"), a.remarks], [tx("lblGroup"), themeLabel[a.theme]]].filter(r => r[1]);
     $("dlgDl").innerHTML = rows.map(r => `<dt>${r[0]}</dt><dd>${esc(r[1])}</dd>`).join("");
     let out = "";
     if(a.sold){
-      out += `<div class="opt"><span>Original</span><span class="s">Sold</span></div>
-        <a class="btn o" href="${mail("Commission similar to " + a.title)}">Ask about a similar commission</a>`;
+      out += `<div class="opt"><span>${esc(tx("lblOriginal"))}</span><span class="s">${esc(tx("lblSold"))}</span></div>
+        <a class="btn o" href="${mail("Commission similar to " + a.title)}">${esc(tx("btnSimilar"))}</a>`;
     } else if(a.price){
-      out += `<div class="opt"><span>Original</span><b>${money(a.price)}</b></div>` +
-        (a.buyUrl ? `<a class="btn" href="${esc(a.buyUrl)}" target="_blank" rel="noopener">Buy the original</a>`
-                  : `<a class="btn" href="${mail("I'd like to buy " + a.title)}">Ask about the original</a>`);
+      out += `<div class="opt"><span>${esc(tx("lblOriginal"))}</span><b>${money(a.price)}</b></div>` +
+        (a.buyUrl ? `<a class="btn" href="${esc(a.buyUrl)}" target="_blank" rel="noopener">${esc(tx("btnBuyOriginal"))}</a>`
+                  : `<a class="btn" href="${mail("I'd like to buy " + a.title)}">${esc(tx("btnAskOriginal"))}</a>`);
     } else {
-      out += `<div class="opt"><span>Original</span><span class="s">Price on request</span></div>
-        <a class="btn" href="${mail("Enquiry about " + a.title)}">Enquire about this painting</a>`;
+      out += `<div class="opt"><span>${esc(tx("lblOriginal"))}</span><span class="s">${esc(tx("lblPriceOnRequest"))}</span></div>
+        <a class="btn" href="${mail("Enquiry about " + a.title)}">${esc(tx("btnEnquire"))}</a>`;
     }
     if(hasPrints(a)){
       const p = a.prints;
-      out += `<div class="opt" style="margin-top:22px"><span>Print${p.size ? ", " + esc(p.size) : ""}</span>${p.price ? `<b>${money(p.price)}</b>` : ""}</div>` +
-        (p.buyUrl ? `<a class="btn o" href="${esc(p.buyUrl)}" target="_blank" rel="noopener">Buy a print</a>`
-                  : `<a class="btn o" href="${mail("Print of " + a.title)}">Ask about prints</a>`);
+      out += `<div class="opt" style="margin-top:22px"><span>${esc(tx("lblPrint"))}${p.size ? ", " + esc(p.size) : ""}</span>${p.price ? `<b>${money(p.price)}</b>` : ""}</div>` +
+        (p.buyUrl ? `<a class="btn o" href="${esc(p.buyUrl)}" target="_blank" rel="noopener">${esc(tx("btnBuyPrint"))}</a>`
+                  : `<a class="btn o" href="${mail("Print of " + a.title)}">${esc(tx("btnAskPrint"))}</a>`);
     }
     const canBuy = (!a.sold && a.price && a.buyUrl) || (hasPrints(a) && a.prints.buyUrl);
-    out += `<p class="note">${canBuy ? "Secure checkout by Stripe. " : ""}Ships ${esc(S.shipsTo)}. <a href="${mail("Question about " + a.title)}">Ask a question</a></p>`;
+    out += `<p class="note">${canBuy ? esc(tx("noteStripe")) + " " : ""}${esc(tx("noteShips"))} <a href="${mail("Question about " + a.title)}">${esc(tx("noteAsk"))}</a></p>`;
     $("dlgOptions").innerHTML = out;
     if(!dlg.open) dlg.showModal();
     dlg.scrollTop = 0;
