@@ -27,7 +27,7 @@ window.THEMES = [
 
 // Where the admin page saves changes. Fill these in once (see the setup guide).
 window.ADMIN = {
-  owner: "YOUR-GITHUB-USERNAME",   // the GitHub account that owns the website
+  owner: "sassycare",              // the GitHub account that owns the website
   repo: "carelyn-site",            // the repository name
   branch: "main"
 };
