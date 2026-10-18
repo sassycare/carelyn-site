@@ -77,6 +77,10 @@
   add(H, "lblGroup", "Label: group", "Group");
   add(H, "lblOriginal", "Label: original", "Original");
   add(H, "lblPrint", "Label: print", "Print");
+  add(H, "lblPrintsHeading", "Heading above the print sizes", "Prints");
+  add(H, "notePrints", "Note beside the print sizes", "Postage is added at checkout.");
+  add(H, "btnBuy", "Button: buy a print size", "Buy");
+  add(H, "btnAskSize", "Button: ask about a print size (when it has no payment link yet)", "Ask");
   add(H, "lblSold", "Word for sold", "Sold");
   add(H, "lblPriceOnRequest", "Words when there is no price", "Price on request");
   add(H, "btnBuyOriginal", "Button: buy the original", "Buy the original");

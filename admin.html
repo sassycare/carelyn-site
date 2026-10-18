@@ -163,6 +163,13 @@ legend{padding:0 6px;font-size:.74rem;letter-spacing:.09em;text-transform:upperc
 .txf.chg input,.txf.chg textarea{border-color:var(--ink)}
 .txf .rs{padding:2px 8px;font-size:.84rem}
 @media (max-width:640px){.tabs{gap:14px}.tabs button{font-size:1.05rem;white-space:nowrap}}
+
+/* print sizes */
+.prrow{display:grid;grid-template-columns:90px minmax(0,1fr) 90px auto;gap:8px;align-items:center;margin:0 0 8px}
+.prrow input{border:1px solid var(--line);background:var(--panel);padding:8px 10px;border-radius:0;width:100%;min-width:0;font:inherit}
+.prhead{font-size:.74rem;letter-spacing:.09em;text-transform:uppercase;color:var(--soft);font-weight:600;margin-bottom:6px}
+.prbtns{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 4px}
+@media (max-width:640px){.prrow{grid-template-columns:70px minmax(0,1fr) 70px auto}.prrow .btn.quiet{padding-inline:2px}}
 </style>
 </head>
 <body>
@@ -232,6 +239,20 @@ legend{padding:0 6px;font-size:.74rem;letter-spacing:.09em;text-transform:upperc
   <section id="viewS" role="tabpanel" aria-labelledby="tabS" hidden>
     <div class="settings">
       <div>
+        <p class="sub" style="margin-top:20px">Print sizes and prices</p>
+        <p class="hint" style="margin-top:4px">Every painting that offers prints uses this list. Changing a price here only changes what the website shows: a Stripe link keeps the price it was made with, so after changing a price, make new links with the print script and import them below.</p>
+        <div class="prhead prrow" aria-hidden="true"><span>Size</span><span>Dimensions</span><span>Price</span><span></span></div>
+        <div id="prList"></div>
+        <div class="prbtns"><button class="btn" type="button" id="prAdd">Add a size</button></div>
+        <p class="sub" style="margin-top:26px">Print payment links</p>
+        <p class="hint" style="margin-top:4px">Turn prints on for every painting, then import the CSV the print script made (columns id, size, payment_link). Each painting gets one link per size. Nothing goes live until you press Publish changes.</p>
+        <div class="f-stack">
+          <div><button class="btn" type="button" id="prAll">Offer prints on every painting</button></div>
+          <input type="file" id="prCsv" accept=".csv,text/csv">
+          <p class="out" id="prCsvOut"></p>
+        </div>
+      </div>
+      <div>
         <p class="sub" style="margin-top:20px">About photo</p>
         <p class="hint" style="margin-top:4px">The photo beside your bio on the home page. It changes on the website right away when you upload it.</p>
         <div class="about-row"><img id="aboutImg" alt="Current about photo"><div class="f-stack">
@@ -295,10 +316,13 @@ legend{padding:0 6px;font-size:.74rem;letter-spacing:.09em;text-transform:upperc
       <legend>Prints</legend>
       <label class="check"><input type="checkbox" id="fPr"> Offer prints of this painting</label>
       <div id="prRow" class="f-stack">
+        <div id="prLinks" class="f-stack"></div>
+        <div id="prLegacy" class="f-stack">
         <div class="f"><label for="fPrSize">Print sizes</label><input id="fPrSize" type="text" placeholder="e.g. 8 x 10, 11 x 14 or 16 x 20 in"></div>
         <div class="two">
           <div class="f"><label for="fPrPrice">Print price from (AUD)</label><input id="fPrPrice" type="number" min="0" step="1"></div>
           <div class="f"><label for="fPrBuy">Print payment link</label><input id="fPrBuy" type="url" placeholder="https://buy.stripe.com/…"></div>
+        </div>
         </div>
       </div>
     </fieldset>
@@ -331,6 +355,10 @@ const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const GROUPS = (window.THEMES || []).map(t => ({id: t.id, label: t.label}));
 const BASE_LABEL = Object.fromEntries(GROUPS.map(g => [g.id, g.label]));
+const DEFAULT_PRINTS = [
+  {id: "A5", label: "A5", dims: "148 x 210 mm", price: 50}, {id: "A4", label: "A4", dims: "210 x 297 mm", price: 70},
+  {id: "A3", label: "A3", dims: "297 x 420 mm", price: 110}, {id: "A2", label: "A2", dims: "420 x 594 mm", price: 210},
+  {id: "A1", label: "A1", dims: "594 x 841 mm", price: 345}];
 const TX = () => window.TEXTS || [];
 const txDef = t => typeof t.def === "function" ? t.def() : (t.def == null ? "" : t.def);
 const txSet = v => typeof v === "string" && v.trim() !== "";
@@ -386,6 +414,7 @@ const pendingImg = {};                   // id -> {image:{b64,url}, thumb:{b64},
 const clone = o => JSON.parse(JSON.stringify(o));
 const origById = () => Object.fromEntries(ORIG.paintings.map(a => [a.id, a]));
 function saveDraft(){ LS.set("draft", JSON.stringify({base: SHA, data: S})); }
+const money = n => "$" + Number(n || 0).toLocaleString("en-AU");
 const thumbSrc = a => pendingImg[a.id] ? pendingImg[a.id].url : (a.thumb || a.image);
 
 async function load(){
@@ -396,6 +425,7 @@ async function load(){
   if(Array.isArray(d)) d = {banner: d.filter(a => a.featured).map(a => a.id), paintings: d};
   d.banner = d.banner || [];
   d.text = (d.text && typeof d.text === "object" && !Array.isArray(d.text)) ? d.text : {};
+  d.printSizes = Array.isArray(d.printSizes) ? d.printSizes : clone(DEFAULT_PRINTS);
   ORIG = clone(d);
   S = clone(d);
   try{
@@ -406,6 +436,7 @@ async function load(){
       dr.data.paintings = dr.data.paintings.filter(a => ids.has(a.id));
       dr.data.banner = dr.data.banner.filter(id => ids.has(id));
       dr.data.text = dr.data.text || {};
+      dr.data.printSizes = Array.isArray(dr.data.printSizes) ? dr.data.printSizes : clone(ORIG.printSizes);
       S = dr.data;
       if(changes().length) toast("Your unpublished changes from last time are still here");
     } else LS.del("draft");
@@ -449,10 +480,13 @@ function changes(){
     if(n.join() !== w.join() && n.slice().sort().join() === w.slice().sort().join()) out.push(`${g.label}: new order`);
   }
   if(S.banner.join() !== ORIG.banner.join()) out.push(`Cover banner: ${S.banner.length} paintings, new selection or order`);
+  if(JSON.stringify(S.printSizes) !== JSON.stringify(ORIG.printSizes)) out.push("Print sizes and prices");
   const ot = ORIG.text || {}, nt = S.text || {};
   const tl = Object.keys(Object.assign({}, ot, nt)).filter(k => (txSet(ot[k]) ? ot[k] : "") !== (txSet(nt[k]) ? nt[k] : ""));
   if(tl.length > 6) out.push(`Website text: ${tl.length} pieces of wording changed`);
   else tl.forEach(k => { const t = TX().find(x => x.k === k); out.push(`Website text: ${t ? t.label : k}`); });
+  const pc = out.filter(x => /: prints changed$/.test(x));
+  if(pc.length > 6) return out.filter(x => !pc.includes(x)).concat(`Prints: ${pc.length} paintings changed`);
   return out;
 }
 const changedIds = () => { const o = origById(); return new Set(S.paintings.filter(a => !o[a.id] || pendingImg[a.id] || Object.keys(FIELDS).some(k => JSON.stringify(a[k] ?? "") !== JSON.stringify(o[a.id][k] ?? ""))).map(a => a.id)); };
@@ -622,7 +656,7 @@ $("fMonth").innerHTML = '<option value="">Not set</option>' + MONTHS.map(m => `<
 const thisYear = new Date().getFullYear();
 $("fYear").innerHTML = '<option value="">Not set</option>' + Array.from({length: 15}, (_, i) => thisYear + 1 - i).map(y => `<option>${y}</option>`).join("");
 let editing = null, isNew = false, staged = null;
-function blank(){ return {id: "", title: "", theme: GROUPS[0].id, size: "", medium: "Acrylic on canvas", painted: `${MONTHS[new Date().getMonth()]} ${thisYear}`, remarks: "", sold: false, price: null, buyUrl: "", description: "", prints: {available: false, size: "", price: null, buyUrl: ""}, image: "", thumb: ""}; }
+function blank(){ return {id: "", title: "", theme: GROUPS[0].id, size: "", medium: "Acrylic on canvas", painted: `${MONTHS[new Date().getMonth()]} ${thisYear}`, remarks: "", sold: false, price: null, buyUrl: "", description: "", prints: {available: false, size: "", price: null, buyUrl: "", links: {}}, image: "", thumb: ""}; }
 function openEditor(id){
   isNew = !id; staged = null;
   const a = isNew ? blank() : S.paintings.find(x => x.id === id); if(!a) return; editing = a;
@@ -637,6 +671,7 @@ function openEditor(id){
   $("stA").checked = !a.sold; $("stS").checked = !!a.sold;
   $("fPrice").value = a.price ?? ""; $("fBuy").value = a.buyUrl || "";
   const p = a.prints || {}; $("fPr").checked = !!p.available; $("fPrSize").value = p.size || ""; $("fPrPrice").value = p.price ?? ""; $("fPrBuy").value = p.buyUrl || "";
+  $("prLinks").innerHTML = S.printSizes.map(z => `<div class="f"><label for="pl_${esc(z.id)}">${esc(z.label)} print link · ${esc(money(z.price))}</label><input id="pl_${esc(z.id)}" data-sz="${esc(z.id)}" type="url" placeholder="https://buy.stripe.com/…" value="${esc((p.links || {})[z.id] || "")}"></div>`).join("");
   $("fBanner").checked = !isNew && S.banner.includes(a.id);
   $("fDesc").value = a.description || "";
   $("dangerBox").hidden = isNew; $("rmConfirm").hidden = true; $("rmBtn").hidden = false;
@@ -650,6 +685,7 @@ function syncForm(){
   $("sizeOut").innerHTML = t ? `Shown on the site as <b>${esc(t)}</b>` : "Enter width and height to show the size in inches and cm.";
   $("saleRow").hidden = $("stS").checked;
   $("prRow").hidden = !$("fPr").checked;
+  const sized = S.printSizes.length > 0; $("prLinks").hidden = !sized; $("prLegacy").hidden = sized;
 }
 ["fW","fH","fU","fNote"].forEach(id => $(id).addEventListener("input", syncForm));
 ["stA","stS","fPr"].forEach(id => $(id).addEventListener("change", syncForm));
@@ -676,7 +712,10 @@ $("form").addEventListener("submit", e => {
   a.sold = $("stS").checked;
   a.price = a.sold ? null : num($("fPrice").value); a.buyUrl = a.sold ? "" : $("fBuy").value.trim();
   const pr = $("fPr").checked;
-  a.prints = {available: pr, size: pr ? $("fPrSize").value.trim() : "", price: pr ? num($("fPrPrice").value) : null, buyUrl: pr ? $("fPrBuy").value.trim() : ""};
+  if(S.printSizes.length){
+    const links = {}; $("prLinks").querySelectorAll("input[data-sz]").forEach(i => { if(i.value.trim()) links[i.dataset.sz] = i.value.trim(); });
+    const old = a.prints || {}; a.prints = {available: pr, size: old.size || "", price: old.price ?? null, buyUrl: old.buyUrl || "", links};
+  } else a.prints = {available: pr, size: pr ? $("fPrSize").value.trim() : "", price: pr ? num($("fPrPrice").value) : null, buyUrl: pr ? $("fPrBuy").value.trim() : "", links: (a.prints && a.prints.links) || {}};
   a.description = $("fDesc").value.trim();
   if(staged){ pendingImg[a.id] = staged; a.ratio = staged.ratio; }
   const inB = S.banner.includes(a.id);
@@ -724,6 +763,7 @@ $("pubYes").onclick = async () => {
     const out = {banner: S.banner, paintings: S.paintings};
     const text = {}; Object.keys(S.text).forEach(k => { if(txSet(S.text[k])) text[k] = S.text[k]; });
     if(Object.keys(text).length) out.text = text;
+    out.printSizes = S.printSizes.filter(z => z.label && Number(z.price) > 0).map(z => ({id: z.id, label: z.label.trim(), dims: (z.dims || "").trim(), price: Number(z.price)}));
     const r = await putFile("artworks.json", b64text(JSON.stringify(out, null, 2) + "\n"), `Update paintings (${changes().length} changes)`, SHA);
     SHA = r.content.sha;
     for(const id of ids){ URL.revokeObjectURL(pendingImg[id].url); delete pendingImg[id]; }
@@ -740,13 +780,70 @@ $("discardBtn").onclick = () => {
   if(Date.now() - armed > 4000){ armed = Date.now(); $("discardBtn").textContent = "Tap again to discard"; setTimeout(() => $("discardBtn").textContent = "Discard changes", 4000); return; }
   armed = 0; $("discardBtn").textContent = "Discard changes";
   S = clone(ORIG); for(const id in pendingImg) delete pendingImg[id]; LS.del("draft"); syncGroups();
-  refreshStatus(); renderGroups(); if(!$("viewB").hidden) renderBanner(); if(!$("viewT").hidden) renderText(); toast("Changes discarded");
+  refreshStatus(); renderGroups(); if(!$("viewB").hidden) renderBanner(); if(!$("viewT").hidden) renderText(); if(!$("viewS").hidden) renderSettings(); toast("Changes discarded");
 };
 addEventListener("beforeunload", e => { if(Object.keys(pendingImg).length){ e.preventDefault(); e.returnValue = ""; } });
 
 /* ---------- settings ---------- */
 let aboutStaged = null;
+function renderPrintRows(){
+  $("prList").innerHTML = S.printSizes.map((z, i) => `<div class="prrow" data-i="${i}"><input data-f="label" type="text" aria-label="Size name" value="${esc(z.label)}"><input data-f="dims" type="text" aria-label="Dimensions" value="${esc(z.dims || "")}"><input data-f="price" type="number" min="0" step="1" aria-label="Price" value="${esc(z.price ?? "")}"><button class="btn quiet" type="button" data-del="${i}">Remove</button></div>`).join("") || `<p class="hint">No sizes yet. The website falls back to a single print price per painting.</p>`;
+}
+$("prList").addEventListener("input", e => {
+  const r = e.target.closest(".prrow"); if(!r || !e.target.dataset.f) return;
+  const z = S.printSizes[+r.dataset.i], f = e.target.dataset.f;
+  z[f] = f === "price" ? (e.target.value === "" ? "" : +e.target.value) : e.target.value;
+  touched();
+});
+$("prList").addEventListener("click", e => {
+  const b = e.target.closest("[data-del]"); if(!b) return;
+  S.printSizes.splice(+b.dataset.del, 1); renderPrintRows(); touched();
+});
+$("prAdd").onclick = () => {
+  let id = "size-" + (S.printSizes.length + 1), n = S.printSizes.length + 1;
+  while(S.printSizes.some(z => z.id === id)) id = "size-" + (++n);
+  S.printSizes.push({id, label: "", dims: "", price: ""}); renderPrintRows(); touched();
+  const l = $("prList").querySelectorAll('input[data-f="label"]'); l[l.length - 1].focus();
+};
+$("prAll").onclick = () => {
+  let n = 0; S.paintings.forEach(a => { a.prints = Object.assign({size: "", price: null, buyUrl: "", links: {}}, a.prints || {}); if(!a.prints.available){ a.prints.available = true; n++; } });
+  touched(); renderGroups(); $("prCsvOut").textContent = n ? `Prints are now offered on ${n} more painting${n > 1 ? "s" : ""}. Press Publish changes to put them on the website.` : "Every painting already offers prints.";
+};
+function parseCsv(text){
+  const rows = []; let row = [], cur = "", q = false;
+  for(let i = 0; i < text.length; i++){
+    const c = text[i];
+    if(q){ if(c === '"'){ if(text[i + 1] === '"'){ cur += '"'; i++; } else q = false; } else cur += c; }
+    else if(c === '"') q = true;
+    else if(c === ","){ row.push(cur); cur = ""; }
+    else if(c === "\n" || c === "\r"){ if(c === "\r" && text[i + 1] === "\n") i++; row.push(cur); cur = ""; if(row.some(x => x.trim() !== "")) rows.push(row); row = []; }
+    else cur += c;
+  }
+  row.push(cur); if(row.some(x => x.trim() !== "")) rows.push(row);
+  return rows;
+}
+$("prCsv").addEventListener("change", async () => {
+  const f = $("prCsv").files[0]; if(!f) return;
+  try{
+    const rows = parseCsv((await f.text()).replace(/^\uFEFF/, "")), head = rows.shift().map(h => h.trim().toLowerCase());
+    const ci = n => head.indexOf(n);
+    if(ci("id") < 0 || ci("size") < 0 || ci("payment_link") < 0) throw new Error("The file needs the columns id, size and payment_link.");
+    const by = Object.fromEntries(S.paintings.map(a => [a.id, a])), sizes = new Set(S.printSizes.map(z => z.id));
+    let done = 0, skipped = 0; const touchedP = new Set();
+    rows.forEach(r => {
+      const a = by[r[ci("id")].trim()], sz = r[ci("size")].trim(), url = r[ci("payment_link")].trim();
+      if(!a || !sizes.has(sz) || !/^https:\/\//.test(url)){ skipped++; return; }
+      a.prints = Object.assign({size: "", price: null, buyUrl: ""}, a.prints || {});
+      a.prints.links = Object.assign({}, a.prints.links || {}); a.prints.links[sz] = url; a.prints.available = true;
+      done++; touchedP.add(a.id);
+    });
+    touched(); renderGroups();
+    $("prCsvOut").textContent = `Imported ${done} link${done === 1 ? "" : "s"} for ${touchedP.size} painting${touchedP.size === 1 ? "" : "s"}.` + (skipped ? ` ${skipped} row${skipped === 1 ? " was" : "s were"} skipped (unknown painting or size, or not a link).` : "") + " Press Publish changes to put them on the website.";
+  }catch(e){ $("prCsvOut").textContent = e.message; }
+  $("prCsv").value = "";
+});
 function renderSettings(){
+  renderPrintRows();
   const c = conn();
   $("connInfo").textContent = `Saving to ${c.owner}/${c.repo} (${c.branch}).`;
   $("aboutImg").src = "images/about.jpg?t=" + Date.now();

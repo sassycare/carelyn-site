@@ -87,6 +87,11 @@ section{padding:clamp(40px,7vw,96px) 0}
 .btn{display:block;text-align:center;text-decoration:none;font:inherit;font-weight:400;font-size:.95rem;padding:13px 20px;border:1px solid var(--ink);background:var(--ink);color:var(--bg);margin:12px 0 0;cursor:pointer;letter-spacing:.01em}
 .btn.o{background:transparent;color:var(--ink)}
 .btn:hover{opacity:.86}
+.prs{margin-top:4px}
+.pr{display:grid;grid-template-columns:minmax(0,1fr) auto 84px;align-items:center;gap:14px;padding:9px 0;border-top:1px solid var(--line);font-size:.98rem}
+.pr small{display:block;color:var(--soft);font-size:.82rem}
+.pr b{font-family:var(--serif);font-weight:400;font-size:1.25rem}
+.pr .btn{margin:0;padding:8px 12px;font-size:.9rem}
 
 footer{border-top:1px solid var(--line);padding:32px 0 48px;font-size:.92rem;color:var(--soft)}
 footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px 28px}
@@ -234,7 +239,7 @@ dt{color:var(--soft)} dd{margin:0}
   const mail = subject => `mailto:${S.email}?subject=${encodeURIComponent(subject)}`;
 
   // Wording: the starting text lives in texts.js; changes made in the admin are saved in artworks.json under "text".
-  let OV = {};
+  let OV = {}, PRINT_SIZES = [];
   const DEFS = Object.fromEntries((window.TEXTS || []).map(t => [t.k, t]));
   const raw = k => { const o = OV[k]; if(typeof o === "string" && o.trim()) return o; const d = DEFS[k] && DEFS[k].def; return typeof d === "function" ? d() : (d == null ? "" : d); };
   const tx = (k, extra) => { const v = Object.assign({ year: new Date().getFullYear(), artistName: raw("artistName"), location: raw("location"), shipsTo: raw("shipsTo"), instagram: raw("instagram") }, extra || {}); return raw(k).replace(/\{(\w+)\}/g, (m, n) => v[n] === undefined ? m : v[n]); };
@@ -273,6 +278,7 @@ dt{color:var(--soft)} dd{margin:0}
   if(A && !Array.isArray(A)){
     const ord = A.banner || [];
     OV = A.text || {};
+    PRINT_SIZES = Array.isArray(A.printSizes) ? A.printSizes.filter(z => z && z.label && Number(z.price) > 0) : [];
     window.BANNER_ORDER = ord;
     A = (A.paintings || []).map(a => Object.assign({}, a, { featured: ord.includes(a.id) }));
   }
@@ -423,12 +429,19 @@ dt{color:var(--soft)} dd{margin:0}
         <a class="btn" href="${mail("Enquiry about " + a.title)}">${esc(tx("btnEnquire"))}</a>`;
     }
     if(hasPrints(a)){
-      const p = a.prints;
-      out += `<div class="opt" style="margin-top:22px"><span>${esc(tx("lblPrint"))}${p.size ? ", " + esc(p.size) : ""}</span>${p.price ? `<b>${money(p.price)}</b>` : ""}</div>` +
-        (p.buyUrl ? `<a class="btn o" href="${esc(p.buyUrl)}" target="_blank" rel="noopener">${esc(tx("btnBuyPrint"))}</a>`
-                  : `<a class="btn o" href="${mail("Print of " + a.title)}">${esc(tx("btnAskPrint"))}</a>`);
+      const p = a.prints, links = p.links || {};
+      if(PRINT_SIZES.length){
+        out += `<div class="opt" style="margin-top:22px"><span>${esc(tx("lblPrintsHeading"))}</span><span class="s">${esc(tx("notePrints"))}</span></div><div class="prs">` +
+          PRINT_SIZES.map(z => `<div class="pr"><span>${esc(z.label)}${z.dims ? `<small>${esc(z.dims)}</small>` : ""}</span><b>${money(z.price)}</b>` +
+            (links[z.id] ? `<a class="btn o" href="${esc(links[z.id])}" target="_blank" rel="noopener">${esc(tx("btnBuy"))}</a>`
+                         : `<a class="btn o" href="${mail("Print (" + z.label + ") of " + a.title)}">${esc(tx("btnAskSize"))}</a>`) + `</div>`).join("") + `</div>`;
+      } else {
+        out += `<div class="opt" style="margin-top:22px"><span>${esc(tx("lblPrint"))}${p.size ? ", " + esc(p.size) : ""}</span>${p.price ? `<b>${money(p.price)}</b>` : ""}</div>` +
+          (p.buyUrl ? `<a class="btn o" href="${esc(p.buyUrl)}" target="_blank" rel="noopener">${esc(tx("btnBuyPrint"))}</a>`
+                    : `<a class="btn o" href="${mail("Print of " + a.title)}">${esc(tx("btnAskPrint"))}</a>`);
+      }
     }
-    const canBuy = (!a.sold && a.price && a.buyUrl) || (hasPrints(a) && a.prints.buyUrl);
+    const canBuy = (!a.sold && a.price && a.buyUrl) || (hasPrints(a) && (a.prints.buyUrl || Object.values(a.prints.links || {}).some(Boolean)));
     out += `<p class="note">${canBuy ? esc(tx("noteStripe")) + " " : ""}${esc(tx("noteShips"))} <a href="${mail("Question about " + a.title)}">${esc(tx("noteAsk"))}</a></p>`;
     $("dlgOptions").innerHTML = out;
     if(!dlg.open) dlg.showModal();
