@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="en-AU" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Carelyn Madaschi | Original paintings and prints</title>
+<meta name="description" content="Original acrylic paintings, prints and commissions by Carelyn Madaschi, Bowral NSW.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300;1,6..72,400&family=Hanken+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F3F0; --tile:#ECEAE5; --ink:#1D1C1A; --soft:#6D6A64; --line:#D9D6CF;
+  --serif:"Newsreader","Iowan Old Style",Georgia,serif;
+  --sans:"Hanken Grotesk","Helvetica Neue",Arial,sans-serif;
+  color-scheme:light; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-weight:300;font-size:1rem;line-height:1.65}
+img{display:block;max-width:100%;height:auto}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
+.wrap{max-width:1240px;margin:0 auto;padding-left:clamp(20px,5vw,64px);padding-right:clamp(20px,5vw,64px)}
+
+header{padding:28px 0}
+.bar{display:flex;justify-content:space-between;align-items:baseline;gap:24px}
+.brand{font-family:var(--serif);font-size:1.35rem;font-weight:400;letter-spacing:.01em;text-decoration:none}
+nav{display:flex;gap:clamp(18px,3vw,36px);font-size:.95rem}
+nav a{text-decoration:none;color:var(--soft)} nav a:hover{color:var(--ink)}
+
+.intro{padding-top:clamp(20px,4vw,48px);padding-bottom:clamp(24px,3.5vw,44px);display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(16px,5vw,80px);align-items:end}
+.intro h1{font-family:var(--serif);font-weight:300;font-size:clamp(2.6rem,6vw,4.6rem);line-height:1;margin:0;letter-spacing:-.012em}
+.intro .theme{font-family:var(--serif);font-style:italic;font-weight:300;font-size:clamp(1.35rem,2.4vw,1.8rem);line-height:1.2;margin:0 0 .35em}
+.intro .sub{margin:0;color:var(--soft);max-width:38ch}
+.link{display:inline-block;font-size:.98rem;text-decoration:none;border-bottom:1px solid var(--ink);padding-bottom:2px}
+.banner{display:flex;flex-direction:column;gap:10px}
+.brow{display:flex;gap:10px;overflow:hidden}
+.bt{position:relative;display:block;overflow:hidden;background:var(--tile);flex:none;text-decoration:none}
+.bt img{width:100%;height:100%;object-fit:cover;display:block}
+.bt .bc{position:absolute;left:0;right:0;bottom:0;padding:36px 14px 12px;background:linear-gradient(to top,rgba(20,19,17,.55),rgba(20,19,17,0));color:#fff;font-family:var(--serif);font-style:italic;font-size:1.05rem;opacity:0;transition:opacity .25s}
+.bt:hover .bc,.bt:focus-visible .bc{opacity:1}
+.bn-foot{display:flex;justify-content:space-between;align-items:baseline;gap:12px 40px;flex-wrap:wrap;padding-top:20px;padding-bottom:clamp(40px,6vw,72px)}
+.bn-foot p{margin:0;color:var(--soft);max-width:62ch}
+.banner.strip{flex-direction:row;overflow-x:auto;scroll-snap-type:x mandatory;gap:10px;scrollbar-width:none;margin-right:calc(-1 * clamp(20px,5vw,64px));padding-right:clamp(20px,5vw,64px);-webkit-overflow-scrolling:touch}
+.banner.strip::-webkit-scrollbar{display:none}
+.banner.strip .bt{height:min(54vh,400px);aspect-ratio:var(--r);scroll-snap-align:start}
+h2{font-family:var(--serif);font-weight:300;font-size:clamp(1.8rem,3.4vw,2.6rem);margin:0 0 .4em;letter-spacing:-.005em}
+section{padding:clamp(40px,7vw,96px) 0}
+
+.tabs{display:flex;flex-wrap:wrap;gap:6px 36px;margin:0 0 30px}
+.tabs button{font:inherit;font-family:var(--serif);font-size:clamp(1.25rem,2.4vw,1.6rem);font-weight:300;color:var(--soft);background:none;border:0;padding:0 0 6px;cursor:pointer;border-bottom:1px solid transparent}
+.tabs button:hover{color:var(--ink)}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+.tabs sup{font-family:var(--sans);font-size:.6em;margin-left:.3em;color:var(--soft)}
+.avail-intro{margin:0 0 clamp(22px,3vw,34px);color:var(--soft);max-width:60ch;font-family:var(--serif);font-style:italic;font-size:1.1rem}
+.work .g{display:block;color:var(--soft);font-size:.85em;margin-top:2px;text-align:left;white-space:normal}
+.filters[hidden]{display:none}
+.filters{display:flex;flex-wrap:wrap;gap:8px 28px;margin:0 0 44px;font-size:.95rem;color:var(--soft);border-bottom:1px solid var(--line);padding-bottom:14px}
+.filters button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+.filters button:hover{color:var(--ink)}
+.filters button[aria-pressed="true"]{color:var(--ink);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:7px}
+.filters .r{margin-left:auto}
+.filters .grp{display:contents}
+
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(36px,5vw,64px) clamp(24px,3.5vw,48px)}
+.work{text-decoration:none;display:block}
+.work .p{aspect-ratio:1/1;background:var(--tile);display:flex;align-items:center;justify-content:center;padding:7%}
+.work .p img{max-width:100%;max-height:100%;width:auto;height:auto;box-shadow:0 1px 0 var(--line);transition:transform .5s ease}
+.work:hover .p img{transform:scale(1.02)}
+.work .m{margin-top:14px;display:flex;justify-content:space-between;gap:16px;font-size:.92rem;color:var(--soft)}
+.work .m i{font-family:var(--serif);font-size:1.08rem;color:var(--ink)}
+.work .m span:last-child{white-space:nowrap;text-align:right}
+.empty,.soon{grid-column:1/-1;color:var(--soft);padding:32px 0}
+
+.about{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,6fr);gap:clamp(28px,6vw,96px);align-items:start}
+.about.solo{grid-template-columns:minmax(0,1fr)}
+.about .ph img{width:100%;aspect-ratio:4/5;object-fit:cover}
+.about p{max-width:54ch;margin:0 0 1.1em}
+.rule{border-top:1px solid var(--line)}
+.cm{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,4fr);gap:clamp(28px,6vw,96px);align-items:end}
+.cm p{max-width:52ch;margin:0;color:var(--soft)}
+.info{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px 48px;margin-top:56px;font-size:.95rem}
+.info h3{font-family:var(--serif);font-weight:400;font-size:1.15rem;margin:0 0 4px}
+.info p{margin:0;color:var(--soft)}
+.btn{display:block;text-align:center;text-decoration:none;font:inherit;font-weight:400;font-size:.95rem;padding:13px 20px;border:1px solid var(--ink);background:var(--ink);color:var(--bg);margin:12px 0 0;cursor:pointer;letter-spacing:.01em}
+.btn.o{background:transparent;color:var(--ink)}
+.btn:hover{opacity:.86}
+
+footer{border-top:1px solid var(--line);padding:32px 0 48px;font-size:.92rem;color:var(--soft)}
+footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px 28px}
+
+dialog{border:0;padding:0;width:min(1120px,94vw);max-width:none;background:var(--bg);color:var(--ink);max-height:92vh;overflow:auto;box-shadow:0 30px 80px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(20,19,17,.72)}
+.dlg{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,4fr);min-height:min(80vh,720px)}
+.dlg .ph{background:var(--tile);display:flex;align-items:center;justify-content:center;padding:clamp(16px,3vw,40px)}
+.dlg .ph img{max-width:100%;max-height:82vh;width:auto;height:auto;box-shadow:0 1px 0 var(--line)}
+.dlg .body{padding:clamp(24px,4vw,48px);display:flex;flex-direction:column;justify-content:center}
+.dlg h3{font-family:var(--serif);font-weight:300;font-size:clamp(1.9rem,3.4vw,2.7rem);line-height:1.05;margin:0 0 .3em}
+.dlg .desc{margin:0 0 8px;color:var(--soft)}
+dl{display:grid;grid-template-columns:auto 1fr;gap:6px 24px;margin:20px 0 22px;font-size:.95rem}
+dt{color:var(--soft)} dd{margin:0}
+.opt{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--line);padding:16px 0 0;font-size:.98rem;margin-top:8px}
+.opt b{font-family:var(--serif);font-weight:400;font-size:1.4rem}
+.opt .s{color:var(--soft);font-size:.95rem}
+.note{font-size:.85rem;color:var(--soft);margin:16px 0 0}
+.close{position:sticky;top:0;float:right;margin:12px 12px -56px 0;z-index:2;width:44px;height:44px;border:0;background:var(--bg);color:var(--ink);font-size:1.5rem;line-height:1;cursor:pointer;opacity:.9}
+
+@media (max-width:820px){
+  .intro,.about,.cm,.dlg{grid-template-columns:1fr}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .filters .r{margin-left:0}
+  .info{grid-template-columns:1fr}
+  nav a:first-child{display:none}
+  .dlg .ph img{max-height:60vh}
+}
+@media (max-width:480px){.grid{gap:28px 14px}.work .p{padding:6%}.work .m{flex-direction:column;gap:0}.work .m i{font-size:1rem}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+.signature{border-top:1px solid var(--line);padding:clamp(40px,6vw,72px) 0 clamp(8px,2vw,24px)}
+.sig-k{font-size:.9rem;color:var(--soft);margin:0 0 24px}
+.sig-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px clamp(24px,5vw,64px)}
+.sig-grid h3{font-family:var(--serif);font-weight:400;font-size:1.3rem;margin:0 0 6px}
+.sig-grid p{margin:0;color:var(--soft);max-width:36ch}
+.gsec{margin:0 0 clamp(56px,8vw,104px)}
+.gsec:last-child{margin-bottom:0}
+.gsec h3{font-family:var(--serif);font-weight:300;font-size:clamp(1.7rem,3.2vw,2.4rem);line-height:1.05;margin:0 0 .25em;letter-spacing:-.005em}
+.gsec .blurb{margin:0 0 clamp(22px,3vw,34px);color:var(--soft);max-width:58ch;font-family:var(--serif);font-style:italic;font-size:1.1rem}
+@media (max-width:820px){.sig-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap bar">
+    <a class="brand" href="#top" data-bind="artistName">Carelyn Madaschi</a>
+    <nav aria-label="Main">
+      <a href="#work">Work</a>
+      <a href="#available" id="navAvail">Available</a>
+      <a href="#about">About</a>
+      <a href="#commissions">Commissions</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <div class="wrap intro" id="intro">
+    <h1 data-bind="artistName">Carelyn Madaschi</h1>
+    <div>
+      <p class="theme">Quiet moments, vivid colour.</p>
+      <p class="sub" data-bind="tagline"></p>
+    </div>
+  </div>
+  <div class="wrap" id="bannerWrap"><div class="banner" id="banner" role="group" aria-label="Signature paintings"></div></div>
+  <div class="wrap bn-foot" id="bnFoot">
+    <p>Children and families, seen from behind, looking out at the sea, the rain and the moon. Come and sit beside them.</p>
+    <a class="link" href="#work">View all work</a>
+  </div>
+
+  <section class="signature" aria-label="Style"><div class="wrap">
+    <p class="sig-k">What you'll recognise in my work</p>
+    <div class="sig-grid">
+      <div><h3>Layered texture</h3><p>Thick acrylic built up in layers, often with a palette knife, so the surface catches the light.</p></div>
+      <div><h3>The colour of in-between hours</h3><p>Saturated purples, pinks and blues warmed with gold: dusk, mist, rain and first light.</p></div>
+      <div><h3>A shared viewpoint</h3><p>Figures are often seen from behind, looking out, so you stand beside them and share the view.</p></div>
+    </div></div></section>
+
+  <section id="work">
+    <div class="wrap">
+      <h2>Work</h2>
+      <div class="tabs" id="tabs" role="tablist" aria-label="View"></div>
+      <div class="filters" id="filters" role="group" aria-label="Filter paintings"></div>
+      <div id="groups"></div>
+    </div>
+  </section>
+
+  <section id="about" class="rule">
+    <div class="wrap about solo" id="aboutBox">
+      <div class="ph" id="aboutPhoto" hidden><img alt="Carelyn Madaschi in her studio"></div>
+      <div><h2>About</h2><div id="bio"></div></div>
+    </div>
+  </section>
+
+  <section id="commissions" style="padding-top:0">
+    <div class="wrap rule" style="padding-top:clamp(40px,7vw,80px)">
+      <div class="cm">
+        <div>
+          <h2>Commissions and prints</h2>
+          <p>A painting of a place you love, your family, or colours to suit a particular room. Send a note with what you have in mind and the size you're after, and I'll reply with a quote and timeline. If an original has sold, a print is often available, and I'm happy to talk about custom print sizes.</p>
+        </div>
+        <div><a class="btn" id="commissionBtn" href="#" style="margin:0">Email about a commission</a></div>
+      </div>
+      <div class="info">
+        <div><h3>Payment</h3><p>Checkout is handled by Stripe, so you can pay by card, Apple Pay or Google Pay.</p></div>
+        <div><h3>Delivery</h3><p id="shipping"></p></div>
+        <div><h3>Questions</h3><p>Not sure about a size or how a piece will look in your room? <a id="askLink" href="#">Send me an email</a>.</p></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap row">
+    <span id="copy"></span>
+    <span><a id="igLink" href="#" rel="noopener">Instagram</a> &nbsp; <a id="mailLink" href="#">Email</a></span>
+  </div>
+</footer>
+
+<dialog id="dlg" aria-labelledby="dlgTitle">
+  <button class="close" id="dlgClose" aria-label="Close">×</button>
+  <div class="dlg">
+    <div class="ph"><img id="dlgImg" alt=""></div>
+    <div class="body">
+      <h3 id="dlgTitle"></h3>
+      <p class="desc" id="dlgDesc"></p>
+      <dl id="dlgDl"></dl>
+      <div id="dlgOptions"></div>
+    </div>
+  </div>
+</dialog>
+
+<script src="config.js"></script>
+<script>
+(async function(){
+  const S = window.SITE, T = window.THEMES;
+  const themeLabel = Object.fromEntries(T.map(t => [t.id, t.label]));
+  const fmt = new Intl.NumberFormat("en-AU", { style:"currency", currency:S.currency, maximumFractionDigits:0 });
+  const money = n => (n === null || n === undefined || n === "") ? "" : fmt.format(Number(n));
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const mail = subject => `mailto:${S.email}?subject=${encodeURIComponent(subject)}`;
+  const hasPrints = a => a.prints && a.prints.available;
+
+  document.querySelectorAll("[data-bind]").forEach(el => el.textContent = S[el.dataset.bind]);
+  $("bio").innerHTML = S.bio.map(p => `<p>${esc(p)}</p>`).join("");
+  $("commissionBtn").href = mail("Commission enquiry");
+  $("askLink").href = mail("Question about a painting");
+  $("mailLink").href = mail("Hello");
+  $("igLink").href = `https://instagram.com/${S.instagram}`;
+  $("igLink").textContent = `@${S.instagram}`;
+  $("shipping").textContent = `Originals and prints are carefully packed and posted ${S.shipsTo}. Local pickup from ${S.location} is welcome.`;
+  $("copy").textContent = `© ${new Date().getFullYear()} ${S.artistName}. ${S.location}.`;
+
+  // Optional About photo: uploaded from admin.html as images/about.jpg
+  const ap = new Image();
+  ap.onload = () => { $("aboutPhoto").querySelector("img").src = ap.src; $("aboutPhoto").hidden = false; $("aboutBox").classList.remove("solo"); };
+  ap.src = window.ABOUT_PHOTO || "images/about.jpg";
+
+  // Load paintings (managed from admin.html)
+  let A = window.ARTWORKS_INLINE;
+  if(!A){
+    try{ const r = await fetch("artworks.json?t=" + Date.now(), { cache:"no-store" }); A = r.ok ? await r.json() : []; }
+    catch(e){ A = []; }
+  }
+  // artworks.json holds { banner: [ids in order], paintings: [...] }
+  if(A && !Array.isArray(A)){
+    const ord = A.banner || [];
+    window.BANNER_ORDER = ord;
+    A = (A.paintings || []).map(a => Object.assign({}, a, { featured: ord.includes(a.id) }));
+  }
+
+  // Banner: the paintings marked featured, in the order set by BANNER_ORDER (else data order)
+  const order = window.BANNER_ORDER || [];
+  const banner = A.filter(a => a.featured).sort((x, y) => {
+    const i = order.indexOf(x.id), j = order.indexOf(y.id);
+    return (i < 0 ? 999 : i) - (j < 0 ? 999 : j);
+  });
+  if(!banner.length){ $("bannerWrap").remove(); $("bnFoot").remove(); }
+  else {
+    const bEl = $("banner"), GAP = 10, TARGET = 290;
+    const ratios = banner.map(a => a.ratio || 1.25);
+    const tile = (a, i) => `<a class="bt" href="#art/${a.id}" data-i="${i}" style="--r:${ratios[i]}"><img src="${esc(a.thumb || a.image)}" alt="${esc(a.title)}${a.medium ? ", " + esc(a.medium.toLowerCase()) : ""}" decoding="async"><span class="bc">${esc(a.title)}</span></a>`;
+    // split the paintings into k rows whose total widths are as even as possible
+    function partition(r, k){
+      const n = r.length, pre = [0]; r.forEach(x => pre.push(pre[pre.length - 1] + x));
+      const mean = pre[n] / k, INF = 1e9;
+      const dp = Array.from({length:k + 1}, () => Array(n + 1).fill(INF)), cut = Array.from({length:k + 1}, () => Array(n + 1).fill(0));
+      dp[0][0] = 0;
+      for(let m = 1; m <= k; m++) for(let j = m; j <= n; j++) for(let i = m - 1; i < j; i++){
+        const c = dp[m - 1][i] + (pre[j] - pre[i] - mean) ** 2;
+        if(c < dp[m][j]){ dp[m][j] = c; cut[m][j] = i; }
+      }
+      const rows = []; let j = n;
+      for(let m = k; m >= 1; m--){ const i = cut[m][j]; rows.unshift([i, j]); j = i; }
+      return rows;
+    }
+    let sig = "";
+    const mq = matchMedia("(max-width:820px)");
+    function layout(){
+      const W = bEl.clientWidth; if(!W) return;
+      if(mq.matches){
+        if(sig !== "strip"){ sig = "strip"; bEl.className = "banner strip"; bEl.innerHTML = banner.map(tile).join(""); }
+        return;
+      }
+      const total = ratios.reduce((s, x) => s + x, 0);
+      const k = Math.max(1, Math.min(banner.length, Math.round(total * TARGET / W)));
+      const rows = partition(ratios, k);
+      const s = "rows" + JSON.stringify(rows);
+      if(sig !== s){
+        sig = s; bEl.className = "banner";
+        bEl.innerHTML = rows.map(([i, j]) => `<div class="brow">${banner.slice(i, j).map((a, o) => tile(a, i + o)).join("")}</div>`).join("");
+      }
+      bEl.querySelectorAll(".brow").forEach((row, ri) => {
+        const [i, j] = rows[ri], sum = ratios.slice(i, j).reduce((s, x) => s + x, 0);
+        const h = (W - GAP * (j - i - 1)) / sum;
+        row.style.height = h + "px";
+        row.querySelectorAll(".bt").forEach(t => { t.style.width = (ratios[t.dataset.i] * h) + "px"; t.style.height = h + "px"; });
+      });
+    }
+    layout();
+    let raf = 0;
+    new ResizeObserver(() => { cancelAnimationFrame(raf); raf = requestAnimationFrame(layout); }).observe(bEl);
+    mq.addEventListener("change", layout);
+  }
+
+  // Filters
+  let theme = "all", show = "all";
+  function renderFilters(){
+    const used = new Set(A.map(a => a.theme));
+    const anyPrints = A.some(hasPrints), anySold = A.some(a => a.sold);
+    const pressed = (on) => `aria-pressed="${on}"`;
+    let html = `<button data-t="all" ${pressed(theme==="all")}>All</button>` +
+      T.filter(t => used.has(t.id)).map(t => `<button data-t="${t.id}" ${pressed(theme===t.id)}>${esc(t.label)}</button>`).join("");
+    if(anyPrints || anySold){
+      html += `<span class="grp r"></span>` +
+        `<button class="r" data-v="available" ${pressed(show==="available")}>Available</button>` +
+        (anyPrints ? `<button data-v="prints" ${pressed(show==="prints")}>Prints</button>` : "");
+    }
+    $("filters").innerHTML = html;
+  }
+  $("filters").addEventListener("click", e => {
+    const b = e.target.closest("button"); if(!b) return;
+    if(b.dataset.t){ theme = b.dataset.t; }
+    else if(b.dataset.v){ show = (show === b.dataset.v) ? "all" : b.dataset.v; }
+    renderFilters(); render();
+  });
+
+  let view = "all";
+  function renderTabs(){
+    const n = A.filter(a => !a.sold).length;
+    $("tabs").innerHTML =
+      `<button role="tab" data-view="all" aria-selected="${view === "all"}">All work</button>` +
+      `<button role="tab" data-view="available" aria-selected="${view === "available"}">Available originals<sup>${n}</sup></button>`;
+  }
+  function setView(v, scroll){
+    view = v; renderTabs(); render();
+    if(scroll) $("work").scrollIntoView({behavior: "smooth", block: "start"});
+  }
+  $("tabs").addEventListener("click", e => { const b = e.target.closest("button"); if(b) setView(b.dataset.view); });
+  $("navAvail").addEventListener("click", e => { e.preventDefault(); try{ history.replaceState(null, "", "#available"); }catch(_){} setView("available", true); });
+  function render(){
+    $("filters").hidden = view === "available";
+    if(!A.length){
+      $("filters").hidden = true;
+      $("groups").innerHTML = `<p class="soon">New paintings are on their way. In the meantime, see recent work on <a href="https://instagram.com/${esc(S.instagram)}">@${esc(S.instagram)}</a>.</p>`;
+      return;
+    }
+    const okShow = a => show === "all" || (show === "available" && !a.sold) || (show === "prints" && hasPrints(a));
+    const known = new Set(T.map(t => t.id));
+    const card = a => {
+      const right = a.sold ? `<span>Original sold${hasPrints(a) ? " · Prints" : ""}</span>` : (a.price ? `<span>${money(a.price)}</span>` : (hasPrints(a) ? `<span>Prints</span>` : `<span>Available</span>`));
+      return `<a class="work" href="#art/${a.id}">
+        <div class="p"><img src="${esc(a.thumb || a.image)}" alt="${esc(a.title)}" loading="lazy" decoding="async"></div>
+        <div class="m"><span><i>${esc(a.title)}</i>${a.size ? "<br>" + esc(a.size) : ""}${view === "available" ? `<small class="g">${esc(themeLabel[a.theme] || "")}</small>` : ""}</span>${right}</div>
+      </a>`;
+    };
+    if(view === "available"){
+      const list = A.filter(a => !a.sold);
+      $("groups").innerHTML = `<p class="avail-intro">${list.length} originals ready for a new home, in group order. Open a painting for its size and framing, or to enquire.</p><div class="grid">${list.map(card).join("")}</div>`;
+      return;
+    }
+    const secs = T.filter(t => theme === "all" || t.id === theme).map(t => {
+      // anything with an unknown group falls into the last group, so nothing goes missing
+      const list = A.filter(a => (a.theme === t.id || (t.id === T[T.length - 1].id && !known.has(a.theme))) && okShow(a));
+      if(!list.length) return "";
+      return `<section class="gsec" aria-labelledby="g-${t.id}"><h3 id="g-${t.id}">${esc(t.label)}</h3>${t.blurb ? `<p class="blurb">${esc(t.blurb)}</p>` : ""}<div class="grid">${list.map(card).join("")}</div></section>`;
+    }).join("");
+    $("groups").innerHTML = secs || `<p class="empty">Nothing matches right now. Choose "All" or ask about a commission.</p>`;
+  }
+  renderTabs(); renderFilters(); render();
+  if(location.hash === "#available") setView("available", true);
+
+  // Detail dialog, driven by #art/<id> so each painting has a shareable link
+  const dlg = $("dlg");
+  let lastScroll = 0;
+  function openArt(id){
+    const a = A.find(x => x.id === id); if(!a) return;
+    $("dlgImg").src = a.image; $("dlgImg").alt = a.title;
+    $("dlgTitle").textContent = a.title;
+    $("dlgDesc").textContent = a.description || ""; $("dlgDesc").hidden = !a.description;
+    const rows = [["Medium", a.medium], ["Size", a.size], ["Painted", a.painted], ["Framing", a.remarks], ["Group", themeLabel[a.theme]]].filter(r => r[1]);
+    $("dlgDl").innerHTML = rows.map(r => `<dt>${r[0]}</dt><dd>${esc(r[1])}</dd>`).join("");
+    let out = "";
+    if(a.sold){
+      out += `<div class="opt"><span>Original</span><span class="s">Sold</span></div>
+        <a class="btn o" href="${mail("Commission similar to " + a.title)}">Ask about a similar commission</a>`;
+    } else if(a.price){
+      out += `<div class="opt"><span>Original</span><b>${money(a.price)}</b></div>` +
+        (a.buyUrl ? `<a class="btn" href="${esc(a.buyUrl)}" target="_blank" rel="noopener">Buy the original</a>`
+                  : `<a class="btn" href="${mail("I'd like to buy " + a.title)}">Ask about the original</a>`);
+    } else {
+      out += `<div class="opt"><span>Original</span><span class="s">Price on request</span></div>
+        <a class="btn" href="${mail("Enquiry about " + a.title)}">Enquire about this painting</a>`;
+    }
+    if(hasPrints(a)){
+      const p = a.prints;
+      out += `<div class="opt" style="margin-top:22px"><span>Print${p.size ? ", " + esc(p.size) : ""}</span>${p.price ? `<b>${money(p.price)}</b>` : ""}</div>` +
+        (p.buyUrl ? `<a class="btn o" href="${esc(p.buyUrl)}" target="_blank" rel="noopener">Buy a print</a>`
+                  : `<a class="btn o" href="${mail("Print of " + a.title)}">Ask about prints</a>`);
+    }
+    const canBuy = (!a.sold && a.price && a.buyUrl) || (hasPrints(a) && a.prints.buyUrl);
+    out += `<p class="note">${canBuy ? "Secure checkout by Stripe. " : ""}Ships ${esc(S.shipsTo)}. <a href="${mail("Question about " + a.title)}">Ask a question</a></p>`;
+    $("dlgOptions").innerHTML = out;
+    if(!dlg.open) dlg.showModal();
+    dlg.scrollTop = 0;
+  }
+  const closeArt = () => { if(dlg.open) dlg.close(); };
+  dlg.addEventListener("close", () => {
+    if(location.hash.startsWith("#art/")) try{ history.replaceState(null, "", location.pathname + location.search + "#work"); }catch(_){}
+    scrollTo(0, lastScroll);
+  });
+  $("dlgClose").addEventListener("click", closeArt);
+  dlg.addEventListener("click", e => { if(e.target === dlg) closeArt(); });
+  document.addEventListener("click", e => {
+    const l = e.target.closest('a[href^="#art/"]'); if(!l) return;
+    e.preventDefault(); lastScroll = scrollY;
+    try{ history.pushState(null, "", l.getAttribute("href")); }catch(_){}
+    openArt(decodeURIComponent(l.getAttribute("href").slice(5)));
+  });
+  addEventListener("popstate", () => { const m = location.hash.match(/^#art\/(.+)$/); m ? openArt(decodeURIComponent(m[1])) : closeArt(); });
+  const m0 = location.hash.match(/^#art\/(.+)$/); if(m0){ lastScroll = scrollY; openArt(decodeURIComponent(m0[1])); }
+})();
+</script>
+</body>
+</html>

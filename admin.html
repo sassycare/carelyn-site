@@ -1,0 +1,722 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Studio · Carelyn Madaschi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300;1,6..72,400&family=Hanken+Grotesk:wght@300;400;500;600&display=swap">
+<style>
+/* Layout: one working column. Header bar with publish status, tabs, then groups of draggable rows; editing happens in a side sheet. Light only, to match the gallery site. */
+:root{
+  --bg:#F4F3F0; --panel:#FBFAF8; --tile:#ECEAE5; --ink:#1D1C1A; --soft:#6D6A64; --line:#D9D6CF;
+  --accent:#2F4A5A;           /* deep slate: the one action colour */
+  --sold:#8A5A44; --ok:#3F6B4E; --warn:#F1E6C8;
+  --serif:"Newsreader","Iowan Old Style",Georgia,serif;
+  --sans:"Hanken Grotesk","Helvetica Neue",Arial,sans-serif;
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-weight:400;font-size:15px;line-height:1.5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg)}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn{appearance:none;border:1px solid var(--ink);background:transparent;padding:9px 16px;border-radius:0;cursor:pointer;font-weight:500;font-size:.92rem;white-space:nowrap}
+.btn:hover{background:var(--tile)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{background:#243b48}
+.btn.primary:disabled{background:var(--line);border-color:var(--line);color:var(--soft);cursor:default}
+.btn.quiet{border-color:transparent;color:var(--soft);padding-inline:8px}
+.btn.quiet:hover{color:var(--ink);background:transparent;text-decoration:underline}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:16px;padding-block:14px;flex-wrap:wrap}
+.brand{font-family:var(--serif);font-size:1.3rem;font-weight:400;margin:0}
+.brand small{font-family:var(--sans);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);margin-left:10px;font-weight:500}
+.top .sp{flex:1}
+.status{font-size:.88rem;color:var(--soft);font-variant-numeric:tabular-nums}
+.status b{color:var(--ink);font-weight:600}
+
+.tabs{display:flex;gap:28px;margin:26px 0 6px;border-bottom:1px solid var(--line)}
+.tabs button{background:none;border:0;padding:0 0 10px;cursor:pointer;font-family:var(--serif);font-size:1.35rem;color:var(--soft);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+.hint{color:var(--soft);font-size:.9rem;margin:12px 0 22px;max-width:70ch}
+.tools{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+.tools input{border:1px solid var(--line);background:var(--panel);padding:8px 12px;min-width:0;flex:1 1 220px;max-width:340px;border-radius:0}
+
+/* groups and rows */
+.grp{margin:0 0 34px}
+.grp h2{font-family:var(--serif);font-weight:400;font-size:1.45rem;margin:0 0 2px;display:flex;align-items:baseline;gap:10px}
+.grp h2 span{font-family:var(--sans);font-size:.8rem;color:var(--soft);font-weight:400}
+.list{list-style:none;margin:10px 0 0;padding:0;border-top:1px solid var(--line);min-height:52px}
+.row{display:grid;grid-template-columns:28px 56px minmax(0,1fr) auto auto;align-items:center;gap:14px;padding:8px 6px;border-bottom:1px solid var(--line);background:var(--bg)}
+.row:hover{background:var(--panel)}
+.grip{cursor:grab;user-select:none;-webkit-user-select:none;color:var(--soft);display:grid;place-items:center;height:44px;border:0;background:none;padding:0;touch-action:none}
+.grip svg{width:14px;height:20px}
+.row img{width:56px;height:56px;object-fit:cover;background:var(--tile);display:block}
+.ttl{min-width:0}
+.ttl b{display:block;font-family:var(--serif);font-weight:400;font-size:1.08rem;font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ttl small{display:block;color:var(--soft);font-size:.84rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
+.chips{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.chip{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border:1px solid var(--line);color:var(--soft);font-weight:500;white-space:nowrap}
+.chip.av{border-color:var(--ok);color:var(--ok)}
+.chip.sd{border-color:var(--sold);color:var(--sold)}
+.chip.bn{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.chip.ch{background:var(--warn);border-color:#d9c48f;color:var(--ink)}
+.edit{padding:8px 12px}
+.sortable-ghost{opacity:.35}
+.sortable-chosen{background:var(--panel)}
+.sortable-drag{box-shadow:0 8px 24px rgba(29,28,26,.18)}
+
+/* banner tab */
+.bgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;list-style:none;margin:0;padding:0}
+.bcell{position:relative;user-select:none;-webkit-user-select:none;background:var(--panel);border:1px solid var(--line);cursor:grab;touch-action:none}
+.bcell img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;pointer-events:none}
+.bcell .cap{display:flex;justify-content:space-between;align-items:center;gap:6px;padding:6px 8px;font-size:.84rem}
+.bcell .cap i{font-family:var(--serif);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.bcell .n{position:absolute;top:6px;left:6px;background:var(--bg);font-size:.75rem;padding:1px 7px;font-variant-numeric:tabular-nums;font-weight:600}
+.bcell .x{border:0;background:none;color:var(--soft);cursor:pointer;padding:2px 4px;font-size:.82rem;text-decoration:underline}
+.mosaic{margin:26px 0 8px;display:flex;flex-direction:column;gap:4px;background:var(--panel);padding:10px;border:1px solid var(--line)}
+.mrow{display:flex;gap:4px}
+.mrow img{display:block;object-fit:cover;background:var(--tile)}
+.sub{font-family:var(--serif);font-size:1.2rem;font-weight:400;margin:30px 0 4px}
+.addlist{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.addlist button{display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--panel);padding:4px 10px 4px 4px;cursor:pointer;font-size:.86rem}
+.addlist button:hover{border-color:var(--ink)}
+.addlist img{width:34px;height:34px;object-fit:cover}
+.note{font-size:.88rem;padding:8px 12px;background:var(--warn);margin:12px 0 0;max-width:70ch}
+
+/* edit sheet */
+.scrim{position:fixed;inset:0;background:rgba(29,28,26,.35);z-index:40}
+.sheet{position:fixed;top:0;right:0;bottom:0;width:min(520px,100%);background:var(--panel);z-index:41;display:flex;flex-direction:column;box-shadow:-10px 0 40px rgba(29,28,26,.15);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);padding-right:env(safe-area-inset-right,0px)}
+.sh-head{display:flex;gap:14px;align-items:center;padding:16px 20px;border-bottom:1px solid var(--line)}
+.sh-head img{width:64px;height:64px;object-fit:cover}
+.sh-head h3{font-family:var(--serif);font-weight:400;font-size:1.3rem;margin:0;font-style:italic;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.sh-body{overflow:auto;padding:18px 20px 24px;display:flex;flex-direction:column;gap:16px}
+.sh-foot{display:flex;gap:10px;justify-content:flex-end;padding:14px 20px;border-top:1px solid var(--line)}
+.f{display:flex;flex-direction:column;gap:5px;min-width:0}
+.f > label,.lbl{font-size:.74rem;letter-spacing:.09em;text-transform:uppercase;color:var(--soft);font-weight:600}
+.f input[type=text],.f input[type=number],.f input[type=url],.f select,.f textarea{border:1px solid var(--line);background:var(--bg);padding:9px 10px;border-radius:0;width:100%;min-width:0}
+.f textarea{min-height:80px;resize:vertical}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.size{display:grid;grid-template-columns:1fr auto 1fr 90px;gap:8px;align-items:center}
+.size span{color:var(--soft)}
+.out{font-size:.88rem;color:var(--soft);font-variant-numeric:tabular-nums}
+.out b{color:var(--ink);font-weight:500}
+.seg{display:flex;border:1px solid var(--ink);width:max-content;max-width:100%}
+.seg label{padding:8px 14px;cursor:pointer;font-size:.9rem;display:flex;align-items:center}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label:has(input:checked){background:var(--ink);color:var(--bg)}
+.seg label:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:-4px}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:.95rem;cursor:pointer}
+.check input{width:18px;height:18px;margin:2px 0 0;accent-color:var(--accent)}
+fieldset{border:1px solid var(--line);padding:12px 14px 14px;margin:0;display:flex;flex-direction:column;gap:12px;min-width:0}
+legend{padding:0 6px;font-size:.74rem;letter-spacing:.09em;text-transform:uppercase;color:var(--soft);font-weight:600}
+
+/* toast + publish panel */
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;font-size:.92rem;z-index:60;max-width:calc(100% - 32px)}
+.pub{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:rgba(29,28,26,.35);padding:16px}
+.pub > div{background:var(--panel);max-width:520px;width:100%;padding:22px 24px;max-height:85vh;overflow:auto}
+.pub h3{font-family:var(--serif);font-weight:400;font-size:1.4rem;margin:0 0 8px}
+.pub ul{padding-left:18px;margin:10px 0 18px;font-size:.92rem}
+.pub .acts{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+
+@media (max-width:640px){
+  .row{grid-template-columns:24px 48px minmax(0,1fr) auto;gap:10px}
+  .row img{width:48px;height:48px}
+  .row .chips{display:none}
+  .two{grid-template-columns:1fr}
+  .size{grid-template-columns:1fr auto 1fr 80px}
+  .brand small{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.tools .sp{flex:1}
+.card{max-width:520px;margin:48px 0;background:var(--panel);border:1px solid var(--line);padding:26px 24px}
+.h1{font-family:var(--serif);font-weight:400;font-size:1.7rem;margin:0 0 6px;text-wrap:balance}
+.f-stack{display:flex;flex-direction:column;gap:12px}
+.adv summary{cursor:pointer;color:var(--soft);font-size:.9rem}
+.err{background:#F6E1DA;color:#6B2A17;padding:9px 12px;font-size:.9rem;margin:0}
+.settings{display:flex;flex-direction:column;gap:10px;max-width:640px}
+.about-row{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin-top:10px}
+.about-row img{width:120px;height:150px;object-fit:cover;background:var(--tile)}
+.danger{border-top:1px solid var(--line);padding-top:12px}
+.danger .btn.quiet{color:var(--sold);padding-inline:0}
+.rmc{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:.9rem}
+</style>
+</head>
+<body>
+<div class="top"><div class="wrap">
+  <p class="brand">Carelyn Madaschi <small>Studio</small></p>
+  <span class="sp"></span>
+  <span class="status" id="status" aria-live="polite"></span>
+  <button class="btn quiet" id="discardBtn" type="button" hidden>Discard changes</button>
+  <button class="btn primary" id="pubBtn" type="button" disabled>Publish changes</button>
+</div></div>
+
+<!-- sign in -->
+<main class="wrap" id="signin" hidden>
+  <div class="card">
+    <h1 class="h1">Sign in to edit your website</h1>
+    <p class="hint">Paste your private save key. You only need to do this once on each device. Keep the key secret: anyone with it can change the website.</p>
+    <form id="signForm" class="f-stack" autocomplete="off">
+      <div class="f"><label for="sToken">Save key</label><input id="sToken" type="password" required placeholder="github_pat_…" spellcheck="false"></div>
+      <details class="adv"><summary>Website connection</summary>
+        <div class="two" style="margin-top:12px">
+          <div class="f"><label for="sOwner">GitHub account</label><input id="sOwner" type="text" spellcheck="false"></div>
+          <div class="f"><label for="sRepo">Repository</label><input id="sRepo" type="text" spellcheck="false"></div>
+        </div>
+        <div class="f" style="margin-top:12px"><label for="sBranch">Branch</label><input id="sBranch" type="text" spellcheck="false"></div>
+      </details>
+      <p class="err" id="signErr" hidden></p>
+      <div><button class="btn primary" type="submit" id="signBtn">Sign in</button></div>
+    </form>
+  </div>
+</main>
+
+<main class="wrap" id="app" hidden>
+  <div class="tabs" role="tablist" aria-label="Sections">
+    <button role="tab" id="tabP" aria-selected="true" aria-controls="viewP" type="button">Paintings</button>
+    <button role="tab" id="tabB" aria-selected="false" aria-controls="viewB" type="button">Cover banner</button>
+    <button role="tab" id="tabS" aria-selected="false" aria-controls="viewS" type="button">Settings</button>
+  </div>
+
+  <section id="viewP" role="tabpanel" aria-labelledby="tabP">
+    <p class="hint">Drag the handle on the left of a row to change the order. Drop a painting into another group to move it there. Tap a painting to edit it. Nothing changes on the website until you press Publish changes.</p>
+    <div class="tools">
+      <label for="q" class="vh">Find a painting</label>
+      <input id="q" type="search" placeholder="Find a painting by name">
+      <span class="sp"></span>
+      <button class="btn" type="button" id="addBtn">Add a painting</button>
+    </div>
+    <div id="groups"></div>
+  </section>
+
+  <section id="viewB" role="tabpanel" aria-labelledby="tabB" hidden>
+    <p class="hint">These paintings fill the top of the home page, in this order. Drag to reorder, remove the ones you don't want, and add others from below.</p>
+    <ul class="bgrid" id="bgrid"></ul>
+    <p class="note" id="oddNote" hidden></p>
+    <p class="sub">How it will look</p>
+    <div class="mosaic" id="mosaic" aria-label="Rough preview of the banner"></div>
+    <p class="sub">Add to the banner</p>
+    <div class="addlist" id="addlist"></div>
+  </section>
+
+  <section id="viewS" role="tabpanel" aria-labelledby="tabS" hidden>
+    <div class="settings">
+      <div>
+        <p class="sub" style="margin-top:20px">About photo</p>
+        <p class="hint" style="margin-top:4px">The photo beside your bio on the home page. It changes on the website right away when you upload it.</p>
+        <div class="about-row"><img id="aboutImg" alt="Current about photo"><div class="f-stack">
+          <input type="file" id="aboutFile" accept="image/*">
+          <div><button class="btn" type="button" id="aboutBtn" disabled>Upload about photo</button></div>
+        </div></div>
+      </div>
+      <div>
+        <p class="sub">Connection</p>
+        <p class="hint" id="connInfo" style="margin-top:4px"></p>
+        <button class="btn" type="button" id="signOut">Sign out on this device</button>
+      </div>
+    </div>
+  </section>
+  <div style="height:60px"></div>
+</main>
+
+<div class="scrim" id="scrim" hidden></div>
+<aside class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="shTitle">
+  <div class="sh-head"><img id="shImg" alt=""><h3 id="shTitle">Edit painting</h3><button class="btn quiet" type="button" id="shClose">Close</button></div>
+  <form class="sh-body" id="form" autocomplete="off">
+    <div class="f">
+      <label for="fFile" id="fFileLbl">Photo</label>
+      <input id="fFile" type="file" accept="image/*">
+      <span class="out" id="fileOut">Use a straight-on photo, cropped to the edge of the painting.</span>
+    </div>
+    <div class="f"><label for="fTitle">Title</label><input id="fTitle" type="text" required></div>
+    <div class="two">
+      <div class="f"><label for="fGroup">Group</label><select id="fGroup"></select></div>
+      <div class="f"><label for="fMedium">Medium</label><input id="fMedium" type="text" list="mediums"></div>
+    </div>
+    <datalist id="mediums"><option value="Acrylic on canvas"><option value="Acrylic on wood"><option value="Acrylic on paper"></datalist>
+    <div class="f">
+      <span class="lbl">Size</span>
+      <div class="size">
+        <input id="fW" type="number" step="0.1" min="0" aria-label="Width" placeholder="Width">
+        <span>×</span>
+        <input id="fH" type="number" step="0.1" min="0" aria-label="Height" placeholder="Height">
+        <select id="fU" aria-label="Unit"><option value="in">inches</option><option value="cm">cm</option></select>
+      </div>
+      <input id="fNote" type="text" aria-label="Size note" placeholder="Optional note, e.g. each, 3 panels">
+      <span class="out" id="sizeOut"></span>
+    </div>
+    <div class="two">
+      <div class="f"><label for="fMonth">Painted (month)</label><select id="fMonth"></select></div>
+      <div class="f"><label for="fYear">Painted (year)</label><select id="fYear"></select></div>
+    </div>
+    <div class="f"><label for="fFrame">Framing</label><input id="fFrame" type="text" placeholder="e.g. Natural floating frame, or Unframed"></div>
+    <fieldset>
+      <legend>Original</legend>
+      <div class="seg" role="radiogroup" aria-label="Original status">
+        <label><input type="radio" name="st" value="a" id="stA">Available</label>
+        <label><input type="radio" name="st" value="s" id="stS">Sold</label>
+      </div>
+      <div class="two" id="saleRow">
+        <div class="f"><label for="fPrice">Price (AUD)</label><input id="fPrice" type="number" min="0" step="1" placeholder="Empty = price on request"></div>
+        <div class="f"><label for="fBuy">Stripe payment link</label><input id="fBuy" type="url" placeholder="https://buy.stripe.com/…"></div>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Prints</legend>
+      <label class="check"><input type="checkbox" id="fPr"> Offer prints of this painting</label>
+      <div id="prRow" class="f-stack">
+        <div class="f"><label for="fPrSize">Print sizes</label><input id="fPrSize" type="text" placeholder="e.g. 8 x 10, 11 x 14 or 16 x 20 in"></div>
+        <div class="two">
+          <div class="f"><label for="fPrPrice">Print price from (AUD)</label><input id="fPrPrice" type="number" min="0" step="1"></div>
+          <div class="f"><label for="fPrBuy">Print payment link</label><input id="fPrBuy" type="url" placeholder="https://buy.stripe.com/…"></div>
+        </div>
+      </div>
+    </fieldset>
+    <label class="check"><input type="checkbox" id="fBanner"> Show in the cover banner on the home page</label>
+    <div class="f"><label for="fDesc">Description</label><textarea id="fDesc" placeholder="Optional. A line or two about the painting."></textarea></div>
+    <div class="danger" id="dangerBox">
+      <button class="btn quiet" type="button" id="rmBtn">Remove this painting from the website</button>
+      <div id="rmConfirm" hidden class="rmc"><span>Remove it? You can't undo this after publishing.</span><button class="btn" type="button" id="rmYes">Yes, remove</button><button class="btn quiet" type="button" id="rmNo">Keep it</button></div>
+    </div>
+  </form>
+  <div class="sh-foot"><button class="btn quiet" type="button" id="shCancel">Cancel</button><button class="btn primary" type="submit" form="form" id="saveBtn">Save painting</button></div>
+</aside>
+
+<div class="pub" id="pub" hidden role="dialog" aria-modal="true" aria-labelledby="pubH"><div>
+  <h3 id="pubH">Publish changes</h3>
+  <p style="margin:0;color:var(--soft);font-size:.92rem" id="pubIntro">These changes go to the website now. They usually appear within a minute or two.</p>
+  <ul id="pubList"></ul>
+  <p class="err" id="pubErr" hidden></p>
+  <div class="acts"><button class="btn quiet" type="button" id="pubNo">Keep editing</button><button class="btn primary" type="button" id="pubYes">Publish</button></div>
+</div></div>
+<div class="toast" id="toast" hidden role="status"></div>
+
+<script src="config.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+<script>
+(function(){
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const GROUPS = (window.THEMES || []).map(t => ({id: t.id, label: t.label}));
+const CFG = Object.assign({owner: "", repo: "", branch: "main"}, window.ADMIN || {});
+if(/^YOUR-/.test(CFG.owner)) CFG.owner = "";   // placeholder not filled in yet
+const LS = {
+  get(k){ try{ return localStorage.getItem("carelyn-admin-" + k); }catch(_){ return null; } },
+  set(k, v){ try{ localStorage.setItem("carelyn-admin-" + k, v); }catch(_){} },
+  del(k){ try{ localStorage.removeItem("carelyn-admin-" + k); }catch(_){} }
+};
+const conn = () => ({
+  token: LS.get("token") || "",
+  owner: LS.get("owner") || CFG.owner, repo: LS.get("repo") || CFG.repo, branch: LS.get("branch") || CFG.branch || "main"
+});
+
+/* ---------- GitHub ---------- */
+async function gh(path, opts = {}){
+  const c = conn();
+  const r = await fetch(`https://api.github.com/repos/${c.owner}/${c.repo}${path}`, Object.assign({}, opts, {
+    headers: Object.assign({"Authorization": `Bearer ${c.token}`, "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"}, opts.headers || {})
+  }));
+  if(!r.ok){
+    let msg = ""; try{ msg = (await r.json()).message || ""; }catch(_){}
+    const e = new Error(msg || r.statusText); e.status = r.status; throw e;
+  }
+  return r.status === 204 ? null : r.json();
+}
+const b64 = bytes => { let s = ""; const u = new Uint8Array(bytes); for(let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000)); return btoa(s); };
+const b64text = t => b64(new TextEncoder().encode(t));
+const textFromB64 = s => new TextDecoder().decode(Uint8Array.from(atob(s.replace(/\n/g, "")), c => c.charCodeAt(0)));
+async function putFile(path, base64, message, sha){
+  const c = conn();
+  const body = {message, content: base64, branch: c.branch}; if(sha) body.sha = sha;
+  return gh(`/contents/${path}`, {method: "PUT", body: JSON.stringify(body)});
+}
+async function fileSha(path){
+  try{ const r = await gh(`/contents/${path}?ref=${encodeURIComponent(conn().branch)}`, {headers: {"Accept": "application/vnd.github.object+json"}}); return r.sha; }
+  catch(e){ if(e.status === 404) return null; throw e; }
+}
+function friendly(e){
+  if(e.status === 401) return "The save key isn't working. It may have expired or been typed wrongly. Sign out in Settings and paste a new one.";
+  if(e.status === 403) return "The save key doesn't allow changes to this website. Make a key with Contents set to Read and write for this repository.";
+  if(e.status === 404) return "Couldn't find the website's files. Check the GitHub account and repository name under Website connection.";
+  if(e.status === 409 || e.status === 422) return "The website changed since you opened this page (maybe from another device). Reload the page to get the latest, then make your changes again.";
+  if(e instanceof TypeError) return "Couldn't reach GitHub. Check your internet connection and try again.";
+  return "Something went wrong: " + (e.message || "unknown error") + ". Try again in a minute.";
+}
+
+/* ---------- state ---------- */
+let S = null, ORIG = null, SHA = null;   // S = {paintings:[], banner:[]}
+const pendingImg = {};                   // id -> {image:{b64,url}, thumb:{b64}, ratio}
+const clone = o => JSON.parse(JSON.stringify(o));
+const origById = () => Object.fromEntries(ORIG.paintings.map(a => [a.id, a]));
+function saveDraft(){ LS.set("draft", JSON.stringify({base: SHA, data: S})); }
+const thumbSrc = a => pendingImg[a.id] ? pendingImg[a.id].url : (a.thumb || a.image);
+
+async function load(){
+  const c = conn();
+  const f = await gh(`/contents/artworks.json?ref=${encodeURIComponent(c.branch)}`);
+  SHA = f.sha;
+  let d = JSON.parse(textFromB64(f.content));
+  if(Array.isArray(d)) d = {banner: d.filter(a => a.featured).map(a => a.id), paintings: d};
+  d.banner = d.banner || [];
+  ORIG = clone(d);
+  S = clone(d);
+  try{
+    const dr = JSON.parse(LS.get("draft") || "null");
+    if(dr && dr.base === SHA && dr.data){
+      // keep unpublished edits, but only for paintings that still exist (new photos are not kept between visits)
+      const ids = new Set(ORIG.paintings.map(a => a.id));
+      dr.data.paintings = dr.data.paintings.filter(a => ids.has(a.id));
+      dr.data.banner = dr.data.banner.filter(id => ids.has(id));
+      S = dr.data;
+      if(changes().length) toast("Your unpublished changes from last time are still here");
+    } else LS.del("draft");
+  }catch(_){}
+}
+
+/* ---------- sizes ---------- */
+const trim = v => { const t = (Math.round(v * 10) / 10).toFixed(1); return t.endsWith(".0") ? t.slice(0, -2) : t; };
+function sizeText(w, h, u, note){
+  if(!(w > 0 && h > 0)) return "";
+  const n = note ? " " + note : "";
+  if(u === "cm") return `${trim(w / 2.54)} x ${trim(h / 2.54)} in · ${trim(w)} x ${trim(h)} cm${n}`;
+  return `${trim(w)} x ${trim(h)} in · ${Math.round(w * 2.54)} x ${Math.round(h * 2.54)} cm${n}`;
+}
+function parseSize(s){
+  const r = {w: "", h: "", u: "in", note: ""};
+  if(!s) return r;
+  const inch = s.match(/([\d.]+)\s*x\s*([\d.]+)\s*in/), cm = s.match(/([\d.]+)\s*x\s*([\d.]+)\s*cm(.*)$/);
+  if(inch && !/\./.test(inch[1] + inch[2])){ r.w = +inch[1]; r.h = +inch[2]; }
+  else if(cm){ r.w = +cm[1]; r.h = +cm[2]; r.u = "cm"; }
+  else if(inch){ r.w = +inch[1]; r.h = +inch[2]; }
+  if(cm && cm[3]) r.note = cm[3].trim();
+  return r;
+}
+
+/* ---------- change tracking ---------- */
+const FIELDS = {title:"title", theme:"group", size:"size", medium:"medium", painted:"painted date", remarks:"framing", sold:"status", price:"price", buyUrl:"payment link", description:"description", prints:"prints"};
+function changes(){
+  if(!S) return [];
+  const out = [], o = origById(), now = new Set(S.paintings.map(a => a.id));
+  for(const a of S.paintings){
+    if(!o[a.id]){ out.push(`${a.title}: new painting`); continue; }
+    const f = Object.keys(FIELDS).filter(k => JSON.stringify(a[k] ?? "") !== JSON.stringify(o[a.id][k] ?? ""));
+    if(pendingImg[a.id]) f.push("photo");
+    if(f.length) out.push(`${a.title}: ${f.map(k => FIELDS[k] || k).join(", ")} changed`);
+  }
+  for(const a of ORIG.paintings) if(!now.has(a.id)) out.push(`${a.title}: removed`);
+  for(const g of GROUPS){
+    const n = S.paintings.filter(a => a.theme === g.id).map(a => a.id), w = ORIG.paintings.filter(a => a.theme === g.id).map(a => a.id);
+    if(n.join() !== w.join() && n.slice().sort().join() === w.slice().sort().join()) out.push(`${g.label}: new order`);
+  }
+  if(S.banner.join() !== ORIG.banner.join()) out.push(`Cover banner: ${S.banner.length} paintings, new selection or order`);
+  return out;
+}
+const changedIds = () => { const o = origById(); return new Set(S.paintings.filter(a => !o[a.id] || pendingImg[a.id] || Object.keys(FIELDS).some(k => JSON.stringify(a[k] ?? "") !== JSON.stringify(o[a.id][k] ?? ""))).map(a => a.id)); };
+function refreshStatus(){
+  const n = changes().length;
+  $("status").innerHTML = n ? `<b>${n}</b> unpublished change${n > 1 ? "s" : ""}` : "Everything is published";
+  $("pubBtn").disabled = !n; $("discardBtn").hidden = !n;
+}
+function touched(){ saveDraft(); refreshStatus(); }
+
+/* ---------- paintings tab ---------- */
+const GRIP = '<svg viewBox="0 0 14 20" aria-hidden="true"><g fill="currentColor"><circle cx="4" cy="4" r="1.6"/><circle cx="10" cy="4" r="1.6"/><circle cx="4" cy="10" r="1.6"/><circle cx="10" cy="10" r="1.6"/><circle cx="4" cy="16" r="1.6"/><circle cx="10" cy="16" r="1.6"/></g></svg>';
+let sortables = [];
+function renderGroups(){
+  sortables.forEach(s => s.destroy()); sortables = [];
+  const q = $("q").value.trim().toLowerCase();
+  const ch = changedIds(), inBanner = new Set(S.banner);
+  $("groups").innerHTML = GROUPS.map(g => {
+    const list = S.paintings.filter(a => a.theme === g.id);
+    const rows = list.map(a => {
+      const hide = q && !a.title.toLowerCase().includes(q);
+      const meta = [a.size, a.painted].filter(Boolean).join(" · ") || "No size yet";
+      return `<li class="row" data-id="${a.id}"${hide ? " hidden" : ""}>
+        <button class="grip" type="button" aria-label="Drag to move ${esc(a.title)}">${GRIP}</button>
+        <img src="${esc(thumbSrc(a))}" alt="" loading="lazy">
+        <div class="ttl"><b>${esc(a.title)}</b><small>${esc(meta)}</small></div>
+        <div class="chips">${ch.has(a.id) ? '<span class="chip ch">Edited</span>' : ""}${inBanner.has(a.id) ? '<span class="chip bn">Banner</span>' : ""}<span class="chip ${a.sold ? "sd" : "av"}">${a.sold ? "Sold" : "Available"}</span></div>
+        <button class="btn edit" type="button" data-edit="${a.id}">Edit</button>
+      </li>`;
+    }).join("");
+    return `<div class="grp"><h2>${esc(g.label)} <span>${list.length}</span></h2><ul class="list" data-group="${g.id}">${rows}</ul></div>`;
+  }).join("");
+  if(!window.Sortable) return;
+  document.querySelectorAll(".list").forEach(ul => {
+    sortables.push(Sortable.create(ul, {
+      group: "paintings", handle: ".grip", animation: 160, forceFallback: true, fallbackTolerance: 3, disabled: !!q,
+      onEnd: () => {
+        const order = [];
+        document.querySelectorAll(".list").forEach(l => l.querySelectorAll(".row").forEach(r => order.push([r.dataset.id, l.dataset.group])));
+        const by = Object.fromEntries(S.paintings.map(a => [a.id, a]));
+        S.paintings = order.map(([id, g]) => { const a = by[id]; if(a.theme !== g){ a.theme = g; toast(`${a.title} moved to ${GROUPS.find(x => x.id === g).label}`); } return a; });
+        touched(); renderGroups();
+      }
+    }));
+  });
+}
+$("groups").addEventListener("click", e => {
+  const b = e.target.closest("[data-edit]") || (e.target.closest(".row") && !e.target.closest(".grip") ? e.target.closest(".row") : null);
+  if(b) openEditor(b.dataset.edit || b.dataset.id);
+});
+$("q").addEventListener("input", renderGroups);
+
+/* ---------- banner tab ---------- */
+let bSort;
+function ratioOf(a){ return (pendingImg[a.id] && pendingImg[a.id].ratio) || a.ratio || 1.25; }
+function renderBanner(){
+  const by = Object.fromEntries(S.paintings.map(a => [a.id, a]));
+  S.banner = S.banner.filter(id => by[id]);
+  $("bgrid").innerHTML = S.banner.map((id, i) => `<li class="bcell" data-id="${id}"><span class="n">${i + 1}</span><img src="${esc(thumbSrc(by[id]))}" alt=""><div class="cap"><i>${esc(by[id].title)}</i><button class="x" type="button" data-rm="${id}">Remove</button></div></li>`).join("");
+  if(bSort) bSort.destroy();
+  if(window.Sortable) bSort = Sortable.create($("bgrid"), {animation: 160, forceFallback: true, fallbackTolerance: 3, filter: ".x", preventOnFilter: false, onEnd: () => {
+    S.banner = [...$("bgrid").children].map(li => li.dataset.id); touched(); renderBanner();
+  }});
+  const n = S.banner.length;
+  $("oddNote").hidden = !(n % 2);
+  $("oddNote").textContent = `${n} paintings. With an odd number, one row of the banner shows two larger paintings. An even number usually looks more even.`;
+  $("addlist").innerHTML = S.paintings.filter(a => !S.banner.includes(a.id)).map(a => `<button type="button" data-add="${a.id}"><img src="${esc(thumbSrc(a))}" alt="" loading="lazy">${esc(a.title)}</button>`).join("");
+  drawMosaic();
+}
+$("bgrid").addEventListener("click", e => { const b = e.target.closest("[data-rm]"); if(!b) return; S.banner = S.banner.filter(x => x !== b.dataset.rm); touched(); renderBanner(); renderGroups(); });
+$("addlist").addEventListener("click", e => { const b = e.target.closest("[data-add]"); if(!b) return; S.banner.push(b.dataset.add); touched(); renderBanner(); renderGroups(); toast("Added to the end of the banner"); });
+function drawMosaic(){
+  const box = $("mosaic"), W = box.clientWidth - 20, gap = 4, target = Math.max(70, W / 4.2);
+  const by = Object.fromEntries(S.paintings.map(a => [a.id, a]));
+  const ids = S.banner, r = ids.map(id => ratioOf(by[id]));
+  if(!ids.length){ box.innerHTML = '<p class="out" style="margin:6px">No paintings in the banner yet.</p>'; return; }
+  const total = r.reduce((s, x) => s + x, 0), k = Math.max(1, Math.min(ids.length, Math.round(total * target / W)));
+  const n = r.length, cost = Array.from({length: n + 1}, () => Array(k + 1).fill(Infinity)), cut = Array.from({length: n + 1}, () => Array(k + 1).fill(0));
+  const pre = [0]; r.forEach(x => pre.push(pre[pre.length - 1] + x));
+  cost[0][0] = 0;
+  for(let i = 1; i <= n; i++) for(let j = 1; j <= Math.min(i, k); j++) for(let p = j - 1; p < i; p++){
+    const c = Math.max(cost[p][j - 1], pre[i] - pre[p]); if(c < cost[i][j]){ cost[i][j] = c; cut[i][j] = p; }
+  }
+  const rows = []; let i = n;
+  for(let j = k; j > 0; j--){ const p = cut[i][j]; rows.unshift(ids.slice(p, i)); i = p; }
+  box.innerHTML = rows.map(row => {
+    const sum = row.reduce((s, id) => s + ratioOf(by[id]), 0), h = (W - gap * (row.length - 1)) / sum;
+    return `<div class="mrow">${row.map(id => `<img src="${esc(thumbSrc(by[id]))}" alt="" style="width:${(ratioOf(by[id]) * h).toFixed(1)}px;height:${h.toFixed(1)}px">`).join("")}</div>`;
+  }).join("");
+}
+addEventListener("resize", () => { if(S && !$("viewB").hidden) drawMosaic(); });
+
+/* ---------- tabs ---------- */
+function setTab(t){
+  [["p", "tabP", "viewP"], ["b", "tabB", "viewB"], ["s", "tabS", "viewS"]].forEach(([k, tb, v]) => { $(tb).setAttribute("aria-selected", t === k); $(v).hidden = t !== k; });
+  if(t === "b") renderBanner();
+  if(t === "s") renderSettings();
+  LS.set("tab", t);
+}
+$("tabP").onclick = () => setTab("p"); $("tabB").onclick = () => setTab("b"); $("tabS").onclick = () => setTab("s");
+
+/* ---------- images ---------- */
+function loadImage(file){
+  return new Promise((res, rej) => { const url = URL.createObjectURL(file), im = new Image(); im.onload = () => res(im); im.onerror = () => rej(new Error("That file isn't a photo this browser can read. Try a JPEG or PNG.")); im.src = url; });
+}
+function jpeg(im, max, q){
+  const s = Math.min(1, max / Math.max(im.naturalWidth, im.naturalHeight));
+  const c = document.createElement("canvas"); c.width = Math.round(im.naturalWidth * s); c.height = Math.round(im.naturalHeight * s);
+  const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height); g.drawImage(im, 0, 0, c.width, c.height);
+  return new Promise(res => c.toBlob(b => res(b), "image/jpeg", q));
+}
+async function prepare(file){
+  const im = await loadImage(file);
+  const big = await jpeg(im, 1800, .86), small = await jpeg(im, 760, .78);
+  return {image: {b64: b64(await big.arrayBuffer())}, thumb: {b64: b64(await small.arrayBuffer())}, url: URL.createObjectURL(small), ratio: +(im.naturalWidth / im.naturalHeight).toFixed(4)};
+}
+const slug = t => (t.toLowerCase().normalize("NFKD").replace(/[^\w\s-]/g, "").trim().replace(/[\s_]+/g, "-").replace(/-+/g, "-") || "painting").slice(0, 60);
+
+/* ---------- editor ---------- */
+$("fGroup").innerHTML = GROUPS.map(g => `<option value="${g.id}">${esc(g.label)}</option>`).join("");
+$("fMonth").innerHTML = '<option value="">Not set</option>' + MONTHS.map(m => `<option>${m}</option>`).join("");
+const thisYear = new Date().getFullYear();
+$("fYear").innerHTML = '<option value="">Not set</option>' + Array.from({length: 15}, (_, i) => thisYear + 1 - i).map(y => `<option>${y}</option>`).join("");
+let editing = null, isNew = false, staged = null;
+function blank(){ return {id: "", title: "", theme: GROUPS[0].id, size: "", medium: "Acrylic on canvas", painted: `${MONTHS[new Date().getMonth()]} ${thisYear}`, remarks: "", sold: false, price: null, buyUrl: "", description: "", prints: {available: false, size: "", price: null, buyUrl: ""}, image: "", thumb: ""}; }
+function openEditor(id){
+  isNew = !id; staged = null;
+  const a = isNew ? blank() : S.paintings.find(x => x.id === id); if(!a) return; editing = a;
+  $("shImg").src = isNew ? "" : thumbSrc(a); $("shImg").hidden = isNew;
+  $("shTitle").textContent = isNew ? "Add a painting" : a.title;
+  $("fFileLbl").textContent = isNew ? "Photo (required)" : "Replace photo (optional)";
+  $("fFile").value = ""; $("fileOut").textContent = "Use a straight-on photo, cropped to the edge of the painting.";
+  $("fTitle").value = a.title; $("fGroup").value = a.theme; $("fMedium").value = a.medium || "";
+  const sz = parseSize(a.size); $("fW").value = sz.w; $("fH").value = sz.h; $("fU").value = sz.u; $("fNote").value = sz.note;
+  const [m, y] = (a.painted || "").split(" "); $("fMonth").value = MONTHS.includes(m) ? m : ""; $("fYear").value = y || (/^\d{4}$/.test(m || "") ? m : "");
+  $("fFrame").value = a.remarks || "";
+  $("stA").checked = !a.sold; $("stS").checked = !!a.sold;
+  $("fPrice").value = a.price ?? ""; $("fBuy").value = a.buyUrl || "";
+  const p = a.prints || {}; $("fPr").checked = !!p.available; $("fPrSize").value = p.size || ""; $("fPrPrice").value = p.price ?? ""; $("fPrBuy").value = p.buyUrl || "";
+  $("fBanner").checked = !isNew && S.banner.includes(a.id);
+  $("fDesc").value = a.description || "";
+  $("dangerBox").hidden = isNew; $("rmConfirm").hidden = true; $("rmBtn").hidden = false;
+  $("saveBtn").textContent = isNew ? "Add painting" : "Save painting";
+  syncForm();
+  $("scrim").hidden = false; $("sheet").hidden = false; (isNew ? $("fFile") : $("fTitle")).focus();
+}
+function closeEditor(){ $("scrim").hidden = true; $("sheet").hidden = true; editing = null; staged = null; }
+function syncForm(){
+  const t = sizeText(+$("fW").value, +$("fH").value, $("fU").value, $("fNote").value.trim());
+  $("sizeOut").innerHTML = t ? `Shown on the site as <b>${esc(t)}</b>` : "Enter width and height to show the size in inches and cm.";
+  $("saleRow").hidden = $("stS").checked;
+  $("prRow").hidden = !$("fPr").checked;
+}
+["fW","fH","fU","fNote"].forEach(id => $(id).addEventListener("input", syncForm));
+["stA","stS","fPr"].forEach(id => $(id).addEventListener("change", syncForm));
+$("fFile").addEventListener("change", async () => {
+  const f = $("fFile").files[0]; staged = null; if(!f) return;
+  $("fileOut").textContent = "Preparing photo…"; $("saveBtn").disabled = true;
+  try{ staged = await prepare(f); $("shImg").src = staged.url; $("shImg").hidden = false; $("fileOut").textContent = "Photo ready. It uploads when you publish."; }
+  catch(e){ $("fileOut").textContent = e.message; }
+  $("saveBtn").disabled = false;
+});
+$("form").addEventListener("submit", e => {
+  e.preventDefault(); if(!editing) return;
+  if(isNew && !staged){ $("fileOut").textContent = "Choose a photo of the painting first."; $("fFile").focus(); return; }
+  const a = editing, num = v => v === "" ? null : +v;
+  a.title = $("fTitle").value.trim() || a.title || "Untitled";
+  if(isNew){ let id = slug(a.title), n = 2; const ids = new Set(S.paintings.map(x => x.id)); while(ids.has(id)) id = `${slug(a.title)}-${n++}`; a.id = id; }
+  const g = $("fGroup").value;
+  if(isNew){ a.theme = g; const idx = S.paintings.map(x => x.theme).lastIndexOf(g); S.paintings.splice(idx < 0 ? S.paintings.length : idx + 1, 0, a); }
+  else if(g !== a.theme){ S.paintings = S.paintings.filter(x => x !== a); const idx = S.paintings.map(x => x.theme).lastIndexOf(g); S.paintings.splice(idx < 0 ? S.paintings.length : idx + 1, 0, a); a.theme = g; }
+  a.medium = $("fMedium").value.trim();
+  a.size = sizeText(+$("fW").value, +$("fH").value, $("fU").value, $("fNote").value.trim());
+  a.painted = $("fMonth").value && $("fYear").value ? `${$("fMonth").value} ${$("fYear").value}` : ($("fYear").value || "");
+  a.remarks = $("fFrame").value.trim();
+  a.sold = $("stS").checked;
+  a.price = a.sold ? null : num($("fPrice").value); a.buyUrl = a.sold ? "" : $("fBuy").value.trim();
+  const pr = $("fPr").checked;
+  a.prints = {available: pr, size: pr ? $("fPrSize").value.trim() : "", price: pr ? num($("fPrPrice").value) : null, buyUrl: pr ? $("fPrBuy").value.trim() : ""};
+  a.description = $("fDesc").value.trim();
+  if(staged){ pendingImg[a.id] = staged; a.ratio = staged.ratio; }
+  const inB = S.banner.includes(a.id);
+  if($("fBanner").checked && !inB) S.banner.push(a.id);
+  if(!$("fBanner").checked && inB) S.banner = S.banner.filter(x => x !== a.id);
+  const t = a.title, wasNew = isNew;
+  closeEditor(); touched(); renderGroups(); if(!$("viewB").hidden) renderBanner();
+  toast(wasNew ? `Added ${t}. Press Publish changes to put it on the website.` : `Saved ${t}. Press Publish changes when you're ready.`);
+});
+$("rmBtn").onclick = () => { $("rmConfirm").hidden = false; $("rmBtn").hidden = true; };
+$("rmNo").onclick = () => { $("rmConfirm").hidden = true; $("rmBtn").hidden = false; };
+$("rmYes").onclick = () => {
+  const a = editing; if(!a) return;
+  S.paintings = S.paintings.filter(x => x !== a); S.banner = S.banner.filter(x => x !== a.id); delete pendingImg[a.id];
+  closeEditor(); touched(); renderGroups(); if(!$("viewB").hidden) renderBanner(); toast(`${a.title} will be removed when you publish`);
+};
+$("addBtn").onclick = () => openEditor(null);
+$("shClose").onclick = closeEditor; $("shCancel").onclick = closeEditor; $("scrim").onclick = closeEditor;
+addEventListener("keydown", e => { if(e.key === "Escape"){ if(!$("sheet").hidden) closeEditor(); if(!pubBusy) $("pub").hidden = true; } });
+
+/* ---------- publish ---------- */
+let pubBusy = false;
+$("pubBtn").onclick = () => {
+  const c = changes();
+  $("pubList").innerHTML = c.slice(0, 30).map(x => `<li>${esc(x)}</li>`).join("") + (c.length > 30 ? `<li>and ${c.length - 30} more</li>` : "");
+  $("pubErr").hidden = true; $("pubYes").disabled = false; $("pubYes").textContent = "Publish";
+  $("pub").hidden = false; $("pubYes").focus();
+};
+$("pubNo").onclick = () => { if(!pubBusy) $("pub").hidden = true; };
+$("pubYes").onclick = async () => {
+  pubBusy = true; $("pubYes").disabled = true; $("pubErr").hidden = true;
+  try{
+    const stamp = Date.now().toString(36);
+    const ids = Object.keys(pendingImg).filter(id => S.paintings.some(a => a.id === id));
+    let k = 0;
+    for(const id of ids){
+      const p = pendingImg[id], a = S.paintings.find(x => x.id === id);
+      $("pubYes").textContent = `Uploading photos ${++k} of ${ids.length}…`;
+      const img = `images/${id}-${stamp}.jpg`, th = `images/thumbs/${id}-${stamp}.jpg`;
+      await putFile(img, p.image.b64, `Photo for ${a.title}`);
+      await putFile(th, p.thumb.b64, `Thumbnail for ${a.title}`);
+      a.image = img; a.thumb = th; a.ratio = p.ratio;
+    }
+    $("pubYes").textContent = "Saving…";
+    const out = {banner: S.banner, paintings: S.paintings};
+    const r = await putFile("artworks.json", b64text(JSON.stringify(out, null, 2) + "\n"), `Update paintings (${changes().length} changes)`, SHA);
+    SHA = r.content.sha;
+    for(const id of ids){ URL.revokeObjectURL(pendingImg[id].url); delete pendingImg[id]; }
+    ORIG = clone(S); LS.del("draft");
+    $("pub").hidden = true; refreshStatus(); renderGroups(); if(!$("viewB").hidden) renderBanner();
+    toast("Published. The website updates within a minute or two.");
+  }catch(e){
+    $("pubErr").textContent = friendly(e); $("pubErr").hidden = false; $("pubYes").textContent = "Try again"; $("pubYes").disabled = false;
+  }
+  pubBusy = false;
+};
+let armed = 0;
+$("discardBtn").onclick = () => {
+  if(Date.now() - armed > 4000){ armed = Date.now(); $("discardBtn").textContent = "Tap again to discard"; setTimeout(() => $("discardBtn").textContent = "Discard changes", 4000); return; }
+  armed = 0; $("discardBtn").textContent = "Discard changes";
+  S = clone(ORIG); for(const id in pendingImg) delete pendingImg[id]; LS.del("draft");
+  refreshStatus(); renderGroups(); if(!$("viewB").hidden) renderBanner(); toast("Changes discarded");
+};
+addEventListener("beforeunload", e => { if(Object.keys(pendingImg).length){ e.preventDefault(); e.returnValue = ""; } });
+
+/* ---------- settings ---------- */
+let aboutStaged = null;
+function renderSettings(){
+  const c = conn();
+  $("connInfo").textContent = `Saving to ${c.owner}/${c.repo} (${c.branch}).`;
+  $("aboutImg").src = "images/about.jpg?t=" + Date.now();
+}
+$("aboutFile").addEventListener("change", async () => {
+  const f = $("aboutFile").files[0]; aboutStaged = null; $("aboutBtn").disabled = true; if(!f) return;
+  try{ const im = await loadImage(f); const b = await jpeg(im, 1400, .86); aboutStaged = b64(await b.arrayBuffer()); $("aboutImg").src = URL.createObjectURL(b); $("aboutBtn").disabled = false; }
+  catch(e){ toast(e.message); }
+});
+$("aboutBtn").onclick = async () => {
+  if(!aboutStaged) return; $("aboutBtn").disabled = true; $("aboutBtn").textContent = "Uploading…";
+  try{ await putFile("images/about.jpg", aboutStaged, "New about photo", await fileSha("images/about.jpg")); toast("About photo uploaded. It shows on the website within a minute or two."); aboutStaged = null; $("aboutFile").value = ""; }
+  catch(e){ toast(friendly(e)); $("aboutBtn").disabled = false; }
+  $("aboutBtn").textContent = "Upload about photo";
+};
+$("signOut").onclick = () => { if(changes().length){ toast("Publish or discard your changes before signing out"); return; } LS.del("token"); LS.del("draft"); location.reload(); };
+
+/* ---------- sign in + start ---------- */
+let tt;
+function toast(m){ $("toast").textContent = m; $("toast").hidden = false; clearTimeout(tt); tt = setTimeout(() => $("toast").hidden = true, 3600); }
+function showSignin(msg){
+  const c = conn();
+  $("sOwner").value = c.owner; $("sRepo").value = c.repo; $("sBranch").value = c.branch;
+  if(!c.owner || !c.repo) $("signin").querySelector("details").open = true;
+  $("signErr").textContent = msg || ""; $("signErr").hidden = !msg;
+  $("app").hidden = true; $("signin").hidden = false; $("status").textContent = ""; $("pubBtn").hidden = true;
+  $("sToken").focus();
+}
+async function start(){
+  $("pubBtn").hidden = false; $("signin").hidden = true;
+  $("status").textContent = "Loading your paintings…";
+  try{ await load(); }
+  catch(e){ showSignin(friendly(e)); return; }
+  $("app").hidden = false; refreshStatus(); renderGroups();
+  const t = LS.get("tab"); if(t === "b" || t === "s") setTab(t);
+}
+$("signForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  LS.set("token", $("sToken").value.trim());
+  LS.set("owner", $("sOwner").value.trim()); LS.set("repo", $("sRepo").value.trim()); LS.set("branch", $("sBranch").value.trim() || "main");
+  $("signBtn").disabled = true; $("signBtn").textContent = "Checking…";
+  try{
+    const r = await gh("");
+    if(r.permissions && r.permissions.push === false){ const er = new Error("read only"); er.status = 403; throw er; }
+    $("sToken").value = "";
+    await start();
+  }catch(err){ LS.del("token"); showSignin(friendly(err)); }
+  $("signBtn").disabled = false; $("signBtn").textContent = "Sign in";
+});
+if(conn().token) start(); else showSignin();
+})();
+</script>
+
+</body>
+</html>
