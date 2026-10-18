@@ -242,8 +242,8 @@
       "painted": "October 2026",
       "remarks": "Natural",
       "sold": false,
-      "price": null,
-      "buyUrl": "",
+      "price": 795,
+      "buyUrl": "https://buy.stripe.com/test_14AdR9cNRbWLcq4dTV4AU00",
       "description": "",
       "prints": {
         "available": false,
