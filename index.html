@@ -108,6 +108,7 @@ dt{color:var(--soft)} dd{margin:0}
 .close{position:sticky;top:0;float:right;margin:12px 12px -56px 0;z-index:2;width:44px;height:44px;border:0;background:var(--bg);color:var(--ink);font-size:1.5rem;line-height:1;cursor:pointer;opacity:.9}
 
 @media (max-width:820px){
+  .banner,.brow{gap:6px}
   .intro,.about,.cm,.dlg{grid-template-columns:1fr}
   .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .filters .r{margin-left:0}
@@ -115,6 +116,7 @@ dt{color:var(--soft)} dd{margin:0}
   nav a:first-child{display:none}
   .dlg .ph img{max-height:60vh}
 }
+@media (max-width:400px){nav{gap:14px;font-size:.9rem}.brand{font-size:1.2rem}}
 @media (max-width:480px){.grid{gap:28px 14px}.work .p{padding:6%}.work .m{flex-direction:column;gap:0}.work .m i{font-size:1rem}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 
@@ -267,7 +269,7 @@ dt{color:var(--soft)} dd{margin:0}
   });
   if(!banner.length){ $("bannerWrap").remove(); $("bnFoot").remove(); }
   else {
-    const bEl = $("banner"), GAP = 10, TARGET = 290;
+    const bEl = $("banner");
     const ratios = banner.map(a => a.ratio || 1.25);
     const tile = (a, i) => `<a class="bt" href="#art/${a.id}" data-i="${i}" style="--r:${ratios[i]}"><img src="${esc(a.thumb || a.image)}" alt="${esc(a.title)}${a.medium ? ", " + esc(a.medium.toLowerCase()) : ""}" decoding="async"><span class="bc">${esc(a.title)}</span></a>`;
     // split the paintings into k rows whose total widths are as even as possible
@@ -288,12 +290,12 @@ dt{color:var(--soft)} dd{margin:0}
     const mq = matchMedia("(max-width:820px)");
     function layout(){
       const W = bEl.clientWidth; if(!W) return;
-      if(mq.matches){
-        if(sig !== "strip"){ sig = "strip"; bEl.className = "banner strip"; bEl.innerHTML = banner.map(tile).join(""); }
-        return;
-      }
+      // the same justified mosaic on every screen; on phones the rows are shorter so every painting shows at once
+      const GAP = mq.matches ? 6 : 10, TARGET = mq.matches ? 135 : 290;
       const total = ratios.reduce((s, x) => s + x, 0);
-      const k = Math.max(1, Math.min(banner.length, Math.round(total * TARGET / W)));
+      // small phones: about two paintings per row, so the rows stay even at every phone width
+      const k = W < 480 ? Math.max(1, Math.round(banner.length / 2.2))
+                        : Math.max(1, Math.min(banner.length, Math.round(total * TARGET / W)));
       const rows = partition(ratios, k);
       const s = "rows" + JSON.stringify(rows);
       if(sig !== s){
