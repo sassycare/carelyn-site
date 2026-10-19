@@ -1273,6 +1273,7 @@
       "buyUrl": "https://buy.stripe.com/3cI00jaGpd9Aa7zeYgfIs0l",
       "description": "",
       "prints": {
+        "available": true,
         "size": "",
         "price": null,
         "buyUrl": "",
@@ -1282,12 +1283,11 @@
           "A3": "https://buy.stripe.com/6oU28rdSB3z0gvX5nGfIs44",
           "A2": "https://buy.stripe.com/fZu7sL15PfhIdjLcQ8fIs45",
           "A1": "https://buy.stripe.com/5kQbJ19Cl4D4a7z9DWfIs46"
-        },
-        "available": true
+        }
       },
-      "image": "images/copper-tide-mvdjpjnt.jpg",
-      "thumb": "images/thumbs/copper-tide-mvdjpjnt.jpg",
-      "ratio": 1.3244
+      "image": "images/copper-tide-mverudnt.jpg",
+      "thumb": "images/thumbs/copper-tide-mverudnt.jpg",
+      "ratio": 1.3246
     },
     {
       "id": "nebula",
