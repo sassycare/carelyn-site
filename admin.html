@@ -245,7 +245,7 @@ legend{padding:0 6px;font-size:.74rem;letter-spacing:.09em;text-transform:upperc
         <div id="prList"></div>
         <div class="prbtns"><button class="btn" type="button" id="prAdd">Add a size</button></div>
         <p class="sub" style="margin-top:26px">Print payment links</p>
-        <p class="hint" style="margin-top:4px">Turn prints on for every painting, then import the CSV the print script made (columns id, size, payment_link). Each painting gets one link per size. Nothing goes live until you press Publish changes.</p>
+        <p class="hint" style="margin-top:4px">Turn prints on for every painting, then import the CSV a Stripe script made (columns id, size, payment_link). Each painting gets one link per print size, and a row with the size "original" sets the original's price and payment link. Nothing goes live until you press Publish changes.</p>
         <div class="f-stack">
           <div><button class="btn" type="button" id="prAll">Offer prints on every painting</button></div>
           <input type="file" id="prCsv" accept=".csv,text/csv">
@@ -829,16 +829,22 @@ $("prCsv").addEventListener("change", async () => {
     const ci = n => head.indexOf(n);
     if(ci("id") < 0 || ci("size") < 0 || ci("payment_link") < 0) throw new Error("The file needs the columns id, size and payment_link.");
     const by = Object.fromEntries(S.paintings.map(a => [a.id, a])), sizes = new Set(S.printSizes.map(z => z.id));
-    let done = 0, skipped = 0; const touchedP = new Set();
+    let done = 0, skipped = 0, origs = 0; const touchedP = new Set();
     rows.forEach(r => {
       const a = by[r[ci("id")].trim()], sz = r[ci("size")].trim(), url = r[ci("payment_link")].trim();
+      if(a && sz.toLowerCase() === "original" && /^https:\/\//.test(url)){
+        if(a.sold){ skipped++; return; }   // a sold painting keeps no buy link
+        const pr = ci("price_aud") >= 0 ? Number(r[ci("price_aud")]) : NaN;
+        a.buyUrl = url; if(pr > 0) a.price = pr;
+        origs++; touchedP.add(a.id); return;
+      }
       if(!a || !sizes.has(sz) || !/^https:\/\//.test(url)){ skipped++; return; }
       a.prints = Object.assign({size: "", price: null, buyUrl: ""}, a.prints || {});
       a.prints.links = Object.assign({}, a.prints.links || {}); a.prints.links[sz] = url; a.prints.available = true;
       done++; touchedP.add(a.id);
     });
     touched(); renderGroups();
-    $("prCsvOut").textContent = `Imported ${done} link${done === 1 ? "" : "s"} for ${touchedP.size} painting${touchedP.size === 1 ? "" : "s"}.` + (skipped ? ` ${skipped} row${skipped === 1 ? " was" : "s were"} skipped (unknown painting or size, or not a link).` : "") + " Press Publish changes to put them on the website.";
+    $("prCsvOut").textContent = `Imported ${done + origs} link${done + origs === 1 ? "" : "s"} (${origs} original${origs === 1 ? "" : "s"}, ${done} print size${done === 1 ? "" : "s"}) for ${touchedP.size} painting${touchedP.size === 1 ? "" : "s"}.` + (skipped ? ` ${skipped} row${skipped === 1 ? " was" : "s were"} skipped (unknown painting or size, or not a link).` : "") + " Press Publish changes to put them on the website.";
   }catch(e){ $("prCsvOut").textContent = e.message; }
   $("prCsv").value = "";
 });
