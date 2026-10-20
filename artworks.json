@@ -769,7 +769,7 @@
     },
     {
       "id": "mauve-skyline",
-      "title": "Mauve Skyline",
+      "title": "Perth Skyline",
       "theme": "skylines",
       "size": "20 x 24 in · 51 x 61 cm",
       "medium": "Acrylic on canvas",
@@ -780,6 +780,7 @@
       "buyUrl": "",
       "description": "",
       "prints": {
+        "available": true,
         "size": "",
         "price": null,
         "buyUrl": "",
@@ -789,8 +790,7 @@
           "A3": "https://buy.stripe.com/8x2cN5cOxb1s0wZ17qfIs2H",
           "A2": "https://buy.stripe.com/fZuaEXbKt6Lc2F74jCfIs2I",
           "A1": "https://buy.stripe.com/fZu6oHeWF9Xo6VnaI0fIs2J"
-        },
-        "available": true
+        }
       },
       "image": "images/mauve-skyline.jpg",
       "thumb": "images/thumbs/mauve-skyline.jpg",
@@ -1001,7 +1001,7 @@
     },
     {
       "id": "afternoon-by-the-lake",
-      "title": "Afternoon by the Lake",
+      "title": "Afternoon by the Water",
       "theme": "landscapes",
       "size": "16 x 24 in · 41 x 61 cm",
       "medium": "Acrylic on canvas",
@@ -1012,6 +1012,7 @@
       "buyUrl": "",
       "description": "",
       "prints": {
+        "available": true,
         "size": "",
         "price": null,
         "buyUrl": "",
@@ -1021,8 +1022,7 @@
           "A3": "https://buy.stripe.com/cNi9AT9Cl4D4a7z6rKfIs3l",
           "A2": "https://buy.stripe.com/7sYdR9dSB0mO7Zr17qfIs3m",
           "A1": "https://buy.stripe.com/28EfZh29T4D493v17qfIs3n"
-        },
-        "available": true
+        }
       },
       "image": "images/afternoon-by-the-lake.jpg",
       "thumb": "images/thumbs/afternoon-by-the-lake.jpg",
