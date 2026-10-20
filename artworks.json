@@ -1059,7 +1059,7 @@
     },
     {
       "id": "forest-falls",
-      "title": "Grand Canyon Trek",
+      "title": "Beneath the Blue Mountains",
       "theme": "landscapes",
       "size": "16 x 12 in · 41 x 30 cm",
       "medium": "Acrylic on canvas",
@@ -1070,6 +1070,7 @@
       "buyUrl": "https://buy.stripe.com/3cI28r3dX0mObbDdUcfIs04",
       "description": "",
       "prints": {
+        "available": true,
         "size": "",
         "price": null,
         "buyUrl": "",
@@ -1079,8 +1080,7 @@
           "A3": "https://buy.stripe.com/5kQ14n5m5glM0wZeYgfIs3v",
           "A2": "https://buy.stripe.com/8x214nbKtd9AdjL17qfIs3w",
           "A1": "https://buy.stripe.com/dRm00jbKtd9AbbD2bufIs3x"
-        },
-        "available": true
+        }
       },
       "image": "images/forest-falls.jpg",
       "thumb": "images/thumbs/forest-falls.jpg",
