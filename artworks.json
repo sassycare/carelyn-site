@@ -740,7 +740,7 @@
     },
     {
       "id": "monochrome-skyline",
-      "title": "Monochrome Skyline",
+      "title": "Dubai Skyline",
       "theme": "skylines",
       "size": "18 x 24 in · 46 x 61 cm",
       "medium": "Acrylic on canvas",
@@ -751,6 +751,7 @@
       "buyUrl": "",
       "description": "",
       "prints": {
+        "available": true,
         "size": "",
         "price": null,
         "buyUrl": "",
@@ -760,8 +761,7 @@
           "A3": "https://buy.stripe.com/00wfZh01Ld9A1B3aI0fIs2C",
           "A2": "https://buy.stripe.com/14A28r4i13z07Zr17qfIs2D",
           "A1": "https://buy.stripe.com/14A28reWF2uW2F74jCfIs2E"
-        },
-        "available": true
+        }
       },
       "image": "images/monochrome-skyline.jpg",
       "thumb": "images/thumbs/monochrome-skyline.jpg",
