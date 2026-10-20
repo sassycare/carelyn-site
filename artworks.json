@@ -1873,13 +1873,14 @@
   "exhibitions": [
     {
       "id": "tbd",
-      "title": "TBD",
+      "title": "Springtime in Dystopia",
       "venue": "ellipsis gallery...",
       "address": "Level 1, 41 Crown Street, Woolloomooloo, 2011 Sydney NSW",
       "place": "Sydney, NSW",
       "url": "https://www.dotdotdot.club/",
       "start": "2027-05-26",
       "end": "2027-06-19",
+      "description": "This will be my first public exhibition. I'm looking forward to seeing you all there.",
       "cover": "images/exhibitions/tbd-cover-mvgl32qf.jpg",
       "coverThumb": "images/exhibitions/thumbs/tbd-cover-mvgl32qf.jpg",
       "holdOnline": true,
