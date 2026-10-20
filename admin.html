@@ -162,7 +162,7 @@ legend{padding:0 6px;font-size:.74rem;letter-spacing:.09em;text-transform:upperc
 .txf textarea{resize:vertical;line-height:1.5}
 .txf.chg input,.txf.chg textarea{border-color:var(--ink)}
 .txf .rs{padding:2px 8px;font-size:.84rem}
-@media (max-width:640px){.tabs{gap:14px}.tabs button{font-size:1.05rem;white-space:nowrap}}
+@media (max-width:640px){.tabs{gap:4px 16px;flex-wrap:wrap}.tabs button{font-size:1.05rem;white-space:nowrap}}
 
 /* print sizes */
 .prrow{display:grid;grid-template-columns:90px minmax(0,1fr) 90px auto;gap:8px;align-items:center;margin:0 0 8px}
@@ -170,6 +170,28 @@ legend{padding:0 6px;font-size:.74rem;letter-spacing:.09em;text-transform:upperc
 .prhead{font-size:.74rem;letter-spacing:.09em;text-transform:uppercase;color:var(--soft);font-weight:600;margin-bottom:6px}
 .prbtns{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 4px}
 @media (max-width:640px){.prrow{grid-template-columns:70px minmax(0,1fr) 70px auto}.prrow .btn.quiet{padding-inline:2px}}
+
+/* exhibitions */
+.xrow{display:grid;grid-template-columns:64px minmax(0,1fr) auto auto;align-items:center;gap:14px;padding:10px 6px;border-bottom:1px solid var(--line)}
+.xrow:hover{background:var(--panel)}
+.xrow img{width:64px;height:48px;object-fit:cover;background:var(--tile);display:block}
+.chip.up{border-color:#2F4A5A;color:#2F4A5A}
+.f input[type=date],.f input[type=search]{border:1px solid var(--line);background:var(--bg);padding:9px 10px;border-radius:0;width:100%;min-width:0}
+.chip.now{background:var(--ok);border-color:var(--ok);color:#fff}
+.xph{display:grid;grid-template-columns:72px minmax(0,1fr) auto;gap:10px;align-items:center;margin:0 0 8px}
+.xph img{width:72px;height:54px;object-fit:cover;background:var(--tile)}
+.xph input{border:1px solid var(--line);background:var(--bg);padding:8px 10px;border-radius:0;width:100%;min-width:0}
+.xph .acts{display:flex;gap:2px}
+.xvr{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) auto;gap:8px;margin:0 0 8px}
+.xvr input{border:1px solid var(--line);background:var(--bg);padding:8px 10px;border-radius:0;width:100%;min-width:0}
+.xpick{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px;max-height:340px;overflow:auto;padding:2px}
+.xpick button{position:relative;text-align:left;border:1px solid var(--line);background:var(--bg);padding:0;cursor:pointer;font-size:.8rem;line-height:1.25}
+.xpick button img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
+.xpick button span{display:block;padding:4px 6px 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.xpick button small{color:var(--soft)}
+.xpick button[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink)}
+.xpick button[aria-pressed="true"]::after{content:"\2713";position:absolute;top:5px;right:5px;width:22px;height:22px;display:grid;place-items:center;background:var(--ink);color:var(--bg);font-size:.8rem}
+@media (max-width:640px){.xrow{grid-template-columns:56px minmax(0,1fr) auto}.xrow .chips{display:none}.xrow img{width:56px;height:42px}.xvr{grid-template-columns:1fr auto}.xvr input:nth-child(2){grid-column:1/2}}
 </style>
 </head>
 <body>
@@ -205,6 +227,7 @@ legend{padding:0 6px;font-size:.74rem;letter-spacing:.09em;text-transform:upperc
   <div class="tabs" role="tablist" aria-label="Sections">
     <button role="tab" id="tabP" aria-selected="true" aria-controls="viewP" type="button">Paintings</button>
     <button role="tab" id="tabB" aria-selected="false" aria-controls="viewB" type="button">Cover banner</button>
+    <button role="tab" id="tabX" aria-selected="false" aria-controls="viewX" type="button">Exhibitions</button>
     <button role="tab" id="tabT" aria-selected="false" aria-controls="viewT" type="button">Site text</button>
     <button role="tab" id="tabS" aria-selected="false" aria-controls="viewS" type="button">Settings</button>
   </div>
@@ -228,6 +251,12 @@ legend{padding:0 6px;font-size:.74rem;letter-spacing:.09em;text-transform:upperc
     <div class="mosaic" id="mosaic" aria-label="Rough preview of the banner"></div>
     <p class="sub">Add to the banner</p>
     <div class="addlist" id="addlist"></div>
+  </section>
+
+  <section id="viewX" role="tabpanel" aria-labelledby="tabX" hidden>
+    <p class="hint">Upcoming, current and past exhibitions. The website sorts them by date by itself, so on the day a show opens it moves to “On now”, and when it ends it moves to “Past exhibitions”. The paintings you pick for a show stay private unless you choose to show them. Nothing changes on the website until you press Publish changes.</p>
+    <div class="tools"><span class="sp"></span><button class="btn" type="button" id="xAdd">Add an exhibition</button></div>
+    <div id="xList"></div>
   </section>
 
   <section id="viewT" role="tabpanel" aria-labelledby="tabT" hidden>
@@ -336,6 +365,57 @@ legend{padding:0 6px;font-size:.74rem;letter-spacing:.09em;text-transform:upperc
   <div class="sh-foot"><button class="btn quiet" type="button" id="shCancel">Cancel</button><button class="btn primary" type="submit" form="form" id="saveBtn">Save painting</button></div>
 </aside>
 
+<aside class="sheet" id="xsheet" hidden role="dialog" aria-modal="true" aria-labelledby="xsTitle">
+  <div class="sh-head"><h3 id="xsTitle">Add an exhibition</h3><button class="btn quiet" type="button" id="xsClose">Close</button></div>
+  <form class="sh-body" id="xform" autocomplete="off">
+    <div class="f"><label for="xTitle">Exhibition title</label><input id="xTitle" type="text" required></div>
+    <div class="f"><label for="xVenue">Gallery name</label><input id="xVenue" type="text" placeholder="e.g. Bowral Art Gallery"></div>
+    <div class="f"><label for="xAddr">Street address</label><input id="xAddr" type="text" placeholder="Used for the map link and for Google"></div>
+    <div class="two">
+      <div class="f"><label for="xPlace">Town and state</label><input id="xPlace" type="text" placeholder="Bowral, NSW"></div>
+      <div class="f"><label for="xUrl">Gallery website (optional)</label><input id="xUrl" type="url" placeholder="https://"></div>
+    </div>
+    <div class="two">
+      <div class="f"><label for="xStart">First day</label><input id="xStart" type="date" required></div>
+      <div class="f"><label for="xEnd">Last day</label><input id="xEnd" type="date" required></div>
+    </div>
+    <div class="f"><label for="xOpen">Opening event (optional)</label><input id="xOpen" type="text" placeholder="e.g. Friday 7 May, 5.30pm to 7.30pm. All welcome."></div>
+    <div class="f"><label for="xHours">Opening hours (optional)</label><input id="xHours" type="text" placeholder="e.g. Tuesday to Sunday, 10am to 4pm"></div>
+    <div class="f"><label for="xDesc">About the exhibition</label><textarea id="xDesc" rows="5" placeholder="A few lines. Leave a blank line between paragraphs."></textarea></div>
+    <fieldset>
+      <legend>Paintings in the show</legend>
+      <div class="f"><label for="xShow">Show this list on the website?</label><select id="xShow"><option value="never">No, keep it private (recommended)</option><option value="opening">Yes, once the show opens</option><option value="always">Yes, straight away</option></select><span class="out">Pick the paintings below even if you keep the list private. They are only used to hold the originals back from online sale.</span></div>
+      <div class="f"><input id="xPickQ" type="search" placeholder="Find a painting" aria-label="Find a painting"></div>
+      <div class="xpick" id="xPick"></div>
+      <span class="out" id="xPickOut"></span>
+      <label class="check"><input type="checkbox" id="xHold" checked> Hold these originals back from online sale while the show is on</label>
+      <div class="f" id="xHoldRow"><label for="xHoldFrom">Pause from (optional)</label><input id="xHoldFrom" type="date"><span class="out">Empty means 7 days before the first day, so there is time to deliver and hang the work. While held, buyers see “email to arrange” instead of Buy, and nothing says why.</span></div>
+    </fieldset>
+    <fieldset>
+      <legend>Cover photo (for example the gallery)</legend>
+      <div class="xph" id="xCoverRow"><img id="xCoverImg" alt="" hidden><input id="xCoverFile" type="file" accept="image/*" style="grid-column:span 2"></div>
+      <span class="out" id="xCoverOut">Optional. Without photos, the website shows just the gallery name.</span>
+    </fieldset>
+    <fieldset>
+      <legend>More photos (for example inside the gallery)</legend>
+      <div id="xPhotos"></div>
+      <input id="xPhotoFile" type="file" accept="image/*" multiple>
+      <span class="out" id="xPhotoOut">Coming up and on now: the cover and the first photo show beside the details. Afterwards, add installation shots and opening night. Captions are optional.</span>
+    </fieldset>
+    <fieldset>
+      <legend>Videos</legend>
+      <div id="xVideos"></div>
+      <div><button class="btn" type="button" id="xVidAdd">Add a video link</button></div>
+      <span class="out">Paste a YouTube or Vimeo link, or a link to an Instagram reel. YouTube “unlisted” works well.</span>
+    </fieldset>
+    <div class="danger" id="xDanger">
+      <button class="btn quiet" type="button" id="xRm">Remove this exhibition from the website</button>
+      <div id="xRmConfirm" hidden class="rmc"><span>Remove it? You can't undo this after publishing.</span><button class="btn" type="button" id="xRmYes">Yes, remove</button><button class="btn quiet" type="button" id="xRmNo">Keep it</button></div>
+    </div>
+  </form>
+  <div class="sh-foot"><button class="btn quiet" type="button" id="xsCancel">Cancel</button><button class="btn primary" type="submit" form="xform" id="xSave">Save exhibition</button></div>
+</aside>
+
 <div class="pub" id="pub" hidden role="dialog" aria-modal="true" aria-labelledby="pubH"><div>
   <h3 id="pubH">Publish changes</h3>
   <p style="margin:0;color:var(--soft);font-size:.92rem" id="pubIntro">These changes go to the website now. They usually appear within a minute or two.</p>
@@ -410,6 +490,7 @@ function friendly(e){
 
 /* ---------- state ---------- */
 let S = null, ORIG = null, SHA = null;   // S = {paintings:[], banner:[]}
+const pendingX = {};                     // token -> prepared exhibition photo
 const pendingImg = {};                   // id -> {image:{b64,url}, thumb:{b64}, ratio}
 const clone = o => JSON.parse(JSON.stringify(o));
 const origById = () => Object.fromEntries(ORIG.paintings.map(a => [a.id, a]));
@@ -426,6 +507,7 @@ async function load(){
   d.banner = d.banner || [];
   d.text = (d.text && typeof d.text === "object" && !Array.isArray(d.text)) ? d.text : {};
   d.printSizes = Array.isArray(d.printSizes) ? d.printSizes : clone(DEFAULT_PRINTS);
+  d.exhibitions = Array.isArray(d.exhibitions) ? d.exhibitions : [];
   ORIG = clone(d);
   S = clone(d);
   try{
@@ -437,6 +519,8 @@ async function load(){
       dr.data.banner = dr.data.banner.filter(id => ids.has(id));
       dr.data.text = dr.data.text || {};
       dr.data.printSizes = Array.isArray(dr.data.printSizes) ? dr.data.printSizes : clone(ORIG.printSizes);
+      // new exhibition photos are not kept between visits, so drop the unsent ones
+      dr.data.exhibitions = (Array.isArray(dr.data.exhibitions) ? dr.data.exhibitions : clone(ORIG.exhibitions)).map(e => { delete e.coverPid; e.photos = (e.photos || []).filter(p => !p.pid); return e; });
       S = dr.data;
       if(changes().length) toast("Your unpublished changes from last time are still here");
     } else LS.del("draft");
@@ -481,6 +565,11 @@ function changes(){
   }
   if(S.banner.join() !== ORIG.banner.join()) out.push(`Cover banner: ${S.banner.length} paintings, new selection or order`);
   if(JSON.stringify(S.printSizes) !== JSON.stringify(ORIG.printSizes)) out.push("Print sizes and prices");
+  {
+    const oe = Object.fromEntries(ORIG.exhibitions.map(e => [e.id, e])), ne = new Set(S.exhibitions.map(e => e.id));
+    S.exhibitions.forEach(e => { if(!oe[e.id]) out.push(`Exhibition ${e.title}: new`); else if(JSON.stringify(e) !== JSON.stringify(oe[e.id])) out.push(`Exhibition ${e.title}: changed`); });
+    ORIG.exhibitions.forEach(e => { if(!ne.has(e.id)) out.push(`Exhibition ${e.title}: removed`); });
+  }
   const ot = ORIG.text || {}, nt = S.text || {};
   const tl = Object.keys(Object.assign({}, ot, nt)).filter(k => (txSet(ot[k]) ? ot[k] : "") !== (txSet(nt[k]) ? nt[k] : ""));
   if(tl.length > 6) out.push(`Website text: ${tl.length} pieces of wording changed`);
@@ -581,14 +670,112 @@ addEventListener("resize", () => { if(S && !$("viewB").hidden) drawMosaic(); });
 
 /* ---------- tabs ---------- */
 function setTab(t){
-  [["p", "tabP", "viewP"], ["b", "tabB", "viewB"], ["t", "tabT", "viewT"], ["s", "tabS", "viewS"]].forEach(([k, tb, v]) => { $(tb).setAttribute("aria-selected", t === k); $(v).hidden = t !== k; });
+  [["p", "tabP", "viewP"], ["b", "tabB", "viewB"], ["x", "tabX", "viewX"], ["t", "tabT", "viewT"], ["s", "tabS", "viewS"]].forEach(([k, tb, v]) => { $(tb).setAttribute("aria-selected", t === k); $(v).hidden = t !== k; });
   if(t === "p"){ syncGroups(); renderGroups(); }
   if(t === "b") renderBanner();
+  if(t === "x") renderEx();
   if(t === "t") renderText();
   if(t === "s") renderSettings();
   LS.set("tab", t);
 }
-$("tabP").onclick = () => setTab("p"); $("tabB").onclick = () => setTab("b"); $("tabT").onclick = () => setTab("t"); $("tabS").onclick = () => setTab("s");
+$("tabP").onclick = () => setTab("p"); $("tabB").onclick = () => setTab("b"); $("tabX").onclick = () => setTab("x"); $("tabT").onclick = () => setTab("t"); $("tabS").onclick = () => setTab("s");
+
+
+/* ---------- exhibitions tab ---------- */
+const TODAY = new Intl.DateTimeFormat("en-CA", {timeZone: "Australia/Sydney"}).format(new Date());
+const exState = e => TODAY < e.start ? "upcoming" : (TODAY <= (e.end || e.start) ? "current" : "past");
+const D8 = s => { const [y, m, d] = s.split("-").map(Number); return new Date(Date.UTC(y, m - 1, d)); };
+const exDates = e => { if(!/^\d{4}-\d{2}-\d{2}$/.test(e.start || "")) return "No dates yet"; const f = (s, o) => new Intl.DateTimeFormat("en-AU", Object.assign({timeZone: "UTC"}, o)).format(D8(s)); const end = e.end || e.start; return e.start === end ? f(e.start, {day: "numeric", month: "long", year: "numeric"}) : `${f(e.start, {day: "numeric", month: "short"})} – ${f(end, {day: "numeric", month: "short", year: "numeric"})}`; };
+const exThumb = e => e.coverThumb || e.cover || ((e.photos || [])[0] || {}).thumb || (() => { const a = S.paintings.find(p => p.id === (e.paintings || [])[0]); return a ? thumbSrc(a) : ""; })();
+function renderEx(){
+  const order = {current: 0, upcoming: 1, past: 2};
+  const list = S.exhibitions.slice().sort((a, b) => order[exState(a)] - order[exState(b)] || (exState(a) === "past" ? (a.start < b.start ? 1 : -1) : (a.start < b.start ? -1 : 1)));
+  const label = {current: ["now", "On now"], upcoming: ["up", "Coming up"], past: ["", "Past"]};
+  $("xList").innerHTML = list.length ? `<div class="list" style="border-top:1px solid var(--line)">` + list.map(e => { const st = exState(e), n = (e.paintings || []).length; const th = exThumb(e);
+    return `<div class="xrow" data-x="${esc(e.id)}"><img src="${esc(th)}" alt=""${th ? "" : " hidden"}><div class="ttl"><b>${esc(e.title)}</b><small>${esc([e.venue, exDates(e), n ? n + " painting" + (n > 1 ? "s" : "") : ""].filter(Boolean).join(" · "))}</small></div><div class="chips"><span class="chip ${label[st][0]}">${label[st][1]}</span></div><button class="btn edit" type="button" data-xedit="${esc(e.id)}">Edit</button></div>`; }).join("") + `</div>`
+    : `<p class="hint">No exhibitions yet. Press “Add an exhibition” and fill in the details. It appears on the website after you press Publish changes.</p>`;
+}
+$("xList").addEventListener("click", e => {
+  const b = e.target.closest("[data-xedit]") || e.target.closest(".xrow");
+  if(b) openX(b.dataset.xedit || b.dataset.x);
+});
+let xe = null, xNew = false, xCoverPid = "";
+const tok = () => "t" + Math.random().toString(36).slice(2, 9);
+function openX(id){
+  xNew = !id;
+  xe = id ? clone(S.exhibitions.find(e => e.id === id)) : {id: "", title: "", venue: "", address: "", place: "Bowral, NSW", url: "", start: "", end: "", opening: "", hours: "", description: "", cover: "", coverThumb: "", photos: [], videos: [], paintings: [], showPaintings: "never", holdOnline: true, holdFrom: ""};
+  if(!xe) return;
+  xe.photos = xe.photos || []; xe.videos = xe.videos || []; xe.paintings = xe.paintings || [];
+  $("xsTitle").textContent = xNew ? "Add an exhibition" : xe.title;
+  $("xTitle").value = xe.title; $("xVenue").value = xe.venue || ""; $("xAddr").value = xe.address || ""; $("xPlace").value = xe.place || ""; $("xUrl").value = xe.url || "";
+  $("xStart").value = xe.start || ""; $("xEnd").value = xe.end || ""; $("xOpen").value = xe.opening || ""; $("xHours").value = xe.hours || ""; $("xDesc").value = xe.description || "";
+  $("xShow").value = xe.showPaintings || "never"; $("xHold").checked = xe.holdOnline !== false; $("xHoldFrom").value = xe.holdFrom || ""; $("xHoldRow").hidden = !$("xHold").checked;
+  $("xPickQ").value = ""; $("xCoverFile").value = ""; $("xPhotoFile").value = "";
+  const cv = xe.cover ? (xe.coverThumb || xe.cover) : ""; $("xCoverImg").src = cv; $("xCoverImg").hidden = !cv;
+  $("xCoverOut").textContent = "Optional. Without photos, the website shows just the gallery name.";
+  drawPick(); drawXPhotos(); drawXVideos();
+  $("xDanger").hidden = xNew; $("xRmConfirm").hidden = true; $("xRm").hidden = false;
+  $("xSave").textContent = xNew ? "Add exhibition" : "Save exhibition";
+  $("scrim").hidden = false; $("xsheet").hidden = false; $("xTitle").focus();
+}
+function closeX(){ $("xsheet").hidden = true; if($("sheet").hidden) $("scrim").hidden = true; xe = null; }
+function drawPick(){
+  const q = $("xPickQ").value.trim().toLowerCase(), sel = new Set(xe.paintings);
+  $("xPick").innerHTML = S.paintings.filter(a => !q || a.title.toLowerCase().includes(q)).map(a => `<button type="button" data-pk="${esc(a.id)}" aria-pressed="${sel.has(a.id)}"><img src="${esc(thumbSrc(a))}" alt="" loading="lazy"><span>${esc(a.title)}${a.sold ? ' <small>sold</small>' : ""}</span></button>`).join("") || `<p class="out">No painting matches.</p>`;
+  const n = xe.paintings.length; $("xPickOut").textContent = n ? `${n} painting${n > 1 ? "s" : ""} selected.` : "No paintings selected yet.";
+}
+$("xPickQ").addEventListener("input", drawPick);
+$("xPick").addEventListener("click", e => { const b = e.target.closest("[data-pk]"); if(!b) return; const id = b.dataset.pk, i = xe.paintings.indexOf(id); if(i < 0) xe.paintings.push(id); else xe.paintings.splice(i, 1); drawPick(); });
+$("xHold").addEventListener("change", () => { $("xHoldRow").hidden = !$("xHold").checked; });
+function drawXPhotos(){
+  $("xPhotos").innerHTML = xe.photos.map((p, i) => `<div class="xph" data-i="${i}"><img src="${esc(p.thumb || p.src)}" alt=""><input type="text" data-cap aria-label="Caption" placeholder="Caption (optional)" value="${esc(p.caption || "")}"><div class="acts"><button class="btn quiet" type="button" data-up="${i}" aria-label="Move earlier"${i ? "" : " disabled"}>↑</button><button class="btn quiet" type="button" data-rmp="${i}">Remove</button></div></div>`).join("");
+}
+$("xPhotos").addEventListener("input", e => { if(e.target.dataset.cap === undefined) return; xe.photos[+e.target.closest(".xph").dataset.i].caption = e.target.value; });
+$("xPhotos").addEventListener("click", e => {
+  const u = e.target.closest("[data-up]"), r = e.target.closest("[data-rmp]");
+  if(u){ const i = +u.dataset.up; if(i > 0){ const t = xe.photos[i]; xe.photos[i] = xe.photos[i - 1]; xe.photos[i - 1] = t; drawXPhotos(); } }
+  if(r){ const p = xe.photos.splice(+r.dataset.rmp, 1)[0]; if(p && p.pid){ delete pendingX[p.pid]; } drawXPhotos(); }
+});
+$("xPhotoFile").addEventListener("change", async () => {
+  const files = [...$("xPhotoFile").files]; if(!files.length) return;
+  $("xSave").disabled = true; let done = 0;
+  for(const f of files){
+    $("xPhotoOut").textContent = `Preparing photo ${++done} of ${files.length}…`;
+    try{ const pr = await prepare(f), pid = tok(); pendingX[pid] = pr; xe.photos.push({src: "", thumb: pr.url, caption: "", pid}); }
+    catch(err){ $("xPhotoOut").textContent = err.message; }
+  }
+  $("xPhotoOut").textContent = "Photos ready. They upload when you publish."; $("xPhotoFile").value = ""; $("xSave").disabled = false; drawXPhotos();
+});
+$("xCoverFile").addEventListener("change", async () => {
+  const f = $("xCoverFile").files[0]; if(!f) return;
+  $("xSave").disabled = true; $("xCoverOut").textContent = "Preparing photo…";
+  try{ const pr = await prepare(f), pid = tok(); pendingX[pid] = pr; xe.coverPid = pid; $("xCoverImg").src = pr.url; $("xCoverImg").hidden = false; $("xCoverOut").textContent = "Cover photo ready. It uploads when you publish."; }
+  catch(err){ $("xCoverOut").textContent = err.message; }
+  $("xSave").disabled = false;
+});
+function drawXVideos(){
+  $("xVideos").innerHTML = xe.videos.map((v, i) => `<div class="xvr" data-i="${i}"><input type="url" data-vu aria-label="Video link" placeholder="https://youtube.com/…" value="${esc(v.url || "")}"><input type="text" data-vt aria-label="Title" placeholder="Title (optional)" value="${esc(v.title || "")}"><button class="btn quiet" type="button" data-rmv="${i}">Remove</button></div>`).join("");
+}
+$("xVideos").addEventListener("input", e => { const r = e.target.closest(".xvr"); if(!r) return; const v = xe.videos[+r.dataset.i]; if(e.target.dataset.vu !== undefined) v.url = e.target.value; if(e.target.dataset.vt !== undefined) v.title = e.target.value; });
+$("xVideos").addEventListener("click", e => { const b = e.target.closest("[data-rmv]"); if(!b) return; xe.videos.splice(+b.dataset.rmv, 1); drawXVideos(); });
+$("xVidAdd").onclick = () => { xe.videos.push({url: "", title: ""}); drawXVideos(); const i = $("xVideos").querySelectorAll("[data-vu]"); i[i.length - 1].focus(); };
+$("xform").addEventListener("submit", e => {
+  e.preventDefault(); if(!xe) return;
+  if($("xEnd").value < $("xStart").value){ toast("The last day can't be before the first day"); $("xEnd").focus(); return; }
+  xe.title = $("xTitle").value.trim() || "Exhibition"; xe.venue = $("xVenue").value.trim(); xe.address = $("xAddr").value.trim(); xe.place = $("xPlace").value.trim(); xe.url = $("xUrl").value.trim();
+  xe.start = $("xStart").value; xe.end = $("xEnd").value; xe.opening = $("xOpen").value.trim(); xe.hours = $("xHours").value.trim(); xe.description = $("xDesc").value.trim();
+  xe.showPaintings = $("xShow").value; xe.holdOnline = $("xHold").checked; xe.holdFrom = $("xHold").checked ? $("xHoldFrom").value : "";
+  xe.videos = xe.videos.filter(v => v.url.trim());
+  if(xNew){ let id = slug(xe.title), n = 2; const ids = new Set(S.exhibitions.map(x => x.id)); while(ids.has(id)) id = `${slug(xe.title)}-${n++}`; xe.id = id; S.exhibitions.push(xe); }
+  else { const i = S.exhibitions.findIndex(x => x.id === xe.id); S.exhibitions[i] = xe; }
+  const t = xe.title, wasNew = xNew; closeX(); touched(); renderEx();
+  toast(wasNew ? `Added ${t}. Press Publish changes to put it on the website.` : `Saved ${t}. Press Publish changes when you're ready.`);
+});
+$("xRm").onclick = () => { $("xRmConfirm").hidden = false; $("xRm").hidden = true; };
+$("xRmNo").onclick = () => { $("xRmConfirm").hidden = true; $("xRm").hidden = false; };
+$("xRmYes").onclick = () => { const t = xe.title; S.exhibitions = S.exhibitions.filter(x => x.id !== xe.id); closeX(); touched(); renderEx(); toast(`${t} will be removed when you publish`); };
+$("xAdd").onclick = () => openX(null);
+$("xsClose").onclick = closeX; $("xsCancel").onclick = closeX;
 
 /* ---------- site text tab ---------- */
 function renderText(){
@@ -679,7 +866,7 @@ function openEditor(id){
   syncForm();
   $("scrim").hidden = false; $("sheet").hidden = false; (isNew ? $("fFile") : $("fTitle")).focus();
 }
-function closeEditor(){ $("scrim").hidden = true; $("sheet").hidden = true; editing = null; staged = null; }
+function closeEditor(){ if($("xsheet").hidden) $("scrim").hidden = true; $("sheet").hidden = true; editing = null; staged = null; }
 function syncForm(){
   const t = sizeText(+$("fW").value, +$("fH").value, $("fU").value, $("fNote").value.trim());
   $("sizeOut").innerHTML = t ? `Shown on the site as <b>${esc(t)}</b>` : "Enter width and height to show the size in inches and cm.";
@@ -733,8 +920,8 @@ $("rmYes").onclick = () => {
   closeEditor(); touched(); renderGroups(); if(!$("viewB").hidden) renderBanner(); toast(`${a.title} will be removed when you publish`);
 };
 $("addBtn").onclick = () => openEditor(null);
-$("shClose").onclick = closeEditor; $("shCancel").onclick = closeEditor; $("scrim").onclick = closeEditor;
-addEventListener("keydown", e => { if(e.key === "Escape"){ if(!$("sheet").hidden) closeEditor(); if(!pubBusy) $("pub").hidden = true; } });
+$("shClose").onclick = closeEditor; $("shCancel").onclick = closeEditor; $("scrim").onclick = () => { closeEditor(); closeX(); };
+addEventListener("keydown", e => { if(e.key === "Escape"){ if(!$("sheet").hidden) closeEditor(); if(!$("xsheet").hidden) closeX(); if(!pubBusy) $("pub").hidden = true; } });
 
 /* ---------- publish ---------- */
 let pubBusy = false;
@@ -759,14 +946,33 @@ $("pubYes").onclick = async () => {
       await putFile(th, p.thumb.b64, `Thumbnail for ${a.title}`);
       a.image = img; a.thumb = th; a.ratio = p.ratio;
     }
+    // exhibition photos
+    const xs = [];
+    S.exhibitions.forEach(e => { if(e.coverPid && pendingX[e.coverPid]) xs.push([e, "cover"]); (e.photos || []).forEach(p => { if(p.pid && pendingX[p.pid]) xs.push([e, p]); }); });
+    let xk = 0;
+    for(const [e, what] of xs){
+      $("pubYes").textContent = `Uploading exhibition photos ${++xk} of ${xs.length}…`;
+      const isCover = what === "cover", pid = isCover ? e.coverPid : what.pid, pr = pendingX[pid], nm = isCover ? `${e.id}-cover-${stamp}` : `${e.id}-${stamp}-${xk}`;
+      const img = `images/exhibitions/${nm}.jpg`, th = `images/exhibitions/thumbs/${nm}.jpg`;
+      await putFile(img, pr.image.b64, `Exhibition photo for ${e.title}`);
+      await putFile(th, pr.thumb.b64, `Exhibition thumbnail for ${e.title}`);
+      if(isCover){ e.cover = img; e.coverThumb = th; delete e.coverPid; } else { what.src = img; what.thumb = th; delete what.pid; }
+    }
     $("pubYes").textContent = "Saving…";
     const out = {banner: S.banner, paintings: S.paintings};
+    const cleanEx = e => { const o = {id: e.id, title: e.title}; ["venue","address","place","url","start","end","opening","hours","description","cover","coverThumb","holdFrom"].forEach(k => { if(e[k]) o[k] = e[k]; });
+      if(e.showPaintings && e.showPaintings !== "never") o.showPaintings = e.showPaintings; o.holdOnline = e.holdOnline !== false; o.paintings = (e.paintings || []).filter(id => S.paintings.some(a => a.id === id));
+      const ph = (e.photos || []).filter(p => p.src && !p.pid).map(p => ({src: p.src, thumb: p.thumb, caption: p.caption || ""})); if(ph.length) o.photos = ph;
+      const vd = (e.videos || []).filter(v => v.url && v.url.trim()).map(v => ({url: v.url.trim(), title: (v.title || "").trim()})); if(vd.length) o.videos = vd; return o; };
+    if(S.exhibitions.length) out.exhibitions = S.exhibitions.map(cleanEx);
     const text = {}; Object.keys(S.text).forEach(k => { if(txSet(S.text[k])) text[k] = S.text[k]; });
     if(Object.keys(text).length) out.text = text;
     out.printSizes = S.printSizes.filter(z => z.label && Number(z.price) > 0).map(z => ({id: z.id, label: z.label.trim(), dims: (z.dims || "").trim(), price: Number(z.price)}));
     const r = await putFile("artworks.json", b64text(JSON.stringify(out, null, 2) + "\n"), `Update paintings (${changes().length} changes)`, SHA);
     SHA = r.content.sha;
     for(const id of ids){ URL.revokeObjectURL(pendingImg[id].url); delete pendingImg[id]; }
+    for(const k in pendingX){ try{ URL.revokeObjectURL(pendingX[k].url); }catch(_){} delete pendingX[k]; }
+    S.exhibitions = out.exhibitions ? clone(out.exhibitions).map(e => Object.assign({photos: [], videos: []}, e)) : [];
     ORIG = clone(S); LS.del("draft");
     $("pub").hidden = true; refreshStatus(); renderGroups(); if(!$("viewB").hidden) renderBanner();
     toast("Published. The website updates within a minute or two.");
@@ -779,10 +985,10 @@ let armed = 0;
 $("discardBtn").onclick = () => {
   if(Date.now() - armed > 4000){ armed = Date.now(); $("discardBtn").textContent = "Tap again to discard"; setTimeout(() => $("discardBtn").textContent = "Discard changes", 4000); return; }
   armed = 0; $("discardBtn").textContent = "Discard changes";
-  S = clone(ORIG); for(const id in pendingImg) delete pendingImg[id]; LS.del("draft"); syncGroups();
-  refreshStatus(); renderGroups(); if(!$("viewB").hidden) renderBanner(); if(!$("viewT").hidden) renderText(); if(!$("viewS").hidden) renderSettings(); toast("Changes discarded");
+  S = clone(ORIG); for(const id in pendingImg) delete pendingImg[id]; for(const k in pendingX) delete pendingX[k]; LS.del("draft"); syncGroups();
+  refreshStatus(); renderGroups(); if(!$("viewB").hidden) renderBanner(); if(!$("viewT").hidden) renderText(); if(!$("viewX").hidden) renderEx(); if(!$("viewS").hidden) renderSettings(); toast("Changes discarded");
 };
-addEventListener("beforeunload", e => { if(Object.keys(pendingImg).length){ e.preventDefault(); e.returnValue = ""; } });
+addEventListener("beforeunload", e => { if(Object.keys(pendingImg).length || Object.keys(pendingX).length){ e.preventDefault(); e.returnValue = ""; } });
 
 /* ---------- settings ---------- */
 let aboutStaged = null;
@@ -884,7 +1090,7 @@ async function start(){
   try{ await load(); }
   catch(e){ showSignin(friendly(e)); return; }
   $("app").hidden = false; refreshStatus(); renderGroups();
-  const t = LS.get("tab"); if(t === "b" || t === "t" || t === "s") setTab(t);
+  const t = LS.get("tab"); if(t === "b" || t === "x" || t === "t" || t === "s") setTab(t);
 }
 $("signForm").addEventListener("submit", async e => {
   e.preventDefault();
