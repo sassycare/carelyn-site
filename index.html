@@ -185,6 +185,75 @@ dt{color:var(--soft)} dd{margin:0}
 .gsec h3{font-family:var(--serif);font-weight:300;font-size:clamp(1.7rem,3.2vw,2.4rem);line-height:1.05;margin:0 0 .25em;letter-spacing:-.005em}
 .gsec .blurb{margin:0 0 clamp(22px,3vw,34px);color:var(--soft);max-width:58ch;font-family:var(--serif);font-style:italic;font-size:1.1rem}
 @media (max-width:820px){.sig-grid{grid-template-columns:1fr}}
+
+/* exhibitions */
+#exhibitions .xintro{margin:0 0 clamp(28px,4vw,48px);color:var(--soft);max-width:60ch;font-family:var(--serif);font-style:italic;font-size:1.1rem}
+.xblock{margin:0 0 clamp(44px,6vw,80px)} .xblock:last-child{margin-bottom:0}
+.xh{font-family:var(--serif);font-weight:300;font-size:clamp(1.5rem,2.8vw,2rem);margin:0 0 22px;letter-spacing:-.005em}
+.xf{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,5fr);gap:clamp(20px,4vw,56px);align-items:center;margin:0 0 clamp(32px,4vw,52px)}
+.xf:last-child{margin-bottom:0}
+.xf-img{display:block;background:var(--tile);aspect-ratio:4/3;overflow:hidden}
+.xf-img img,.xhero img,.xw .p img{width:100%;height:100%;object-fit:cover}
+.fbt{display:grid;place-items:center;width:100%;height:100%;padding:16px;text-align:center;font-family:var(--serif);font-style:italic;font-size:1.35rem;color:var(--soft)}
+.xf-img.two{display:grid;grid-template-columns:2fr 1fr;gap:6px;background:transparent}
+.xf-img.two img{min-width:0}
+.xw .m span:last-child{text-align:left;white-space:normal}
+.xf-body h4{font-family:var(--serif);font-weight:300;font-size:clamp(1.7rem,3vw,2.4rem);line-height:1.1;margin:0 0 .3em}
+.xf-body h4 a{text-decoration:none}
+.xf-body p{margin:0 0 .5em}
+.xv{font-size:1.05rem} .xd{font-family:var(--serif);font-size:1.25rem}
+.xo{color:var(--soft);font-size:.95rem}
+.xs{color:var(--soft);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;max-width:48ch}
+.xa{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.xa .btn{display:inline-block;margin:0}
+.xw .p{aspect-ratio:4/3;padding:0;overflow:hidden}
+.xw .p img{box-shadow:none}
+.xw .m{flex-direction:column;gap:2px}
+#xdlg{width:min(1040px,94vw)}
+.xhero{background:var(--tile);aspect-ratio:12/5;max-height:44vh;width:100%;overflow:hidden}
+.xhero.fb{aspect-ratio:12/5}
+.xsec .work .m{flex-direction:column;gap:2px}
+.xsec .work .m span:last-child{text-align:left;white-space:normal}
+.xvl{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.xvl .btn{display:inline-block;margin:0}
+.xbody{padding:clamp(24px,4vw,52px)}
+.xbody h3{font-family:var(--serif);font-weight:300;font-size:clamp(2rem,4vw,3rem);line-height:1.05;margin:0 0 .3em}
+.xbody .xsub{margin:0 0 20px;color:var(--soft);font-size:1.02rem}
+.xbody .desc p{margin:0 0 1em;max-width:62ch}
+.xbody dl{max-width:620px}
+.xbody dd a{text-decoration:underline;text-underline-offset:3px}
+.xbody .xa{margin:6px 0 0}
+.xsec{margin-top:clamp(36px,5vw,60px)}
+.xsec h4{font-family:var(--serif);font-weight:300;font-size:1.5rem;margin:0 0 18px}
+.xg{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.xg button{padding:0;border:0;background:var(--tile);cursor:zoom-in;aspect-ratio:4/3;overflow:hidden}
+.xg img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.xg button:hover img{transform:scale(1.03)}
+.xvg{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:18px}
+.xvid{position:relative;aspect-ratio:16/9;background:#000}
+.xvid iframe,.xvid video,.xvg video{position:absolute;inset:0;width:100%;height:100%;border:0}
+.xvg video{position:static;aspect-ratio:16/9;background:#000}
+.xvg figcaption{font-size:.92rem;color:var(--soft);margin-top:6px}
+.xvg figure{margin:0}
+.xsec .grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:28px 20px}
+#lb{width:min(1200px,96vw);background:#141311;color:#eee}
+#lb[open]{display:grid;grid-template-columns:52px minmax(0,1fr) 52px;align-items:center;min-height:50vh}
+#lb figure{margin:0;padding:16px 0;text-align:center}
+#lb img{max-width:100%;max-height:78vh;margin:0 auto;width:auto}
+#lb figcaption{margin-top:10px;font-size:.95rem;color:#c9c5bd;min-height:1.4em}
+#lb .close{position:absolute;top:6px;right:6px;float:none;margin:0;background:transparent;color:#fff}
+.lbn{border:0;background:transparent;color:#fff;font-size:2.4rem;cursor:pointer;height:100%;min-height:80px}
+#lb::backdrop{background:rgba(10,9,8,.88)}
+@media (max-width:820px){
+  .xf{grid-template-columns:1fr}
+  .xsec .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .xhero,.xhero.fb{aspect-ratio:4/3;max-height:none}
+  #lb[open]{grid-template-columns:36px minmax(0,1fr) 36px}
+}
+@media (max-width:560px){
+  .bar{flex-wrap:wrap;row-gap:6px}
+  nav{width:100%;justify-content:space-between;gap:10px}
+}
 </style>
 </head>
 <body>
@@ -194,6 +263,7 @@ dt{color:var(--soft)} dd{margin:0}
     <nav aria-label="Main">
       <a href="#work" data-tx="navWork">Work</a>
       <a href="#available" id="navAvail" data-tx="navAvail">Available</a>
+      <a href="#exhibitions" id="navExh" data-tx="navExhibitions" hidden>Exhibitions</a>
       <a href="#about" data-tx="navAbout">About</a>
       <a href="#commissions" data-tx="navCommissions">Commissions</a>
     </nav>
@@ -229,6 +299,14 @@ dt{color:var(--soft)} dd{margin:0}
       <div class="tabs" id="tabs" role="tablist" aria-label="View"></div>
       <div class="filters" id="filters" role="group" aria-label="Filter paintings"></div>
       <div id="groups"></div>
+    </div>
+  </section>
+
+  <section id="exhibitions" class="rule" hidden>
+    <div class="wrap">
+      <h2 data-tx="exHeading">Exhibitions</h2>
+      <p class="xintro" data-tx="exIntro"></p>
+      <div id="exList"></div>
     </div>
   </section>
 
@@ -277,6 +355,18 @@ dt{color:var(--soft)} dd{margin:0}
   </div>
 </dialog>
 
+<dialog id="xdlg" aria-labelledby="xTitle">
+  <button class="close" id="xClose" aria-label="Close">×</button>
+  <div id="xBody"></div>
+</dialog>
+
+<dialog id="lb" aria-label="Photo">
+  <button class="close" id="lbClose" aria-label="Close">×</button>
+  <button class="lbn" id="lbPrev" aria-label="Previous photo">‹</button>
+  <figure><img id="lbImg" alt=""><figcaption id="lbCap"></figcaption></figure>
+  <button class="lbn" id="lbNext" aria-label="Next photo">›</button>
+</dialog>
+
 <script src="config.js"></script>
 <script src="texts.js"></script>
 <script>
@@ -290,7 +380,7 @@ dt{color:var(--soft)} dd{margin:0}
   const mail = subject => `mailto:${S.email}?subject=${encodeURIComponent(subject)}`;
 
   // Wording: the starting text lives in texts.js; changes made in the admin are saved in artworks.json under "text".
-  let OV = {}, PRINT_SIZES = [];
+  let OV = {}, PRINT_SIZES = [], EXH_RAW = [];
   const DEFS = Object.fromEntries((window.TEXTS || []).map(t => [t.k, t]));
   const raw = k => { const o = OV[k]; if(typeof o === "string" && o.trim()) return o; const d = DEFS[k] && DEFS[k].def; return typeof d === "function" ? d() : (d == null ? "" : d); };
   const tx = (k, extra) => { const v = Object.assign({ year: new Date().getFullYear(), artistName: raw("artistName"), location: raw("location"), shipsTo: raw("shipsTo"), instagram: raw("instagram") }, extra || {}); return raw(k).replace(/\{(\w+)\}/g, (m, n) => v[n] === undefined ? m : v[n]); };
@@ -329,10 +419,43 @@ dt{color:var(--soft)} dd{margin:0}
   if(A && !Array.isArray(A)){
     const ord = A.banner || [];
     OV = A.text || {};
+    EXH_RAW = Array.isArray(A.exhibitions) ? A.exhibitions : [];
     PRINT_SIZES = Array.isArray(A.printSizes) ? A.printSizes.filter(z => z && z.label && Number(z.price) > 0) : [];
     window.BANNER_ORDER = ord;
     A = (A.paintings || []).map(a => Object.assign({}, a, { featured: ord.includes(a.id) }));
   }
+
+
+  /* ---------- Exhibitions: dates, status and which paintings are in a show ---------- */
+  const ISO = /^\d{4}-\d{2}-\d{2}$/;
+  const todayStr = (() => {
+    const q = new URLSearchParams(location.search).get("today");
+    return ISO.test(q || "") ? q : new Intl.DateTimeFormat("en-CA", { timeZone:"Australia/Sydney" }).format(new Date());
+  })();
+  const D = s => { const [y, m, d] = s.split("-").map(Number); return new Date(Date.UTC(y, m - 1, d)); };
+  const dfmt = (s, o) => new Intl.DateTimeFormat("en-AU", Object.assign({ timeZone:"UTC" }, o)).format(D(s));
+  const fmtDay = s => dfmt(s, { day:"numeric", month:"long", year:"numeric" });
+  const fmtRange = (a, b) => {
+    if(!b || b === a) return fmtDay(a);
+    const x = D(a), y = D(b), sameY = x.getUTCFullYear() === y.getUTCFullYear(), sameM = sameY && x.getUTCMonth() === y.getUTCMonth();
+    return sameM ? `${x.getUTCDate()} – ${fmtDay(b)}` : sameY ? `${dfmt(a, { day:"numeric", month:"short" })} – ${fmtDay(b)}` : `${fmtDay(a)} – ${fmtDay(b)}`;
+  };
+  const addDays = (s, n) => { const d = D(s); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+  const EX = EXH_RAW.filter(e => e && e.id && e.title && ISO.test(e.start || ""))
+    .map(e => Object.assign({}, e, { end: ISO.test(e.end || "") && e.end >= e.start ? e.end : e.start }));
+  const exState = e => todayStr < e.start ? "upcoming" : (todayStr <= e.end ? "current" : "past");
+  const inShow = (e, a) => (e.paintings || []).includes(a.id);
+  // which paintings are in a show stays private unless Carelyn chooses to show them (never / opening / always)
+  const revealed = e => e.showPaintings === "always" || (e.showPaintings === "opening" && exState(e) !== "upcoming");
+  // an original is held back from online sale while it is hanging in (or about to go to) a show
+  const heldBy = a => EX.find(e => e.holdOnline !== false && inShow(e, a) && todayStr <= e.end && todayStr >= (ISO.test(e.holdFrom || "") ? e.holdFrom : addDays(e.start, -7)));
+  const rightOf = a => {
+    const pr = hasPrints(a) ? " · " + esc(tx("cardPrints")) : "";
+    if(a.sold) return `<span>${esc(tx("cardSold"))}${pr}</span>`;
+    const h = heldBy(a);
+    if(h && revealed(h)) return `<span>${esc(tx("cardOnShow"))}${pr}</span>`;
+    return a.price ? `<span>${money(a.price)}</span>` : (hasPrints(a) ? `<span>${esc(tx("cardPrints"))}</span>` : `<span>${esc(tx("cardAvailable"))}</span>`);
+  };
 
   applyStatic();
 
@@ -435,7 +558,7 @@ dt{color:var(--soft)} dd{margin:0}
     const okShow = a => show === "all" || (show === "available" && !a.sold) || (show === "prints" && hasPrints(a));
     const known = new Set(T.map(t => t.id));
     const card = a => {
-      const right = a.sold ? `<span>${esc(tx("cardSold"))}${hasPrints(a) ? " · " + esc(tx("cardPrints")) : ""}</span>` : (a.price ? `<span>${money(a.price)}</span>` : (hasPrints(a) ? `<span>${esc(tx("cardPrints"))}</span>` : `<span>${esc(tx("cardAvailable"))}</span>`));
+      const right = rightOf(a);
       return `<a class="work" href="#art/${a.id}">
         <div class="p"><img src="${esc(a.thumb || a.image)}" alt="${esc(a.title)}" loading="lazy" decoding="async"></div>
         <div class="m"><span><i>${esc(a.title)}</i>${a.size ? "<br>" + esc(a.size) : ""}${view === "available" ? `<small class="g">${esc(themeLabel[a.theme] || "")}</small>` : ""}</span>${right}</div>
@@ -455,6 +578,173 @@ dt{color:var(--soft)} dd{margin:0}
     $("groups").innerHTML = secs || `<p class="empty">${esc(tx("emptyFilter"))}</p>`;
   }
   renderTabs(); renderFilters(); render();
+  /* ---------- Exhibitions: section, detail pop-up, photos, calendar ---------- */
+  const byId = Object.fromEntries(A.map(a => [a.id, a]));
+  const exArt = e => (e.paintings || []).map(id => byId[id]).filter(Boolean);
+  const exPhotos = e => (e.photos || []).filter(p => p && p.src);
+  // pictures of the gallery: the cover photo first, then the photos. Never the paintings (that list is private by default).
+  const exImgs = e => {
+    const out = [];
+    if(e.cover || e.coverThumb) out.push({ thumb: e.coverThumb || e.cover, big: e.cover || e.coverThumb });
+    exPhotos(e).forEach(p => out.push({ thumb: p.thumb || p.src, big: p.src }));
+    return out;
+  };
+  // mode: "big" (pop-up banner), "two" (cover plus one more), otherwise just the first picture
+  const coverHtml = (e, mode) => {
+    const im = exImgs(e);
+    if(!im.length) return mode === "big" ? "" : `<span class="fbt">${esc(e.venue || e.title)}</span>`;
+    if(mode === "big") return `<img src="${esc(im[0].big)}" alt="">`;
+    return im.slice(0, mode === "two" ? 2 : 1).map(i => `<img src="${esc(i.thumb)}" alt="" loading="lazy" decoding="async">`).join("");
+  };
+  const where = e => [e.venue, e.place].filter(Boolean).join(", ");
+  const mapUrl = e => "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent([e.venue, e.address, e.place].filter(Boolean).join(", "));
+  const safeUrl = u => /^https?:\/\//i.test(u || "") ? u : "";
+  const paras = t => String(t || "").split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
+  let curShow = "";
+
+  function renderExhibitions(){
+    const sec = $("exhibitions");
+    if(!EX.length){ sec.hidden = true; $("navExh").hidden = true; return; }
+    sec.hidden = false; $("navExh").hidden = false;
+    const by = st => EX.filter(e => exState(e) === st);
+    const cur = by("current").sort((p, q) => p.start < q.start ? -1 : 1), up = by("upcoming").sort((p, q) => p.start < q.start ? -1 : 1), past = by("past").sort((p, q) => p.start < q.start ? 1 : -1);
+    const feat = e => {
+      const id = esc(e.id);
+      return `<article class="xf"><a class="xf-img${exImgs(e).length > 1 ? " two" : ""}" href="#show/${id}" aria-label="${esc(e.title)}">${coverHtml(e, "two")}</a>
+        <div class="xf-body"><h4><a href="#show/${id}">${esc(e.title)}</a></h4>
+          <p class="xv">${esc(where(e))}</p><p class="xd">${esc(fmtRange(e.start, e.end))}</p>
+          ${e.opening ? `<p class="xo"><b>${esc(tx("exLblOpening"))}:</b> ${esc(e.opening)}</p>` : ""}
+          ${e.description ? `<p class="xs">${esc(paras(e.description)[0] || "")}</p>` : ""}
+          <div class="xa"><a class="btn" href="#show/${id}">${esc(tx("exBtnDetails"))}</a><button class="btn o" type="button" data-cal="${id}">${esc(tx("exBtnCalendar"))}</button></div></div></article>`;
+    };
+    const pcard = e => {
+      return `<a class="work xw" href="#show/${esc(e.id)}"><div class="p">${coverHtml(e)}</div>
+        <div class="m"><span><i>${esc(e.title)}</i><br>${esc(where(e))}</span><span>${esc(fmtRange(e.start, e.end))}</span></div></a>`;
+    };
+    $("exList").innerHTML =
+      (cur.length ? `<div class="xblock"><h3 class="xh">${esc(tx("exCurrentHeading"))}</h3>${cur.map(feat).join("")}</div>` : "") +
+      (up.length ? `<div class="xblock"><h3 class="xh">${esc(tx("exUpcomingHeading"))}</h3>${up.map(feat).join("")}</div>` : "") +
+      (past.length ? `<div class="xblock"><h3 class="xh">${esc(tx("exPastHeading"))}</h3><div class="grid">${past.map(pcard).join("")}</div></div>` : "");
+  }
+
+  function videoHtml(v){
+    const u = String(v.url || "").trim(); let m;
+    const frame = src => `<div class="xvid"><iframe src="${esc(src)}" title="${esc(v.title || "Video")}" loading="lazy" allow="accelerometer; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>`;
+    let inner;
+    if((m = u.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:[^#]*&)?v=|shorts\/|embed\/))([\w-]{11})/))) inner = frame("https://www.youtube-nocookie.com/embed/" + m[1]);
+    else if((m = u.match(/vimeo\.com\/(?:video\/)?(\d+)/))) inner = frame("https://player.vimeo.com/video/" + m[1]);
+    else if(/\.(mp4|webm|mov)(\?|$)/i.test(u) && !/^javascript:/i.test(u)) inner = `<video controls preload="metadata" playsinline src="${esc(u)}"></video>`;
+    else if(safeUrl(u)) return { link: `<a class="btn o" href="${esc(u)}" target="_blank" rel="noopener">${esc(v.title || tx("exWatch"))}</a>` };
+    else return "";
+    return { embed: `<figure>${inner}${v.title ? `<figcaption>${esc(v.title)}</figcaption>` : ""}</figure>` };
+  }
+
+  const xdlg = $("xdlg");
+  function openShow(id){
+    const e = EX.find(x => x.id === id); if(!e) return;
+    curShow = id;
+    const ps = revealed(e) ? exArt(e) : [], ph = exPhotos(e), vids = (e.videos || []).map(videoHtml).filter(Boolean), embeds = vids.filter(v => v.embed), links = vids.filter(v => v.link);
+    const where2 = [e.venue, e.address, e.place].filter(Boolean).map(esc).join(", ");
+    const rows = [
+      [tx("exLblWhen"), esc(fmtRange(e.start, e.end))],
+      [tx("exLblWhere"), where2 ? `<a href="${esc(mapUrl(e))}" target="_blank" rel="noopener">${where2}</a>` : ""],
+      [tx("exLblOpening"), esc(e.opening || "")],
+      [tx("exLblHours"), esc(e.hours || "")]
+    ].filter(r => r[1]);
+    const gal = safeUrl(e.url);
+    $("xBody").innerHTML =
+      (coverHtml(e, "big") ? `<div class="xhero">${coverHtml(e, "big")}</div>` : "") +
+      `<div class="xbody"><h3 id="xTitle">${esc(e.title)}</h3>
+        <p class="xsub">${esc(exState(e) === "current" ? tx("exCurrentHeading") : exState(e) === "upcoming" ? tx("exUpcomingHeading") : "")}</p>
+        ${paras(e.description).length ? `<div class="desc">${paras(e.description).map(p => `<p>${esc(p)}</p>`).join("")}</div>` : ""}
+        <dl>${rows.map(r => `<dt>${esc(r[0])}</dt><dd>${r[1]}</dd>`).join("")}</dl>
+        <div class="xa">${exState(e) !== "past" ? `<button class="btn" type="button" data-cal="${esc(e.id)}">${esc(tx("exBtnCalendar"))}</button>` : ""}${gal ? `<a class="btn o" href="${esc(gal)}" target="_blank" rel="noopener">${esc(tx("exBtnGallery"))}</a>` : ""}</div>
+        ${ps.length ? `<div class="xsec"><h4>${esc(tx("exWorksHeading"))}</h4><div class="grid">${ps.map(a => `<a class="work" href="#art/${esc(a.id)}"><div class="p"><img src="${esc(a.thumb || a.image)}" alt="${esc(a.title)}" loading="lazy" decoding="async"></div><div class="m"><span><i>${esc(a.title)}</i>${a.size ? "<br>" + esc(a.size) : ""}</span>${rightOf(a)}</div></a>`).join("")}</div></div>` : ""}
+        ${ph.length ? `<div class="xsec"><h4>${esc(tx("exPhotosHeading"))}</h4><div class="xg">${ph.map((p, i) => `<button type="button" data-lb="${i}" aria-label="${esc(p.caption || "Photo " + (i + 1))}"><img src="${esc(p.thumb || p.src)}" alt="${esc(p.caption || "")}" loading="lazy" decoding="async"></button>`).join("")}</div></div>` : ""}
+        ${vids.length ? `<div class="xsec"><h4>${esc(tx("exVideosHeading"))}</h4>${embeds.length ? `<div class="xvg">${embeds.map(v => v.embed).join("")}</div>` : ""}${links.length ? `<div class="xvl">${links.map(v => v.link).join("")}</div>` : ""}</div>` : ""}
+      </div>`;
+    if(!xdlg.open) xdlg.showModal();
+    xdlg.scrollTop = 0;
+  }
+  function closeShow(){ if(xdlg.open) xdlg.close(); }
+  xdlg.addEventListener("close", () => {
+    if(location.hash.startsWith("#show/")) try{ history.replaceState(null, "", location.pathname + location.search + "#exhibitions"); }catch(_){}
+    if(!dlg.open) scrollTo(0, lastScroll);
+    curShow = "";
+  });
+  $("xClose").addEventListener("click", closeShow);
+  xdlg.addEventListener("click", e => { if(e.target === xdlg) closeShow(); });
+  document.addEventListener("click", e => {
+    const l = e.target.closest('a[href^="#show/"]'); if(!l) return;
+    e.preventDefault();
+    if(!xdlg.open) lastScroll = scrollY;
+    if(dlg.open) closeArt();
+    try{ history.pushState(null, "", l.getAttribute("href")); }catch(_){}
+    openShow(decodeURIComponent(l.getAttribute("href").slice(6)));
+  });
+
+  // Photo viewer
+  const lb = $("lb"); let lbList = [], lbI = 0;
+  function lbShow(i){
+    lbI = (i + lbList.length) % lbList.length; const p = lbList[lbI];
+    $("lbImg").src = p.src; $("lbImg").alt = p.caption || ""; $("lbCap").textContent = p.caption || "";
+    $("lbPrev").hidden = $("lbNext").hidden = lbList.length < 2;
+  }
+  $("lbPrev").addEventListener("click", () => lbShow(lbI - 1));
+  $("lbNext").addEventListener("click", () => lbShow(lbI + 1));
+  $("lbClose").addEventListener("click", () => lb.close());
+  lb.addEventListener("click", e => { if(e.target === lb) lb.close(); });
+  lb.addEventListener("keydown", e => { if(e.key === "ArrowLeft") lbShow(lbI - 1); if(e.key === "ArrowRight") lbShow(lbI + 1); });
+
+  // "Add to calendar" and photo clicks (both live inside generated markup)
+  const ics = e => {
+    const t = s => String(s || "").replace(/\\/g, "\\\\").replace(/\n/g, "\\n").replace(/,/g, "\\,").replace(/;/g, "\;");
+    const ymd = s => s.replace(/-/g, "");
+    const L = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Carelyn Madaschi//Exhibitions//EN", "CALSCALE:GREGORIAN", "BEGIN:VEVENT",
+      `UID:${e.id}@carelynmadaschi.com`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d+/, "")}`,
+      `DTSTART;VALUE=DATE:${ymd(e.start)}`, `DTEND;VALUE=DATE:${ymd(addDays(e.end, 1))}`,
+      `SUMMARY:${t(e.title + (e.venue ? " at " + e.venue : ""))}`,
+      `LOCATION:${t([e.venue, e.address, e.place].filter(Boolean).join(", "))}`,
+      `DESCRIPTION:${t([e.opening ? tx("exLblOpening") + ": " + e.opening : "", e.hours ? tx("exLblHours") + ": " + e.hours : "", "https://carelynmadaschi.com/#show/" + e.id].filter(Boolean).join("\n"))}`,
+      `URL:https://carelynmadaschi.com/#show/${e.id}`, "END:VEVENT", "END:VCALENDAR"];
+    return L.join("\r\n") + "\r\n";
+  };
+  document.addEventListener("click", ev => {
+    const b = ev.target.closest("[data-cal]");
+    if(b){
+      const e = EX.find(x => x.id === b.dataset.cal); if(!e) return;
+      const url = URL.createObjectURL(new Blob([ics(e)], { type:"text/calendar;charset=utf-8" }));
+      const a = document.createElement("a"); a.href = url; a.download = e.id + ".ics"; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 4000);
+      return;
+    }
+    const p = ev.target.closest("[data-lb]");
+    if(p && curShow){
+      const e = EX.find(x => x.id === curShow); if(!e) return;
+      lbList = exPhotos(e); lb.showModal(); lbShow(+p.dataset.lb);
+    }
+  });
+
+  // Tell search engines about upcoming and current exhibitions
+  (function(){
+    const evs = EX.filter(e => exState(e) !== "past").map(e => {
+      const pl = String(e.place || "").split(",").map(s => s.trim());
+      const c = exImgs(e)[0] || {}, abs = u => u ? new URL(u, "https://carelynmadaschi.com/").href : "";
+      const o = { "@type":"ExhibitionEvent", name:e.title, startDate:e.start, endDate:e.end,
+        eventStatus:"https://schema.org/EventScheduled", eventAttendanceMode:"https://schema.org/OfflineEventAttendanceMode",
+        location:{ "@type":"Place", name:e.venue || e.title, address:{ "@type":"PostalAddress", streetAddress:e.address || undefined, addressLocality:pl[0] || undefined, addressRegion:pl[1] || undefined, addressCountry:"AU" } },
+        url:"https://carelynmadaschi.com/#show/" + e.id,
+        organizer:{ "@type":"Person", name:S.artistName }, performer:{ "@type":"Person", name:S.artistName } };
+      if(e.description) o.description = paras(e.description).join(" ");
+      if(c.big) o.image = exImgs(e).slice(0, 2).map(i => abs(i.big));
+      return o;
+    });
+    if(!evs.length) return;
+    const s = document.createElement("script"); s.type = "application/ld+json";
+    s.textContent = JSON.stringify({ "@context":"https://schema.org", "@graph":evs });
+    document.head.appendChild(s);
+  })();
+  renderExhibitions();
   if(location.hash === "#available") setView("available", true);
 
   // Detail dialog, driven by #art/<id> so each painting has a shareable link
@@ -466,9 +756,21 @@ dt{color:var(--soft)} dd{margin:0}
     $("dlgTitle").textContent = a.title;
     $("dlgDesc").textContent = a.description || ""; $("dlgDesc").hidden = !a.description;
     const rows = [[tx("lblMedium"), a.medium], [tx("lblSize"), a.size], [tx("lblPainted"), a.painted], [tx("lblFraming"), a.remarks], [tx("lblGroup"), themeLabel[a.theme]]].filter(r => r[1]);
-    $("dlgDl").innerHTML = rows.map(r => `<dt>${r[0]}</dt><dd>${esc(r[1])}</dd>`).join("");
+    const shows = EX.filter(e => inShow(e, a) && revealed(e)).sort((p, q) => p.start < q.start ? 1 : -1);
+    $("dlgDl").innerHTML = rows.map(r => `<dt>${r[0]}</dt><dd>${esc(r[1])}</dd>`).join("") +
+      shows.map(e => `<dt>${esc(tx("lblExhibition"))}</dt><dd><a href="#show/${esc(e.id)}">${esc(e.venue || e.title)}, ${esc(dfmt(e.start, { month:"long", year:"numeric" }))}</a></dd>`).join("");
+    const held = !a.sold && heldBy(a);
     let out = "";
-    if(a.sold){
+    if(held && revealed(held)){
+      out += `<div class="opt"><span>${esc(tx("lblOriginal"))}</span><span class="s">${esc(tx("lblOnShow", { date: fmtDay(held.end) }))}</span></div>
+        <p class="note" style="margin:10px 0 0">${esc(tx("exHoldNote", { title: held.title, venue: held.venue || held.title }))}</p>
+        <a class="btn" href="${mail("Enquiry about " + a.title + " (on exhibition)")}">${esc(tx("btnEnquire"))}</a>`;
+    } else if(held){
+      // held back from online sale, but nothing says why: the show stays private
+      out += `<div class="opt"><span>${esc(tx("lblOriginal"))}</span>${a.price ? `<b>${money(a.price)}</b>` : `<span class="s">${esc(tx("lblPriceOnRequest"))}</span>`}</div>
+        <p class="note" style="margin:10px 0 0">${esc(tx("exHoldQuiet"))}</p>
+        <a class="btn" href="${mail("I'd like to buy " + a.title)}">${esc(tx("btnAskOriginal"))}</a>`;
+    } else if(a.sold){
       out += `<div class="opt"><span>${esc(tx("lblOriginal"))}</span><span class="s">${esc(tx("lblSold"))}</span></div>
         <a class="btn o" href="${mail("Commission similar to " + a.title)}">${esc(tx("btnSimilar"))}</a>`;
     } else if(a.price){
@@ -492,7 +794,7 @@ dt{color:var(--soft)} dd{margin:0}
                     : `<a class="btn o" href="${mail("Print of " + a.title)}">${esc(tx("btnAskPrint"))}</a>`);
       }
     }
-    const canBuy = (!a.sold && a.price && a.buyUrl) || (hasPrints(a) && (a.prints.buyUrl || Object.values(a.prints.links || {}).some(Boolean)));
+    const canBuy = (!a.sold && !held && a.price && a.buyUrl) || (hasPrints(a) && (a.prints.buyUrl || Object.values(a.prints.links || {}).some(Boolean)));
     out += `<p class="note">${canBuy ? esc(tx("noteStripe")) + " " : ""}${esc(tx("noteShips"))} <a href="${mail("Question about " + a.title)}">${esc(tx("noteAsk"))}</a></p>`;
     $("dlgOptions").innerHTML = out;
     if(!dlg.open) dlg.showModal();
@@ -500,8 +802,8 @@ dt{color:var(--soft)} dd{margin:0}
   }
   const closeArt = () => { if(dlg.open) dlg.close(); };
   dlg.addEventListener("close", () => {
-    if(location.hash.startsWith("#art/")) try{ history.replaceState(null, "", location.pathname + location.search + "#work"); }catch(_){}
-    scrollTo(0, lastScroll);
+    if(location.hash.startsWith("#art/")) try{ history.replaceState(null, "", location.pathname + location.search + ($("xdlg").open && curShow ? "#show/" + curShow : "#work")); }catch(_){}
+    if(!$("xdlg").open) scrollTo(0, lastScroll);
   });
   $("dlgClose").addEventListener("click", closeArt);
   dlg.addEventListener("click", e => { if(e.target === dlg) closeArt(); });
@@ -511,8 +813,15 @@ dt{color:var(--soft)} dd{margin:0}
     try{ history.pushState(null, "", l.getAttribute("href")); }catch(_){}
     openArt(decodeURIComponent(l.getAttribute("href").slice(5)));
   });
-  addEventListener("popstate", () => { const m = location.hash.match(/^#art\/(.+)$/); m ? openArt(decodeURIComponent(m[1])) : closeArt(); });
-  const m0 = location.hash.match(/^#art\/(.+)$/); if(m0){ lastScroll = scrollY; openArt(decodeURIComponent(m0[1])); }
+  addEventListener("popstate", () => {
+    const m = location.hash.match(/^#art\/(.+)$/), x = location.hash.match(/^#show\/(.+)$/);
+    if(m){ openArt(decodeURIComponent(m[1])); return; }
+    closeArt();
+    x ? openShow(decodeURIComponent(x[1])) : closeShow();
+  });
+  const m0 = location.hash.match(/^#art\/(.+)$/), x0 = location.hash.match(/^#show\/(.+)$/);
+  if(m0){ lastScroll = scrollY; openArt(decodeURIComponent(m0[1])); }
+  else if(x0){ lastScroll = scrollY; openShow(decodeURIComponent(x0[1])); }
 })();
 </script>
 </body>

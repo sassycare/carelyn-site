@@ -38,6 +38,30 @@
   add(C, "filterPrints", "Filter button: prints", "Prints");
   add(C, "emptyFilter", "Message when no painting matches", "Nothing matches right now. Choose \"All\" or ask about a commission.", {multi: true});
 
+  const X = "Exhibitions";
+  add(X, "navExhibitions", "Menu: Exhibitions", "Exhibitions");
+  add(X, "exHeading", "Heading", "Exhibitions");
+  add(X, "exIntro", "Sentence under the heading", "Where to see the paintings in person, and a look back at past shows.", {multi: true});
+  add(X, "exCurrentHeading", "Heading: on now", "On now");
+  add(X, "exUpcomingHeading", "Heading: coming up", "Coming up");
+  add(X, "exPastHeading", "Heading: past exhibitions", "Past exhibitions");
+  add(X, "exBtnDetails", "Button: details", "Details");
+  add(X, "exBtnCalendar", "Button: add to calendar", "Add to calendar");
+  add(X, "exBtnGallery", "Button: gallery website", "Gallery website");
+  add(X, "exLblWhen", "Label: when", "When");
+  add(X, "exLblWhere", "Label: where", "Where");
+  add(X, "exLblOpening", "Label: opening event", "Opening");
+  add(X, "exLblHours", "Label: opening hours", "Hours");
+  add(X, "exWorksHeading", "Heading: the paintings", "Paintings in the exhibition");
+  add(X, "exPhotosHeading", "Heading: photos", "Photos");
+  add(X, "exVideosHeading", "Heading: videos", "Video");
+  add(X, "exWatch", "Link: watch a video elsewhere", "Watch the video");
+  add(X, "lblExhibition", "Label on a painting: exhibition", "Exhibition");
+  add(X, "lblOnShow", "On a painting: original is in a show", "On exhibition until {date}");
+  add(X, "cardOnShow", "On the cards: original is in a show", "On exhibition");
+  add(X, "exHoldQuiet", "Note on an original that is held back from online sale", "To buy this original, please email me and I'll arrange it.", {multi: true});
+  add(X, "exHoldNote", "Note on a painting that is in a show", "This painting is hanging in {title} at {venue}, so the original can't be bought online until the show ends. Email to enquire. Prints are still available.", {multi: true});
+
   const G = "Group names and descriptions";
   (window.THEMES || []).forEach(t => {
     add(G, "group_" + t.id + "_label", "Group name: " + t.label, t.label);
