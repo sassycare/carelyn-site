@@ -1870,6 +1870,22 @@
       "ratio": 0.7383
     }
   ],
+  "exhibitions": [
+    {
+      "id": "tbd",
+      "title": "TBD",
+      "venue": "ellipsis gallery...",
+      "address": "Level 1, 41 Crown Street, Woolloomooloo, 2011 Sydney NSW",
+      "place": "Sydney, NSW",
+      "url": "https://www.dotdotdot.club/",
+      "start": "2027-05-26",
+      "end": "2027-06-19",
+      "cover": "images/exhibitions/tbd-cover-mvgl32qf.jpg",
+      "coverThumb": "images/exhibitions/thumbs/tbd-cover-mvgl32qf.jpg",
+      "holdOnline": true,
+      "paintings": []
+    }
+  ],
   "text": {
     "theme": "Quiet moments, vivid colours",
     "tagline": "Original acrylic paintings, prints and commissions from the Southern Highlands, NSW.",
