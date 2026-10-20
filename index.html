@@ -382,6 +382,12 @@ dt{color:var(--soft)} dd{margin:0}
   // Wording: the starting text lives in texts.js; changes made in the admin are saved in artworks.json under "text".
   let OV = {}, PRINT_SIZES = [], EXH_RAW = [];
   const DEFS = Object.fromEntries((window.TEXTS || []).map(t => [t.k, t]));
+  // exhibition wording: used if an older texts.js is still on the site
+  Object.entries({ navExhibitions:"Exhibitions", exHeading:"Exhibitions", exIntro:"Where to see the paintings in person, and a look back at past shows.", exCurrentHeading:"On now", exUpcomingHeading:"Coming up", exPastHeading:"Past exhibitions",
+    exBtnDetails:"Details", exBtnCalendar:"Add to calendar", exBtnGallery:"Gallery website", exLblWhen:"When", exLblWhere:"Where", exLblOpening:"Opening", exLblHours:"Hours", exWorksHeading:"Paintings in the exhibition",
+    exPhotosHeading:"Photos", exVideosHeading:"Video", exWatch:"Watch the video", lblExhibition:"Exhibition", lblOnShow:"On exhibition until {date}", cardOnShow:"On exhibition",
+    exHoldNote:"This painting is hanging in {title} at {venue}, so the original can't be bought online until the show ends. Email to enquire. Prints are still available.",
+    exHoldQuiet:"To buy this original, please email me and I'll arrange it." }).forEach(([k, d]) => { if(!DEFS[k]) DEFS[k] = { k: k, def: d }; });
   const raw = k => { const o = OV[k]; if(typeof o === "string" && o.trim()) return o; const d = DEFS[k] && DEFS[k].def; return typeof d === "function" ? d() : (d == null ? "" : d); };
   const tx = (k, extra) => { const v = Object.assign({ year: new Date().getFullYear(), artistName: raw("artistName"), location: raw("location"), shipsTo: raw("shipsTo"), instagram: raw("instagram") }, extra || {}); return raw(k).replace(/\{(\w+)\}/g, (m, n) => v[n] === undefined ? m : v[n]); };
   const hasPrints = a => a.prints && a.prints.available;
