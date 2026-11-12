@@ -362,6 +362,29 @@
       "ratio": 0.6492
     },
     {
+      "id": "the-tropical-swingbed",
+      "title": "The Tropical Swingbed",
+      "theme": "signature",
+      "size": "16 x 12 in · 41 x 30 cm",
+      "medium": "Acrylic on canvas",
+      "painted": "November 2026",
+      "remarks": "Unframed",
+      "sold": false,
+      "price": 200,
+      "buyUrl": "",
+      "description": "",
+      "prints": {
+        "available": true,
+        "size": "",
+        "price": null,
+        "buyUrl": "",
+        "links": {}
+      },
+      "image": "images/the-tropical-swingbed-mwe5f3x8.jpg",
+      "thumb": "images/thumbs/the-tropical-swingbed-mwe5f3x8.jpg",
+      "ratio": 1.348
+    },
+    {
       "id": "pastel-rain",
       "title": "Pastel Rain",
       "theme": "florals",
