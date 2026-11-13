@@ -257,9 +257,11 @@ dt{color:var(--soft)} dd{margin:0}
 
 /* see it on a wall */
 .dlg .ph{position:relative}
-.roombtn{position:absolute;left:14px;bottom:14px;display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:.9rem;font-weight:400;color:var(--ink);background:rgba(244,243,240,.94);border:1px solid var(--line);padding:9px 14px 9px 12px;cursor:pointer}
+.roombtn{position:absolute;left:14px;top:14px;z-index:1;box-shadow:0 2px 8px rgba(0,0,0,.12);display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:.9rem;font-weight:400;color:var(--ink);background:rgba(244,243,240,.94);border:1px solid var(--line);padding:9px 14px 9px 12px;cursor:pointer}
 .roombtn:hover{background:var(--bg)}
 .roombtn svg{width:20px;height:20px;flex:none}
+.roomlink{display:flex;align-items:center;justify-content:center;gap:9px;margin:4px 0 6px}
+.roomlink svg{width:20px;height:20px}
 #room{width:min(1180px,96vw)}
 .rm-stage{background:#1d1c1a;display:flex;justify-content:center;align-items:center;line-height:0;min-height:200px}
 .ph-room{position:relative;display:inline-block;max-width:100%}
@@ -856,10 +858,14 @@ dt{color:var(--soft)} dd{margin:0}
     out += `<p class="note">${canBuy ? esc(tx("noteStripe")) + " " : ""}${esc(tx("noteShips"))} <a href="${mail("Question about " + a.title)}">${esc(tx("noteAsk"))}</a></p>`;
     $("dlgOptions").innerHTML = out;
     curArt = a;
-    const rb = $("dlgRoomBtn"); if(rb) rb.remove();
+    ["dlgRoomBtn", "dlgRoomBtn2"].forEach(id => { const b = $(id); if(b) b.remove(); });
     if(artCm(a)){
-      $("dlgImg").insertAdjacentHTML("afterend", `<button type="button" class="roombtn" id="dlgRoomBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="7" y="3" width="10" height="8"/><path d="M3 21v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5M3 18h18M5 21v1M19 21v1"/></svg>${esc(tx("btnRoom"))}</button>`);
+      // two ways in: on the photo (seen first on phones) and in the details beside the size (seen first on computers)
+      const ic = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="7" y="3" width="10" height="8"/><path d="M3 21v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5M3 18h18M5 21v1M19 21v1"/></svg>`;
+      $("dlgImg").insertAdjacentHTML("afterend", `<button type="button" class="roombtn" id="dlgRoomBtn">${ic}${esc(tx("btnRoom"))}</button>`);
+      $("dlgDl").insertAdjacentHTML("afterend", `<button type="button" class="btn o roomlink" id="dlgRoomBtn2">${ic}${esc(tx("btnRoom"))}</button>`);
       $("dlgRoomBtn").addEventListener("click", () => openRoom(a));
+      $("dlgRoomBtn2").addEventListener("click", () => openRoom(a));
     }
     if(!dlg.open) dlg.showModal();
     dlg.scrollTop = 0;
