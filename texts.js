@@ -78,6 +78,24 @@
   add(RM, "roomOwnWidth", "Your wall: size slider label", "About how wide is the wall in your photo?");
   add(RM, "roomOwnDrag", "Your wall: how to move the painting", "Drag the painting to move it.");
   add(RM, "roomOwnChange", "Your wall: change photo link", "Use a different photo");
+  add(RM, "roomScaleFramed", "Line under the title when a frame is chosen", "Shown to scale. This painting is {size}, or {framed} in this frame.");
+  add(RM, "roomReset", "Link: move the painting back", "Put it back");
+  add(RM, "roomFrame", "Label: frame", "Frame");
+  add(RM, "frameNone", "Frame: none", "None");
+  add(RM, "frameWhite", "Frame: white", "White");
+  add(RM, "frameNatural", "Frame: natural wood", "Natural");
+  add(RM, "frameBlack", "Frame: black", "Black");
+  add(RM, "roomThick", "Label: frame thickness", "Thickness");
+  add(RM, "thickThin", "Thickness: thin", "Thin");
+  add(RM, "thickMedium", "Thickness: medium", "Medium");
+  add(RM, "thickThick", "Thickness: thick", "Thick");
+  add(RM, "roomRef_lounge", "Size guide for the living room photo", "The door is about 2 m tall.");
+  add(RM, "roomRef_sofa", "Size guide for the lounge photo", "The sofa is about 1.8 m wide.");
+  add(RM, "roomRef_sideboard", "Size guide for the reading corner photo", "The cabinet is about 1 m wide.");
+  add(RM, "roomRef_plants", "Size guide for the open wall photo", "The pots are about 38 cm across.");
+  add(RM, "roomRef_yellow", "Size guide for the dining room photo", "The bench is about 1.2 m long.");
+  add(RM, "roomRef_nook", "Size guide for the dining nook photo", "The table is about 80 cm wide.");
+  add(RM, "roomRef_bedroom", "Size guide for the bedroom photo", "The bedside table is about 55 cm wide.");
   add(RM, "roomOwnTip", "Your wall: tip for judging width", "Tip: a standard door is about 82 cm wide and a three-seater sofa about 2.2 m.", {multi: true});
 
   const G = "Group names and descriptions";

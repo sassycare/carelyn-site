@@ -266,7 +266,6 @@ dt{color:var(--soft)} dd{margin:0}
 .rm-stage{background:#1d1c1a;display:flex;justify-content:center;align-items:center;line-height:0;min-height:200px}
 .ph-room{position:relative;display:inline-block;max-width:100%}
 .ph-room > img:first-child{display:block;max-width:100%;max-height:68vh;width:auto;height:auto}
-.ph-art{position:absolute;object-fit:cover;box-shadow:0 4px 10px rgba(0,0,0,.32),0 1px 3px rgba(0,0,0,.25)}
 .rm-bar{padding:16px clamp(16px,3vw,32px) 22px}
 .rm-head h3{font-family:var(--serif);font-weight:300;font-size:clamp(1.4rem,2.4vw,1.9rem);line-height:1.1;margin:0}
 .rm-head p{margin:4px 0 0;color:var(--soft);font-size:.92rem}
@@ -280,8 +279,6 @@ dt{color:var(--soft)} dd{margin:0}
 .rm-tabs button[aria-selected="true"] img,.rm-tabs button[aria-selected="true"] .cam{opacity:1;outline:2px solid var(--ink);outline-offset:2px}
 .own{position:relative;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;width:100%}
 .own > img:first-child{display:block;width:100%;height:auto;max-height:68vh;object-fit:contain;margin:0 auto;pointer-events:none}
-.own-art{position:absolute;cursor:grab;box-shadow:0 2px 7px rgba(0,0,0,.4);touch-action:none;-webkit-user-drag:none}
-.own-art:active{cursor:grabbing}
 .own-empty{min-height:min(52vh,420px);display:grid;place-content:center;justify-items:center;gap:14px;text-align:center;padding:30px 20px;line-height:1.6;background:var(--tile);width:100%}
 .own-empty p{margin:0;color:var(--soft);max-width:44ch;font-size:.95rem}
 .own-empty .btn{display:inline-block;margin:0}
@@ -292,6 +289,27 @@ dt{color:var(--soft)} dd{margin:0}
 .rm-own .lk{font:inherit;background:none;border:0;padding:0;color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .rm-own small{flex-basis:100%;font-size:.85rem}
 .rm-credit{margin:10px 0 0;font-size:.75rem;color:var(--soft)}
+
+/* frames and dragging in the wall view */
+.ph-art,.own-art{position:absolute;box-sizing:border-box;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;box-shadow:0 4px 10px rgba(0,0,0,.32),0 1px 3px rgba(0,0,0,.25)}
+.ph-art:active,.own-art:active{cursor:grabbing}
+.ph-art .gap,.own-art .gap{width:100%;height:100%;box-sizing:border-box}
+.ph-art img,.own-art img{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none}
+.fr-white{background:#F3F1EC;box-shadow:0 5px 12px rgba(0,0,0,.28),0 1px 3px rgba(0,0,0,.2),inset 0 0 0 1px rgba(0,0,0,.06)}
+.fr-black{background:#1F1E1C;box-shadow:0 5px 12px rgba(0,0,0,.34),0 1px 3px rgba(0,0,0,.25),inset 0 0 0 1px rgba(255,255,255,.05)}
+.fr-natural{background:repeating-linear-gradient(90deg,rgba(110,72,36,.10) 0 2px,transparent 2px 6px,rgba(255,255,255,.06) 6px 7px,transparent 7px 11px),linear-gradient(180deg,#D2B087,#C29D6E);box-shadow:0 5px 12px rgba(0,0,0,.3),0 1px 3px rgba(0,0,0,.22),inset 0 0 0 1px rgba(80,50,20,.18)}
+.fr-white .gap,.fr-black .gap,.fr-natural .gap{background:#171615;box-shadow:inset 0 0 6px rgba(0,0,0,.7)}
+.fr-white img,.fr-black img,.fr-natural img{box-shadow:0 1px 4px rgba(0,0,0,.6)}
+.rm-ctl{display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px;margin-top:14px;font-size:.9rem;color:var(--soft)}
+.rm-ctl[hidden]{display:none}
+.rm-grp{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.rm-grp > span{margin-right:4px}
+.rm-grp button{font:inherit;font-size:.88rem;display:inline-flex;align-items:center;gap:7px;background:var(--bg);color:var(--ink);border:1px solid var(--line);padding:6px 11px;cursor:pointer}
+.rm-grp button[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.rm-grp i{width:14px;height:14px;border-radius:50%;display:inline-block;border:1px solid rgba(0,0,0,.2)}
+.rm-ctl .lk{font:inherit;background:none;border:0;padding:0;color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.rm-head .rm-hint{font-size:.85rem;margin-top:2px}
+@media (max-width:640px){.rm-grp button{font-size:.84rem;padding:5px 9px;gap:5px}.rm-ctl{gap:8px 14px}}
 </style>
 </head>
 <body>
@@ -397,8 +415,9 @@ dt{color:var(--soft)} dd{margin:0}
   <button class="close" id="rmClose" aria-label="Close">×</button>
   <div class="rm-stage" id="rmStage"></div>
   <div class="rm-bar">
-    <div class="rm-head"><h3 id="rmTitle"></h3><p id="rmScale"></p></div>
+    <div class="rm-head"><h3 id="rmTitle"></h3><p id="rmScale"></p><p class="rm-hint" id="rmHint"></p></div>
     <div class="rm-tabs" role="tablist" id="rmTabs"></div>
+    <div class="rm-ctl" id="rmCtl"></div>
     <div class="rm-own" id="rmOwn" hidden></div>
   </div>
   <input type="file" id="rmFile" accept="image/*" hidden>
@@ -441,7 +460,10 @@ dt{color:var(--soft)} dd{margin:0}
     roomScale:"Shown to scale. This painting is {size}.", roomOwnPick:"Choose a photo of your wall",
     roomOwnHint:"Take a photo of your wall from straight on. It stays on your device and is never uploaded.",
     roomOwnWidth:"About how wide is the wall in your photo?", roomOwnDrag:"Drag the painting to move it.", roomOwnChange:"Use a different photo",
-    roomOwnTip:"Tip: a standard door is about 82 cm wide and a three-seater sofa about 2.2 m." }).forEach(([k, d]) => { if(!DEFS[k]) DEFS[k] = { k: k, def: d }; });
+    roomOwnTip:"Tip: a standard door is about 82 cm wide and a three-seater sofa about 2.2 m.",
+    roomScaleFramed:"Shown to scale. This painting is {size}, or {framed} in this frame.", roomReset:"Put it back",
+    roomFrame:"Frame", frameNone:"None", frameWhite:"White", frameNatural:"Natural", frameBlack:"Black",
+    roomThick:"Thickness", thickThin:"Thin", thickMedium:"Medium", thickThick:"Thick", roomRef_lounge:"The door is about 2 m tall.", roomRef_sofa:"The sofa is about 1.8 m wide.", roomRef_sideboard:"The cabinet is about 1 m wide.", roomRef_plants:"The pots are about 38 cm across.", roomRef_yellow:"The bench is about 1.2 m long.", roomRef_nook:"The table is about 80 cm wide.", roomRef_bedroom:"The bedside table is about 55 cm wide." }).forEach(([k, d]) => { if(!DEFS[k]) DEFS[k] = { k: k, def: d }; });
   const raw = k => { const o = OV[k]; if(typeof o === "string" && o.trim()) return o; const d = DEFS[k] && DEFS[k].def; return typeof d === "function" ? d() : (d == null ? "" : d); };
   const tx = (k, extra) => { const v = Object.assign({ year: new Date().getFullYear(), artistName: raw("artistName"), location: raw("location"), shipsTo: raw("shipsTo"), instagram: raw("instagram") }, extra || {}); return raw(k).replace(/\{(\w+)\}/g, (m, n) => v[n] === undefined ? m : v[n]); };
   const hasPrints = a => a.prints && a.prints.available;
@@ -880,58 +902,106 @@ dt{color:var(--soft)} dd{margin:0}
     if(m){ w = +m[1]; h = +m[2]; }
     else if((m = t.match(/([\d.]+)\s*[x×]\s*([\d.]+)\s*(in|")/i))){ w = +m[1] * 2.54; h = +m[2] * 2.54; }
     else return null;
-    if(!(w > 0 && h > 0)) return null;
-    return { w, h };
+    return w > 0 && h > 0 ? { w, h } : null;
   }
-  // Each photo: its size in pixels, pixels per cm on the wall, where the painting hangs (centre x, and bottom edge or centre y), and the largest painting that fits
-  const ROOMS = [{"id":"lounge","w":1600,"h":1068,"ppc":3.5963,"cx":680.1,"an":"b","y":668.9,"maxW":110,"maxH":175},{"id":"sofa","w":1446,"h":1600,"ppc":4.7158,"cx":724.2,"an":"b","y":903.6,"maxW":104,"maxH":180},{"id":"sideboard","w":1374,"h":1600,"ppc":4.8,"cx":412.0,"an":"b","y":832.0,"maxW":160,"maxH":165},{"id":"plants","w":1508,"h":1600,"ppc":5.1512,"cx":671.2,"an":"c","y":708.7,"maxW":210,"maxH":250},{"id":"yellow","w":1278,"h":1600,"ppc":4.0707,"cx":744.2,"an":"b","y":751.6,"maxW":200,"maxH":150},{"id":"nook","w":1145,"h":1600,"ppc":5.7333,"cx":640.0,"an":"b","y":800.0,"maxW":93,"maxH":135},{"id":"bedroom","w":1600,"h":1563,"ppc":7.4534,"cx":385.1,"an":"b","y":857.1,"maxW":103,"maxH":111}];
+  // Each photo: size in pixels, pixels per cm measured on the wall itself, where a painting hangs by default
+  // (centre x, and bottom edge or centre y), and the largest painting that fits there
+  const ROOMS = [{"id":"lounge","w":1600,"h":1068,"ppc":3.2919,"cx":680.1,"an":"b","y":668.9,"maxW":120,"maxH":191},{"id":"sofa","w":1446,"h":1600,"ppc":4.4211,"cx":724.2,"an":"b","y":903.6,"maxW":111,"maxH":192},{"id":"sideboard","w":1374,"h":1600,"ppc":4.6,"cx":412.0,"an":"b","y":832.0,"maxW":167,"maxH":172},{"id":"plants","w":1508,"h":1600,"ppc":4.9951,"cx":671.2,"an":"c","y":708.7,"maxW":216,"maxH":258},{"id":"yellow","w":1278,"h":1600,"ppc":3.9442,"cx":744.2,"an":"b","y":751.6,"maxW":206,"maxH":155},{"id":"nook","w":1145,"h":1600,"ppc":5.2,"cx":640.0,"an":"b","y":800.0,"maxW":102,"maxH":149},{"id":"bedroom","w":1600,"h":1563,"ppc":6.5839,"cx":385.1,"an":"b","y":857.1,"maxW":117,"maxH":126}];
   const LSr = { get(k){ try{ return localStorage.getItem("cm-room-" + k); }catch(_){ return null; } }, set(k, v){ try{ localStorage.setItem("cm-room-" + k, v); }catch(_){} } };
+  // floating frames: face width by thickness, and the shadow gap between frame and canvas (cm)
+  const FRAMES = [["none", "frameNone", ""], ["white", "frameWhite", "#F3F1EC"], ["natural", "frameNatural", "#C9A57A"], ["black", "frameBlack", "#1F1E1C"]];
+  const THICK = [["thin", "thickThin", 1], ["medium", "thickMedium", 2], ["thick", "thickThick", 3.5]], GAP = .8;
   let rmRoom = LSr.get("room") || ROOMS[0].id;
+  let rmFrame = FRAMES.some(f => f[0] === LSr.get("frame")) ? LSr.get("frame") : "none";
+  let rmThick = THICK.some(t => t[0] === LSr.get("thick")) ? LSr.get("thick") : "medium";
   let ownUrl = "", ownM = +LSr.get("ownm") || 3, ownX = .5, ownY = .38;
+  let rmPos = {}; // where the visitor dragged the painting in each room: {x, y} of its centre as fractions of the photo
   const rmDlg = $("room");
   const roomSrc = (id, th) => (window.ROOM_IMG && window.ROOM_IMG[(th ? "t:" : "") + id]) || `images/rooms/${th ? "thumbs/" : ""}${id}.jpg`;
+  const frameCm = () => rmFrame === "none" ? { face: 0, gap: 0 } : { face: THICK.find(t => t[0] === rmThick)[2], gap: GAP };
+  const outerCm = cm => { const f = frameCm(), e = 2 * (f.face + f.gap); return { w: cm.w + e, h: cm.h + e }; };
   const fits = (r, cm) => cm.w <= r.maxW && cm.h <= r.maxH;
   const fmtCm = cm => `${Math.round(cm.w)} × ${Math.round(cm.h)} cm`;
   const camSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M4 7h3l2-2h6l2 2h3v12H4z"/><circle cx="12" cy="13" r="3.5"/></svg>`;
+  // the painting with its frame; sizes are set by the caller
+  const artHtml = (a, id, cls) => `<div class="${cls} fr-${rmFrame}" id="${id}"><div class="gap"><img src="${esc(a.image || a.thumb)}" alt="${esc(a.title)}" draggable="false"></div></div>`;
+  function drawControls(cm){
+    const framed = rmFrame !== "none";
+    $("rmCtl").innerHTML = `<div class="rm-grp"><span>${esc(tx("roomFrame"))}</span>` +
+      FRAMES.map(([k, t, c]) => `<button type="button" data-frame="${k}" aria-pressed="${k === rmFrame}">${c ? `<i style="background:${c}"></i>` : ""}${esc(tx(t))}</button>`).join("") + `</div>` +
+      (framed ? `<div class="rm-grp"><span>${esc(tx("roomThick"))}</span>` + THICK.map(([k, t]) => `<button type="button" data-thick="${k}" aria-pressed="${k === rmThick}">${esc(tx(t))}</button>`).join("") + `</div>` : "") +
+      `<button type="button" class="lk" data-reset${(rmRoom === "own" ? false : rmPos[rmRoom]) ? "" : " hidden"}>${esc(tx("roomReset"))}</button>`;
+    const o = outerCm(cm);
+    $("rmScale").textContent = framed ? tx("roomScaleFramed", { size: fmtCm(cm), framed: fmtCm(o) }) : tx("roomScale", { size: fmtCm(cm) });
+    const ref = rmRoom !== "own" ? tx("roomRef_" + rmRoom) : "";
+    $("rmHint").textContent = [ref, tx("roomOwnDrag")].filter(Boolean).join(" ");
+  }
   function drawRoom(){
-    const a = curArt, cm = artCm(a), avail = ROOMS.filter(r => fits(r, cm));
+    const a = curArt, cm = artCm(a), avail = ROOMS.filter(r => fits(r, outerCm(cm)));
     if(rmRoom !== "own" && !avail.some(r => r.id === rmRoom)) rmRoom = avail[0] ? avail[0].id : "own";
     $("rmTabs").innerHTML = avail.map(r => `<button type="button" role="tab" data-room="${r.id}" aria-selected="${r.id === rmRoom}"><img src="${roomSrc(r.id, true)}" alt="" loading="lazy">${esc(tx("room_" + r.id))}</button>`).join("") +
       `<button type="button" role="tab" data-room="own" aria-selected="${rmRoom === "own"}"><span class="cam">${camSvg}</span>${esc(tx("roomOwn"))}</button>`;
-    $("rmScale").textContent = tx("roomScale", { size: fmtCm(cm) });
+    drawControls(cm);
     const own = rmRoom === "own";
     $("rmOwn").hidden = !own || !ownUrl;
+    $("rmCtl").hidden = own && !ownUrl;
     if(!own){
-      const r = ROOMS.find(x => x.id === rmRoom), w = cm.w * r.ppc, h = cm.h * r.ppc, top = r.an === "b" ? r.y - h : r.y - h / 2;
-      const pc = (v, t) => (v / t * 100).toFixed(3) + "%";
-      $("rmStage").innerHTML = `<div class="ph-room"><img src="${roomSrc(r.id)}" alt="" width="${r.w}" height="${r.h}"><img class="ph-art" src="${esc(a.image || a.thumb)}" alt="${esc(a.title)}" style="left:${pc(r.cx - w / 2, r.w)};top:${pc(top, r.h)};width:${pc(w, r.w)};height:${pc(h, r.h)}"></div>`;
+      const r = ROOMS.find(x => x.id === rmRoom);
+      $("rmStage").innerHTML = `<div class="ph-room" id="phRoom"><img src="${roomSrc(r.id)}" alt="" width="${r.w}" height="${r.h}">${artHtml(a, "phArt", "ph-art")}</div>`;
+      placeRoom(); dragArt($("phArt"), $("phRoom"), false);
       return;
     }
     if(!ownUrl){
       $("rmStage").innerHTML = `<div class="own-empty"><p>${esc(tx("roomOwnHint"))}</p><button type="button" class="btn" data-pick>${esc(tx("roomOwnPick"))}</button><p><small>${esc(tx("roomOwnTip"))}</small></p></div>`;
       return;
     }
-    $("rmStage").innerHTML = `<div class="own" id="own"><img src="${ownUrl}" alt="" id="ownBg"><img src="${esc(a.image || a.thumb)}" alt="${esc(a.title)}" class="own-art" id="ownArt" draggable="false"></div>`;
+    $("rmStage").innerHTML = `<div class="own" id="own"><img src="${ownUrl}" alt="" id="ownBg">${artHtml(a, "ownArt", "own-art")}</div>`;
     $("rmOwn").innerHTML = `<label for="ownM">${esc(tx("roomOwnWidth"))}</label><input type="range" id="ownM" min="0.8" max="8" step="0.1" value="${ownM}"><output id="ownMo">${ownM.toFixed(1)} m</output>
-      <button type="button" class="lk" data-pick>${esc(tx("roomOwnChange"))}</button><small>${esc(tx("roomOwnDrag"))} ${esc(tx("roomOwnTip"))}</small>`;
+      <button type="button" class="lk" data-pick>${esc(tx("roomOwnChange"))}</button><small>${esc(tx("roomOwnTip"))}</small>`;
     $("ownM").addEventListener("input", e => { ownM = +e.target.value; $("ownMo").textContent = ownM.toFixed(1) + " m"; LSr.set("ownm", ownM); placeOwn(); });
     const bg = $("ownBg"); bg.complete ? placeOwn() : bg.addEventListener("load", placeOwn, { once:true });
-    dragOwn();
+    dragArt($("ownArt"), $("own"), true);
   }
+  // room photo: everything in % of the photo, so it stays to scale at any screen size
+  function placeRoom(){
+    const r = ROOMS.find(x => x.id === rmRoom), el = $("phArt"); if(!r || !el) return;
+    const cm = artCm(curArt), o = outerCm(cm), f = frameCm(), W = o.w * r.ppc, H = o.h * r.ppc;
+    const def = { x: r.cx / r.w, y: (r.an === "b" ? r.y - H / 2 : r.y) / r.h }, p = rmPos[r.id] || def;
+    const hw = W / r.w / 2, hh = H / r.h / 2, x = Math.min(Math.max(p.x, hw), 1 - hw), y = Math.min(Math.max(p.y, hh), 1 - hh);
+    if(rmPos[r.id]) rmPos[r.id] = { x, y };
+    const pc = v => (v * 100).toFixed(3) + "%";
+    el.style.left = pc(x - hw); el.style.top = pc(y - hh); el.style.width = pc(W / r.w); el.style.height = pc(H / r.h);
+    el.style.padding = pc(f.face * r.ppc / r.w); el.querySelector(".gap").style.padding = pc(f.gap * r.ppc / r.w);
+  }
+  // visitor's photo: pixels, from the wall width they set
   function placeOwn(){
-    const bg = $("ownBg"), art = $("ownArt"), cm = artCm(curArt); if(!bg || !art) return;
-    const W = bg.offsetWidth, H = bg.offsetHeight, wpx = W * cm.w / (ownM * 100), hpx = wpx * cm.h / cm.w;
+    const bg = $("ownBg"), el = $("ownArt"); if(!bg || !el) return;
+    const cm = artCm(curArt), o = outerCm(cm), f = frameCm(), W = bg.offsetWidth, H = bg.offsetHeight, ppc = W / (ownM * 100);
+    const wpx = o.w * ppc, hpx = o.h * ppc;
     ownX = Math.min(Math.max(ownX, 0), 1); ownY = Math.min(Math.max(ownY, 0), 1);
-    art.style.width = wpx + "px"; art.style.height = hpx + "px";
-    art.style.left = (bg.offsetLeft + ownX * W - wpx / 2) + "px"; art.style.top = (bg.offsetTop + ownY * H - hpx / 2) + "px";
+    el.style.width = wpx + "px"; el.style.height = hpx + "px";
+    el.style.left = (bg.offsetLeft + ownX * W - wpx / 2) + "px"; el.style.top = (bg.offsetTop + ownY * H - hpx / 2) + "px";
+    el.style.padding = f.face * ppc + "px"; el.querySelector(".gap").style.padding = f.gap * ppc + "px";
   }
-  function dragOwn(){
-    const art = $("ownArt"), bg = $("ownBg"); let sx, sy, ox, oy, on = false;
-    art.addEventListener("pointerdown", e => { on = true; art.setPointerCapture(e.pointerId); sx = e.clientX; sy = e.clientY; ox = ownX; oy = ownY; e.preventDefault(); });
-    art.addEventListener("pointermove", e => { if(!on) return; ownX = ox + (e.clientX - sx) / bg.offsetWidth; ownY = oy + (e.clientY - sy) / bg.offsetHeight; placeOwn(); });
-    const end = () => { on = false; }; art.addEventListener("pointerup", end); art.addEventListener("pointercancel", end);
+  // drag the painting anywhere on the wall, with a mouse or a finger
+  function dragArt(el, box, own){
+    let sx, sy, ox, oy, on = false;
+    el.addEventListener("pointerdown", e => {
+      on = true; el.setPointerCapture(e.pointerId); sx = e.clientX; sy = e.clientY;
+      if(own){ ox = ownX; oy = ownY; }
+      else { const r = box.getBoundingClientRect(), a = el.getBoundingClientRect(); ox = (a.left + a.width / 2 - r.left) / r.width; oy = (a.top + a.height / 2 - r.top) / r.height; }
+      e.preventDefault();
+    });
+    el.addEventListener("pointermove", e => {
+      if(!on) return;
+      const r = box.getBoundingClientRect(), dx = (e.clientX - sx) / r.width, dy = (e.clientY - sy) / r.height;
+      if(own){ ownX = ox + dx; ownY = oy + dy; placeOwn(); }
+      else { rmPos[rmRoom] = { x: ox + dx, y: oy + dy }; placeRoom(); const b = $("rmCtl").querySelector("[data-reset]"); if(b) b.hidden = false; }
+    });
+    const end = () => { on = false; }; el.addEventListener("pointerup", end); el.addEventListener("pointercancel", end);
   }
   function openRoom(a){
+    if(!curArt || curArt.id !== a.id) rmPos = {};
     curArt = a;
     $("rmTitle").textContent = a.title;
     drawRoom();
@@ -942,6 +1012,9 @@ dt{color:var(--soft)} dd{margin:0}
   rmDlg.addEventListener("click", e => {
     if(e.target === rmDlg){ rmDlg.close(); return; }
     const t = e.target.closest("[data-room]"); if(t){ rmRoom = t.dataset.room; if(rmRoom !== "own") LSr.set("room", rmRoom); drawRoom(); return; }
+    const f = e.target.closest("[data-frame]"); if(f){ rmFrame = f.dataset.frame; LSr.set("frame", rmFrame); drawRoom(); return; }
+    const k = e.target.closest("[data-thick]"); if(k){ rmThick = k.dataset.thick; LSr.set("thick", rmThick); drawRoom(); return; }
+    if(e.target.closest("[data-reset]")){ delete rmPos[rmRoom]; drawRoom(); return; }
     if(e.target.closest("[data-pick]")) $("rmFile").click();
   });
   $("rmFile").addEventListener("change", () => {
