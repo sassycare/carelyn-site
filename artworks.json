@@ -1241,14 +1241,20 @@
       "remarks": "Unframed",
       "sold": false,
       "price": 200,
-      "buyUrl": "",
+      "buyUrl": "https://buy.stripe.com/4gM3cv4i1b1s0wZ8zSfIt1I",
       "description": "",
       "prints": {
-        "available": true,
         "size": "",
         "price": null,
         "buyUrl": "",
-        "links": {}
+        "available": true,
+        "links": {
+          "A5": "https://buy.stripe.com/cNidR99ClfhIenP8zSfIt1J",
+          "A4": "https://buy.stripe.com/eVqcN58yhc5wgvXbM4fIt1K",
+          "A3": "https://buy.stripe.com/eVq9AT8yh8TkgvX17qfIt1L",
+          "A2": "https://buy.stripe.com/4gMeVd8yhc5wgvX8zSfIt1M",
+          "A1": "https://buy.stripe.com/dRm28rg0Jb1s4Nf3fyfIt1N"
+        }
       },
       "image": "images/out-of-time-mwe7hc6u.jpg",
       "thumb": "images/thumbs/out-of-time-mwe7hc6u.jpg",
