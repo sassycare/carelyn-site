@@ -103,7 +103,13 @@ button,input,select,textarea{font:inherit;color:inherit}
 .f input[type=text],.f input[type=number],.f input[type=url],.f select,.f textarea{border:1px solid var(--line);background:var(--bg);padding:9px 10px;border-radius:0;width:100%;min-width:0}
 .f textarea{min-height:80px;resize:vertical}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.size{display:grid;grid-template-columns:1fr auto 1fr 90px;gap:8px;align-items:center}
+.size{display:grid;grid-template-columns:1fr auto 1fr 90px;gap:8px;align-items:end}
+.szl{display:flex;flex-direction:column;gap:3px;min-width:0}
+.szl small{font-size:.78rem;color:var(--soft)}
+.size > span{padding-bottom:10px}
+.szrow{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px}
+.szwarn{color:#9A3B1F;font-size:.88rem}
+.chip.ck{border-color:#9A3B1F;color:#9A3B1F}
 .size span{color:var(--soft)}
 .out{font-size:.88rem;color:var(--soft);font-variant-numeric:tabular-nums}
 .out b{color:var(--ink);font-weight:500}
@@ -316,12 +322,15 @@ legend{padding:0 6px;font-size:.74rem;letter-spacing:.09em;text-transform:upperc
     <datalist id="mediums"><option value="Acrylic on canvas"><option value="Acrylic on wood"><option value="Acrylic on paper"></datalist>
     <div class="f">
       <span class="lbl">Size</span>
+      <span class="out">Measure the painting as it hangs: width is side to side, height is top to bottom.</span>
       <div class="size">
-        <input id="fW" type="number" step="0.1" min="0" aria-label="Width" placeholder="Width">
+        <label class="szl"><small>Width (side to side)</small><input id="fW" type="number" step="0.1" min="0" placeholder="Width"></label>
         <span>×</span>
-        <input id="fH" type="number" step="0.1" min="0" aria-label="Height" placeholder="Height">
-        <select id="fU" aria-label="Unit"><option value="in">inches</option><option value="cm">cm</option></select>
+        <label class="szl"><small>Height (top to bottom)</small><input id="fH" type="number" step="0.1" min="0" placeholder="Height"></label>
+        <label class="szl"><small>Unit</small><select id="fU"><option value="in">inches</option><option value="cm">cm</option></select></label>
       </div>
+      <div class="szrow"><span class="out" id="shapeOut"></span><button class="btn quiet" type="button" id="fSwap">Swap width and height</button></div>
+      <span class="szwarn" id="shapeWarn" hidden></span>
       <input id="fNote" type="text" aria-label="Size note" placeholder="Optional note, e.g. each, 3 panels">
       <span class="out" id="sizeOut"></span>
     </div>
@@ -536,6 +545,15 @@ function sizeText(w, h, u, note){
   if(u === "cm") return `${trim(w / 2.54)} x ${trim(h / 2.54)} in · ${trim(w)} x ${trim(h)} cm${n}`;
   return `${trim(w)} x ${trim(h)} in · ${Math.round(w * 2.54)} x ${Math.round(h * 2.54)} cm${n}`;
 }
+// landscape / portrait / square from width and height (5% tolerance counts as square)
+const shapeOf = (w, h) => !(w > 0 && h > 0) ? "" : (Math.abs(w / h - 1) <= .05 ? "square" : (w > h ? "landscape" : "portrait"));
+const SHAPE = {landscape: "Landscape: wider than tall", portrait: "Portrait: taller than wide", square: "Square"};
+// true when the size and the photo disagree about which way round the painting is
+function sizeMismatch(a){
+  const z = parseSize(a.size), r = (pendingImg[a.id] && pendingImg[a.id].ratio) || a.ratio;
+  const s1 = shapeOf(+z.w, +z.h), s2 = r ? shapeOf(r, 1) : "";
+  return !!(s1 && s2 && s1 !== "square" && s2 !== "square" && s1 !== s2);
+}
 function parseSize(s){
   const r = {w: "", h: "", u: "in", note: ""};
   if(!s) return r;
@@ -602,7 +620,7 @@ function renderGroups(){
         <button class="grip" type="button" aria-label="Drag to move ${esc(a.title)}">${GRIP}</button>
         <img src="${esc(thumbSrc(a))}" alt="" loading="lazy">
         <div class="ttl"><b>${esc(a.title)}</b><small>${esc(meta)}</small></div>
-        <div class="chips">${ch.has(a.id) ? '<span class="chip ch">Edited</span>' : ""}${inBanner.has(a.id) ? '<span class="chip bn">Banner</span>' : ""}<span class="chip ${a.sold ? "sd" : "av"}">${a.sold ? "Sold" : "Available"}</span></div>
+        <div class="chips">${sizeMismatch(a) ? '<span class="chip ck" title="The size and the photo disagree about landscape or portrait">Check size</span>' : ""}${ch.has(a.id) ? '<span class="chip ch">Edited</span>' : ""}${inBanner.has(a.id) ? '<span class="chip bn">Banner</span>' : ""}<span class="chip ${a.sold ? "sd" : "av"}">${a.sold ? "Sold" : "Available"}</span></div>
         <button class="btn edit" type="button" data-edit="${a.id}">Edit</button>
       </li>`;
     }).join("");
@@ -868,18 +886,26 @@ function openEditor(id){
 }
 function closeEditor(){ if($("xsheet").hidden) $("scrim").hidden = true; $("sheet").hidden = true; editing = null; staged = null; }
 function syncForm(){
-  const t = sizeText(+$("fW").value, +$("fH").value, $("fU").value, $("fNote").value.trim());
-  $("sizeOut").innerHTML = t ? `Shown on the site as <b>${esc(t)}</b>` : "Enter width and height to show the size in inches and cm.";
+  const w = +$("fW").value, h = +$("fH").value;
+  const t = sizeText(w, h, $("fU").value, $("fNote").value.trim());
+  $("sizeOut").innerHTML = t ? `Shown on the site as <b>${esc(t)}</b> (width × height)` : "Enter width and height to show the size in inches and cm.";
+  const sh = shapeOf(w, h);
+  $("shapeOut").textContent = sh ? SHAPE[sh] : ""; $("fSwap").hidden = !sh;
+  const pr = (staged && staged.ratio) || (editing && ((pendingImg[editing.id] && pendingImg[editing.id].ratio) || editing.ratio)) || 0, ps = pr ? shapeOf(pr, 1) : "";
+  const bad = sh && ps && sh !== "square" && ps !== "square" && sh !== ps;
+  $("shapeWarn").hidden = !bad;
+  if(bad) $("shapeWarn").textContent = `The photo is ${ps}, but this size makes the painting ${sh}. If the painting hangs ${ps}, press “Swap width and height”. If the size is right, replace the photo with one the right way round.`;
   $("saleRow").hidden = $("stS").checked;
   $("prRow").hidden = !$("fPr").checked;
   const sized = S.printSizes.length > 0; $("prLinks").hidden = !sized; $("prLegacy").hidden = sized;
 }
 ["fW","fH","fU","fNote"].forEach(id => $(id).addEventListener("input", syncForm));
+$("fSwap").addEventListener("click", () => { const w = $("fW").value; $("fW").value = $("fH").value; $("fH").value = w; syncForm(); });
 ["stA","stS","fPr"].forEach(id => $(id).addEventListener("change", syncForm));
 $("fFile").addEventListener("change", async () => {
   const f = $("fFile").files[0]; staged = null; if(!f) return;
   $("fileOut").textContent = "Preparing photo…"; $("saveBtn").disabled = true;
-  try{ staged = await prepare(f); $("shImg").src = staged.url; $("shImg").hidden = false; $("fileOut").textContent = "Photo ready. It uploads when you publish."; }
+  try{ staged = await prepare(f); $("shImg").src = staged.url; $("shImg").hidden = false; $("fileOut").textContent = "Photo ready. It uploads when you publish."; syncForm(); }
   catch(e){ $("fileOut").textContent = e.message; }
   $("saveBtn").disabled = false;
 });

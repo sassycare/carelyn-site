@@ -254,6 +254,42 @@ dt{color:var(--soft)} dd{margin:0}
   .bar{flex-wrap:wrap;row-gap:6px}
   nav{width:100%;justify-content:space-between;gap:10px}
 }
+
+/* see it on a wall */
+.dlg .ph{position:relative}
+.roombtn{position:absolute;left:14px;bottom:14px;display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:.9rem;font-weight:400;color:var(--ink);background:rgba(244,243,240,.94);border:1px solid var(--line);padding:9px 14px 9px 12px;cursor:pointer}
+.roombtn:hover{background:var(--bg)}
+.roombtn svg{width:20px;height:20px;flex:none}
+#room{width:min(1180px,96vw)}
+.rm-stage{background:#1d1c1a;display:flex;justify-content:center;align-items:center;line-height:0;min-height:200px}
+.ph-room{position:relative;display:inline-block;max-width:100%}
+.ph-room > img:first-child{display:block;max-width:100%;max-height:68vh;width:auto;height:auto}
+.ph-art{position:absolute;object-fit:cover;box-shadow:0 4px 10px rgba(0,0,0,.32),0 1px 3px rgba(0,0,0,.25)}
+.rm-bar{padding:16px clamp(16px,3vw,32px) 22px}
+.rm-head h3{font-family:var(--serif);font-weight:300;font-size:clamp(1.4rem,2.4vw,1.9rem);line-height:1.1;margin:0}
+.rm-head p{margin:4px 0 0;color:var(--soft);font-size:.92rem}
+.rm-tabs{display:flex;align-items:flex-start;gap:10px;overflow-x:auto;padding:14px 2px 4px;scrollbar-width:thin}
+.rm-tabs button{flex:none;width:78px;font:inherit;font-size:.78rem;line-height:1.25;color:var(--soft);background:none;border:0;padding:0;cursor:pointer;text-align:center;display:flex;flex-direction:column;align-items:center}
+.rm-tabs button img,.rm-tabs button .cam{display:block;width:78px;height:78px;object-fit:cover;border:1px solid var(--line);margin-bottom:6px;opacity:.85}
+.rm-tabs button .cam{display:grid;place-items:center;background:var(--tile)}
+.rm-tabs button .cam svg{width:28px;height:28px}
+.rm-tabs button:hover img,.rm-tabs button:hover .cam{opacity:1}
+.rm-tabs button[aria-selected="true"]{color:var(--ink)}
+.rm-tabs button[aria-selected="true"] img,.rm-tabs button[aria-selected="true"] .cam{opacity:1;outline:2px solid var(--ink);outline-offset:2px}
+.own{position:relative;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;width:100%}
+.own > img:first-child{display:block;width:100%;height:auto;max-height:68vh;object-fit:contain;margin:0 auto;pointer-events:none}
+.own-art{position:absolute;cursor:grab;box-shadow:0 2px 7px rgba(0,0,0,.4);touch-action:none;-webkit-user-drag:none}
+.own-art:active{cursor:grabbing}
+.own-empty{min-height:min(52vh,420px);display:grid;place-content:center;justify-items:center;gap:14px;text-align:center;padding:30px 20px;line-height:1.6;background:var(--tile);width:100%}
+.own-empty p{margin:0;color:var(--soft);max-width:44ch;font-size:.95rem}
+.own-empty .btn{display:inline-block;margin:0}
+.rm-own{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;font-size:.92rem;color:var(--soft);margin-top:12px}
+.rm-own[hidden]{display:none}
+.rm-own input[type=range]{width:min(260px,60vw);accent-color:var(--ink)}
+.rm-own output{color:var(--ink);min-width:3.5em}
+.rm-own .lk{font:inherit;background:none;border:0;padding:0;color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.rm-own small{flex-basis:100%;font-size:.85rem}
+.rm-credit{margin:10px 0 0;font-size:.75rem;color:var(--soft)}
 </style>
 </head>
 <body>
@@ -355,6 +391,17 @@ dt{color:var(--soft)} dd{margin:0}
   </div>
 </dialog>
 
+<dialog id="room" aria-labelledby="rmTitle">
+  <button class="close" id="rmClose" aria-label="Close">×</button>
+  <div class="rm-stage" id="rmStage"></div>
+  <div class="rm-bar">
+    <div class="rm-head"><h3 id="rmTitle"></h3><p id="rmScale"></p></div>
+    <div class="rm-tabs" role="tablist" id="rmTabs"></div>
+    <div class="rm-own" id="rmOwn" hidden></div>
+  </div>
+  <input type="file" id="rmFile" accept="image/*" hidden>
+</dialog>
+
 <dialog id="xdlg" aria-labelledby="xTitle">
   <button class="close" id="xClose" aria-label="Close">×</button>
   <div id="xBody"></div>
@@ -387,7 +434,12 @@ dt{color:var(--soft)} dd{margin:0}
     exBtnDetails:"Details", exBtnCalendar:"Add to calendar", exBtnGallery:"Gallery website", exLblWhen:"When", exLblWhere:"Where", exLblOpening:"Opening", exLblHours:"Hours", exWorksHeading:"Paintings in the exhibition",
     exPhotosHeading:"Photos", exVideosHeading:"Video", exWatch:"Watch the video", lblExhibition:"Exhibition", lblOnShow:"On exhibition until {date}", cardOnShow:"On exhibition",
     exHoldNote:"This painting is hanging in {title} at {venue}, so the original can't be bought online until the show ends. Email to enquire. Prints are still available.",
-    exHoldQuiet:"To buy this original, please email me and I'll arrange it." }).forEach(([k, d]) => { if(!DEFS[k]) DEFS[k] = { k: k, def: d }; });
+    exHoldQuiet:"To buy this original, please email me and I'll arrange it.",
+    btnRoom:"See it on a wall", room_lounge:"Living room", room_sofa:"Lounge", room_sideboard:"Reading corner", room_plants:"Open wall", room_yellow:"Dining room", room_nook:"Dining nook", room_bedroom:"Bedroom", roomOwn:"Your wall",
+    roomScale:"Shown to scale. This painting is {size}.", roomOwnPick:"Choose a photo of your wall",
+    roomOwnHint:"Take a photo of your wall from straight on. It stays on your device and is never uploaded.",
+    roomOwnWidth:"About how wide is the wall in your photo?", roomOwnDrag:"Drag the painting to move it.", roomOwnChange:"Use a different photo",
+    roomOwnTip:"Tip: a standard door is about 82 cm wide and a three-seater sofa about 2.2 m." }).forEach(([k, d]) => { if(!DEFS[k]) DEFS[k] = { k: k, def: d }; });
   const raw = k => { const o = OV[k]; if(typeof o === "string" && o.trim()) return o; const d = DEFS[k] && DEFS[k].def; return typeof d === "function" ? d() : (d == null ? "" : d); };
   const tx = (k, extra) => { const v = Object.assign({ year: new Date().getFullYear(), artistName: raw("artistName"), location: raw("location"), shipsTo: raw("shipsTo"), instagram: raw("instagram") }, extra || {}); return raw(k).replace(/\{(\w+)\}/g, (m, n) => v[n] === undefined ? m : v[n]); };
   const hasPrints = a => a.prints && a.prints.available;
@@ -803,10 +855,97 @@ dt{color:var(--soft)} dd{margin:0}
     const canBuy = (!a.sold && !held && a.price && a.buyUrl) || (hasPrints(a) && (a.prints.buyUrl || Object.values(a.prints.links || {}).some(Boolean)));
     out += `<p class="note">${canBuy ? esc(tx("noteStripe")) + " " : ""}${esc(tx("noteShips"))} <a href="${mail("Question about " + a.title)}">${esc(tx("noteAsk"))}</a></p>`;
     $("dlgOptions").innerHTML = out;
+    curArt = a;
+    const rb = $("dlgRoomBtn"); if(rb) rb.remove();
+    if(artCm(a)){
+      $("dlgImg").insertAdjacentHTML("afterend", `<button type="button" class="roombtn" id="dlgRoomBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="7" y="3" width="10" height="8"/><path d="M3 21v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5M3 18h18M5 21v1M19 21v1"/></svg>${esc(tx("btnRoom"))}</button>`);
+      $("dlgRoomBtn").addEventListener("click", () => openRoom(a));
+    }
     if(!dlg.open) dlg.showModal();
     dlg.scrollTop = 0;
   }
-  const closeArt = () => { if(dlg.open) dlg.close(); };
+
+  /* ---------- See it on a wall: real room photos at true scale, or the visitor's own photo ---------- */
+  let curArt = null;
+  // painting size in cm from "16 x 20 in · 41 x 51 cm", read as width x height (the admin labels them)
+  function artCm(a){
+    const t = String(a.size || "");
+    let m = t.match(/([\d.]+)\s*[x×]\s*([\d.]+)\s*cm/i), w, h;
+    if(m){ w = +m[1]; h = +m[2]; }
+    else if((m = t.match(/([\d.]+)\s*[x×]\s*([\d.]+)\s*(in|")/i))){ w = +m[1] * 2.54; h = +m[2] * 2.54; }
+    else return null;
+    if(!(w > 0 && h > 0)) return null;
+    return { w, h };
+  }
+  // Each photo: its size in pixels, pixels per cm on the wall, where the painting hangs (centre x, and bottom edge or centre y), and the largest painting that fits
+  const ROOMS = [{"id":"lounge","w":1600,"h":1068,"ppc":3.5963,"cx":680.1,"an":"b","y":668.9,"maxW":110,"maxH":175},{"id":"sofa","w":1446,"h":1600,"ppc":4.7158,"cx":724.2,"an":"b","y":903.6,"maxW":104,"maxH":180},{"id":"sideboard","w":1374,"h":1600,"ppc":4.8,"cx":412.0,"an":"b","y":832.0,"maxW":160,"maxH":165},{"id":"plants","w":1508,"h":1600,"ppc":5.1512,"cx":671.2,"an":"c","y":708.7,"maxW":210,"maxH":250},{"id":"yellow","w":1278,"h":1600,"ppc":4.0707,"cx":744.2,"an":"b","y":751.6,"maxW":200,"maxH":150},{"id":"nook","w":1145,"h":1600,"ppc":5.7333,"cx":640.0,"an":"b","y":800.0,"maxW":93,"maxH":135},{"id":"bedroom","w":1600,"h":1563,"ppc":7.4534,"cx":385.1,"an":"b","y":857.1,"maxW":103,"maxH":111}];
+  const LSr = { get(k){ try{ return localStorage.getItem("cm-room-" + k); }catch(_){ return null; } }, set(k, v){ try{ localStorage.setItem("cm-room-" + k, v); }catch(_){} } };
+  let rmRoom = LSr.get("room") || ROOMS[0].id;
+  let ownUrl = "", ownM = +LSr.get("ownm") || 3, ownX = .5, ownY = .38;
+  const rmDlg = $("room");
+  const roomSrc = (id, th) => (window.ROOM_IMG && window.ROOM_IMG[(th ? "t:" : "") + id]) || `images/rooms/${th ? "thumbs/" : ""}${id}.jpg`;
+  const fits = (r, cm) => cm.w <= r.maxW && cm.h <= r.maxH;
+  const fmtCm = cm => `${Math.round(cm.w)} × ${Math.round(cm.h)} cm`;
+  const camSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M4 7h3l2-2h6l2 2h3v12H4z"/><circle cx="12" cy="13" r="3.5"/></svg>`;
+  function drawRoom(){
+    const a = curArt, cm = artCm(a), avail = ROOMS.filter(r => fits(r, cm));
+    if(rmRoom !== "own" && !avail.some(r => r.id === rmRoom)) rmRoom = avail[0] ? avail[0].id : "own";
+    $("rmTabs").innerHTML = avail.map(r => `<button type="button" role="tab" data-room="${r.id}" aria-selected="${r.id === rmRoom}"><img src="${roomSrc(r.id, true)}" alt="" loading="lazy">${esc(tx("room_" + r.id))}</button>`).join("") +
+      `<button type="button" role="tab" data-room="own" aria-selected="${rmRoom === "own"}"><span class="cam">${camSvg}</span>${esc(tx("roomOwn"))}</button>`;
+    $("rmScale").textContent = tx("roomScale", { size: fmtCm(cm) });
+    const own = rmRoom === "own";
+    $("rmOwn").hidden = !own || !ownUrl;
+    if(!own){
+      const r = ROOMS.find(x => x.id === rmRoom), w = cm.w * r.ppc, h = cm.h * r.ppc, top = r.an === "b" ? r.y - h : r.y - h / 2;
+      const pc = (v, t) => (v / t * 100).toFixed(3) + "%";
+      $("rmStage").innerHTML = `<div class="ph-room"><img src="${roomSrc(r.id)}" alt="" width="${r.w}" height="${r.h}"><img class="ph-art" src="${esc(a.image || a.thumb)}" alt="${esc(a.title)}" style="left:${pc(r.cx - w / 2, r.w)};top:${pc(top, r.h)};width:${pc(w, r.w)};height:${pc(h, r.h)}"></div>`;
+      return;
+    }
+    if(!ownUrl){
+      $("rmStage").innerHTML = `<div class="own-empty"><p>${esc(tx("roomOwnHint"))}</p><button type="button" class="btn" data-pick>${esc(tx("roomOwnPick"))}</button><p><small>${esc(tx("roomOwnTip"))}</small></p></div>`;
+      return;
+    }
+    $("rmStage").innerHTML = `<div class="own" id="own"><img src="${ownUrl}" alt="" id="ownBg"><img src="${esc(a.image || a.thumb)}" alt="${esc(a.title)}" class="own-art" id="ownArt" draggable="false"></div>`;
+    $("rmOwn").innerHTML = `<label for="ownM">${esc(tx("roomOwnWidth"))}</label><input type="range" id="ownM" min="0.8" max="8" step="0.1" value="${ownM}"><output id="ownMo">${ownM.toFixed(1)} m</output>
+      <button type="button" class="lk" data-pick>${esc(tx("roomOwnChange"))}</button><small>${esc(tx("roomOwnDrag"))} ${esc(tx("roomOwnTip"))}</small>`;
+    $("ownM").addEventListener("input", e => { ownM = +e.target.value; $("ownMo").textContent = ownM.toFixed(1) + " m"; LSr.set("ownm", ownM); placeOwn(); });
+    const bg = $("ownBg"); bg.complete ? placeOwn() : bg.addEventListener("load", placeOwn, { once:true });
+    dragOwn();
+  }
+  function placeOwn(){
+    const bg = $("ownBg"), art = $("ownArt"), cm = artCm(curArt); if(!bg || !art) return;
+    const W = bg.offsetWidth, H = bg.offsetHeight, wpx = W * cm.w / (ownM * 100), hpx = wpx * cm.h / cm.w;
+    ownX = Math.min(Math.max(ownX, 0), 1); ownY = Math.min(Math.max(ownY, 0), 1);
+    art.style.width = wpx + "px"; art.style.height = hpx + "px";
+    art.style.left = (bg.offsetLeft + ownX * W - wpx / 2) + "px"; art.style.top = (bg.offsetTop + ownY * H - hpx / 2) + "px";
+  }
+  function dragOwn(){
+    const art = $("ownArt"), bg = $("ownBg"); let sx, sy, ox, oy, on = false;
+    art.addEventListener("pointerdown", e => { on = true; art.setPointerCapture(e.pointerId); sx = e.clientX; sy = e.clientY; ox = ownX; oy = ownY; e.preventDefault(); });
+    art.addEventListener("pointermove", e => { if(!on) return; ownX = ox + (e.clientX - sx) / bg.offsetWidth; ownY = oy + (e.clientY - sy) / bg.offsetHeight; placeOwn(); });
+    const end = () => { on = false; }; art.addEventListener("pointerup", end); art.addEventListener("pointercancel", end);
+  }
+  function openRoom(a){
+    curArt = a;
+    $("rmTitle").textContent = a.title;
+    drawRoom();
+    if(!rmDlg.open) rmDlg.showModal();
+    rmDlg.scrollTop = 0;
+    const sel = $("rmTabs").querySelector('[aria-selected="true"]'); if(sel) sel.scrollIntoView({ block:"nearest", inline:"nearest" });
+  }
+  rmDlg.addEventListener("click", e => {
+    if(e.target === rmDlg){ rmDlg.close(); return; }
+    const t = e.target.closest("[data-room]"); if(t){ rmRoom = t.dataset.room; if(rmRoom !== "own") LSr.set("room", rmRoom); drawRoom(); return; }
+    if(e.target.closest("[data-pick]")) $("rmFile").click();
+  });
+  $("rmFile").addEventListener("change", () => {
+    const f = $("rmFile").files[0]; if(!f) return;
+    if(ownUrl) URL.revokeObjectURL(ownUrl);
+    ownUrl = URL.createObjectURL(f); ownX = .5; ownY = .38; $("rmFile").value = ""; drawRoom();
+  });
+  $("rmClose").addEventListener("click", () => rmDlg.close());
+  let rmT; addEventListener("resize", () => { clearTimeout(rmT); rmT = setTimeout(() => { if(rmDlg.open && rmRoom === "own") placeOwn(); }, 150); });
+  const closeArt = () => { if(rmDlg.open) rmDlg.close(); if(dlg.open) dlg.close(); };
   dlg.addEventListener("close", () => {
     if(location.hash.startsWith("#art/")) try{ history.replaceState(null, "", location.pathname + location.search + ($("xdlg").open && curShow ? "#show/" + curShow : "#work")); }catch(_){}
     if(!$("xdlg").open) scrollTo(0, lastScroll);

@@ -62,6 +62,24 @@
   add(X, "exHoldQuiet", "Note on an original that is held back from online sale", "To buy this original, please email me and I'll arrange it.", {multi: true});
   add(X, "exHoldNote", "Note on a painting that is in a show", "This painting is hanging in {title} at {venue}, so the original can't be bought online until the show ends. Email to enquire. Prints are still available.", {multi: true});
 
+  const RM = "See it on a wall";
+  add(RM, "btnRoom", "Button on a painting's photo", "See it on a wall");
+  add(RM, "room_lounge", "Room name: living room photo", "Living room");
+  add(RM, "room_sofa", "Room name: lounge photo", "Lounge");
+  add(RM, "room_sideboard", "Room name: reading corner photo", "Reading corner");
+  add(RM, "room_plants", "Room name: open wall photo", "Open wall");
+  add(RM, "room_yellow", "Room name: dining room photo", "Dining room");
+  add(RM, "room_nook", "Room name: dining nook photo", "Dining nook");
+  add(RM, "room_bedroom", "Room name: bedroom photo", "Bedroom");
+  add(RM, "roomOwn", "Room name: the visitor's own wall", "Your wall");
+  add(RM, "roomScale", "Line under the title. {size} is the painting's size", "Shown to scale. This painting is {size}.");
+  add(RM, "roomOwnPick", "Button: choose a photo", "Choose a photo of your wall");
+  add(RM, "roomOwnHint", "Your wall: explanation", "Take a photo of your wall from straight on. It stays on your device and is never uploaded.", {multi: true});
+  add(RM, "roomOwnWidth", "Your wall: size slider label", "About how wide is the wall in your photo?");
+  add(RM, "roomOwnDrag", "Your wall: how to move the painting", "Drag the painting to move it.");
+  add(RM, "roomOwnChange", "Your wall: change photo link", "Use a different photo");
+  add(RM, "roomOwnTip", "Your wall: tip for judging width", "Tip: a standard door is about 82 cm wide and a three-seater sofa about 2.2 m.", {multi: true});
+
   const G = "Group names and descriptions";
   (window.THEMES || []).forEach(t => {
     add(G, "group_" + t.id + "_label", "Group name: " + t.label, t.label);
