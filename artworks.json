@@ -1933,6 +1933,43 @@
     "tagline": "Original acrylic paintings, prints and commissions from the Southern Highlands, NSW.",
     "bio": "Carelyn Madaschi is a contemporary artist based in the Southern Highlands in New South Wales whose work spans bold portraits, abstract landscapes, emotionally resonant self-reflections, and whimsical playfulness. With a background in economics and accounting, painting became her therapeutic conduit: a space where colour, form, and raw emotion merge.\n\nAcross subjects and styles, Carelyn’s work is unified by layered acrylic textures, expressive brushwork, and vibrant palettes. She invites collectors into a world shaped by introspection, energy, healing, and delight, where every piece reflects a moment, feeling, or idea made visible.\n\nEvery original is signed and ready to hang, and many are also available as prints."
   },
+  "rooms": {
+    "lounge": {
+      "scale": 1.3,
+      "x": 0.4204,
+      "y": 0.4226
+    },
+    "sofa": {
+      "x": 0.3709,
+      "y": 0.4148,
+      "scale": 1.3
+    },
+    "sideboard": {
+      "x": 0.3167,
+      "y": 0.4188,
+      "scale": 1.3
+    },
+    "plants": {
+      "x": 0.3454,
+      "y": 0.3255,
+      "scale": 1.3
+    },
+    "yellow": {
+      "x": 0.4557,
+      "y": 0.3523,
+      "scale": 1.46
+    },
+    "nook": {
+      "x": 0.5665,
+      "y": 0.3808,
+      "scale": 1.2
+    },
+    "bedroom": {
+      "x": 0.2425,
+      "y": 0.4328,
+      "scale": 1.1
+    }
+  },
   "printSizes": [
     {
       "id": "A5",
