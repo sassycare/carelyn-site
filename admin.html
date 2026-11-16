@@ -113,6 +113,23 @@ button,input,select,textarea{font:inherit;color:inherit}
 .fixbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;border:1px solid #9A3B1F;background:#FBF3EF;padding:12px 14px;margin:0 0 18px;font-size:.92rem}
 .fixbar[hidden]{display:none}
 .fixbar p{margin:0;flex:1 1 320px}
+.calwrap{grid-column:1/-1;border-top:1px solid var(--line);padding-top:6px}
+.cal-top{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin:14px 0 10px}
+.cal-top select{border:1px solid var(--line);background:var(--bg);padding:8px 10px;font:inherit;max-width:100%}
+.cal-rooms{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 8px}
+.cal-rooms button{flex:none;width:72px;font:inherit;font-size:.75rem;line-height:1.25;color:var(--soft);background:none;border:0;padding:0;cursor:pointer;text-align:center}
+.cal-rooms img{display:block;width:72px;height:72px;object-fit:cover;border:1px solid var(--line);margin-bottom:5px}
+.cal-rooms button[aria-pressed="true"]{color:var(--ink)}
+.cal-rooms button[aria-pressed="true"] img{outline:2px solid var(--ink);outline-offset:2px}
+.cal-rooms .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#2F6B4F;margin-left:4px;vertical-align:middle}
+.cal-stage{background:#1d1c1a;display:flex;justify-content:center;line-height:0;margin-top:6px}
+.cal-room{position:relative;display:inline-block;max-width:100%;touch-action:none}
+.cal-room > img:first-child{display:block;max-width:100%;max-height:62vh;width:auto;height:auto}
+.cal-art{position:absolute;cursor:grab;box-shadow:0 4px 10px rgba(0,0,0,.32);touch-action:none;user-select:none;-webkit-user-drag:none;object-fit:cover}
+.cal-art:active{cursor:grabbing}
+.cal-ctl{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin-top:12px;font-size:.92rem}
+.cal-ctl input[type=range]{width:min(320px,70vw);accent-color:var(--ink)}
+.cal-ctl output{min-width:3.5em;font-weight:500}
 .size span{color:var(--soft)}
 .out{font-size:.88rem;color:var(--soft);font-variant-numeric:tabular-nums}
 .out b{color:var(--ink);font-weight:500}
@@ -298,6 +315,15 @@ legend{padding:0 6px;font-size:.74rem;letter-spacing:.09em;text-transform:upperc
           <input type="file" id="aboutFile" accept="image/*">
           <div><button class="btn" type="button" id="aboutBtn" disabled>Upload about photo</button></div>
         </div></div>
+      </div>
+      <div class="calwrap">
+        <p class="sub" style="margin-top:20px">See it on a wall: room sizes</p>
+        <p class="hint" style="margin-top:4px">If paintings look too big or too small in one of the room photos, fix that room here once and every painting follows. Pick a painting you know well, pick a room, drag the painting to where it should hang, then use the slider until it looks the right size. The spot and size are saved per room. Nothing changes on the website until you press Publish changes.</p>
+        <div class="cal-top"><label for="calArt">Painting</label><select id="calArt"></select><span class="out" id="calSize"></span></div>
+        <div class="cal-rooms" id="calRooms"></div>
+        <div class="cal-stage" id="calStage"></div>
+        <div class="cal-ctl"><label for="calK">Size in this room</label><input type="range" id="calK" min="0.6" max="1.6" step="0.01"><output id="calKo"></output><button class="btn quiet" type="button" id="calReset">Reset this room</button></div>
+        <p class="out" id="calNote"></p>
       </div>
       <div>
         <p class="sub">Connection</p>
@@ -520,6 +546,7 @@ async function load(){
   d.banner = d.banner || [];
   d.text = (d.text && typeof d.text === "object" && !Array.isArray(d.text)) ? d.text : {};
   d.printSizes = Array.isArray(d.printSizes) ? d.printSizes : clone(DEFAULT_PRINTS);
+  d.rooms = d.rooms && typeof d.rooms === "object" && !Array.isArray(d.rooms) ? d.rooms : {};
   d.exhibitions = Array.isArray(d.exhibitions) ? d.exhibitions : [];
   ORIG = clone(d);
   S = clone(d);
@@ -532,6 +559,7 @@ async function load(){
       dr.data.banner = dr.data.banner.filter(id => ids.has(id));
       dr.data.text = dr.data.text || {};
       dr.data.printSizes = Array.isArray(dr.data.printSizes) ? dr.data.printSizes : clone(ORIG.printSizes);
+      dr.data.rooms = dr.data.rooms && typeof dr.data.rooms === "object" && !Array.isArray(dr.data.rooms) ? dr.data.rooms : clone(ORIG.rooms);
       // new exhibition photos are not kept between visits, so drop the unsent ones
       dr.data.exhibitions = (Array.isArray(dr.data.exhibitions) ? dr.data.exhibitions : clone(ORIG.exhibitions)).map(e => { delete e.coverPid; e.photos = (e.photos || []).filter(p => !p.pid); return e; });
       S = dr.data;
@@ -587,6 +615,7 @@ function changes(){
   }
   if(S.banner.join() !== ORIG.banner.join()) out.push(`Cover banner: ${S.banner.length} paintings, new selection or order`);
   if(JSON.stringify(S.printSizes) !== JSON.stringify(ORIG.printSizes)) out.push("Print sizes and prices");
+  if(JSON.stringify(S.rooms) !== JSON.stringify(ORIG.rooms)) out.push("See it on a wall: room sizes");
   {
     const oe = Object.fromEntries(ORIG.exhibitions.map(e => [e.id, e])), ne = new Set(S.exhibitions.map(e => e.id));
     S.exhibitions.forEach(e => { if(!oe[e.id]) out.push(`Exhibition ${e.title}: new`); else if(JSON.stringify(e) !== JSON.stringify(oe[e.id])) out.push(`Exhibition ${e.title}: changed`); });
@@ -1011,6 +1040,7 @@ $("pubYes").onclick = async () => {
     if(S.exhibitions.length) out.exhibitions = S.exhibitions.map(cleanEx);
     const text = {}; Object.keys(S.text).forEach(k => { if(txSet(S.text[k])) text[k] = S.text[k]; });
     if(Object.keys(text).length) out.text = text;
+    if(Object.keys(S.rooms).length) out.rooms = S.rooms;
     out.printSizes = S.printSizes.filter(z => z.label && Number(z.price) > 0).map(z => ({id: z.id, label: z.label.trim(), dims: (z.dims || "").trim(), price: Number(z.price)}));
     const r = await putFile("artworks.json", b64text(JSON.stringify(out, null, 2) + "\n"), `Update paintings (${changes().length} changes)`, SHA);
     SHA = r.content.sha;
@@ -1098,8 +1128,80 @@ $("prCsv").addEventListener("change", async () => {
   }catch(e){ $("prCsvOut").textContent = e.message; }
   $("prCsv").value = "";
 });
+
+/* ---------- room sizes for "See it on a wall" ---------- */
+// the same room photos and measurements as the website: pixels per cm on the wall, default spot
+const ROOMS = [{"id":"lounge","w":1600,"h":1068,"ppc":3.2919,"cx":680.1,"an":"b","y":668.9,"name":"Living room"},{"id":"sofa","w":1446,"h":1600,"ppc":4.4211,"cx":724.2,"an":"b","y":903.6,"name":"Lounge"},{"id":"sideboard","w":1374,"h":1600,"ppc":4.6,"cx":412.0,"an":"b","y":832.0,"name":"Reading corner"},{"id":"plants","w":1508,"h":1600,"ppc":4.9951,"cx":671.2,"an":"c","y":708.7,"name":"Open wall"},{"id":"yellow","w":1278,"h":1600,"ppc":3.9442,"cx":744.2,"an":"b","y":751.6,"name":"Dining room"},{"id":"nook","w":1145,"h":1600,"ppc":5.2,"cx":640.0,"an":"b","y":800.0,"name":"Dining nook"},{"id":"bedroom","w":1600,"h":1563,"ppc":6.5839,"cx":385.1,"an":"b","y":857.1,"name":"Bedroom"}];
+let calRoom = ROOMS[0].id, calId = "";
+function calCm(a){
+  const t = String(a.size || "");
+  let m = t.match(/([\d.]+)\s*[x×]\s*([\d.]+)\s*cm/i);
+  if(m) return {w: +m[1], h: +m[2]};
+  if((m = t.match(/([\d.]+)\s*[x×]\s*([\d.]+)\s*(in|")/i))) return {w: m[1] * 2.54, h: m[2] * 2.54};
+  return null;
+}
+const calOf = id => S.rooms[id] || {};
+const r4 = v => Math.round(v * 10000) / 10000;
+function renderCal(){
+  const list = S.paintings.filter(a => calCm(a));
+  if(!list.some(a => a.id === calId)) calId = (list.find(a => a.id === "copper-tide") || list[0] || {}).id || "";
+  $("calArt").innerHTML = list.map(a => `<option value="${esc(a.id)}"${a.id === calId ? " selected" : ""}>${esc(a.title)}</option>`).join("");
+  $("calRooms").innerHTML = ROOMS.map(r => `<button type="button" data-calroom="${r.id}" aria-pressed="${r.id === calRoom}"><img src="images/rooms/thumbs/${r.id}.jpg" alt="" loading="lazy">${esc(r.name)}${S.rooms[r.id] ? '<span class="dot" title="Adjusted"></span>' : ""}</button>`).join("");
+  drawCal();
+}
+function calGeom(){
+  const a = S.paintings.find(x => x.id === calId), r = ROOMS.find(x => x.id === calRoom); if(!a || !r) return null;
+  const c = calOf(r.id), k = +c.scale || 1, cm = calCm(a), ppc = r.ppc * k, W = cm.w * ppc, H = cm.h * ppc;
+  const x = typeof c.x === "number" ? c.x : r.cx / r.w, yv = typeof c.y === "number" ? c.y : r.y / r.h;
+  const cy = r.an === "b" ? yv - H / r.h / 2 : yv;
+  return {a, r, k, cm, W, H, x, cy};
+}
+function drawCal(){
+  const g = calGeom();
+  if(!g){ $("calStage").innerHTML = `<p class="hint" style="padding:20px;line-height:1.5;color:#ccc">Add a painting with a size first.</p>`; return; }
+  $("calSize").textContent = `${Math.round(g.cm.w)} × ${Math.round(g.cm.h)} cm (width × height)`;
+  $("calStage").innerHTML = `<div class="cal-room" id="calBox"><img src="images/rooms/${g.r.id}.jpg" alt=""><img class="cal-art" id="calPic" src="${esc(g.a.image || thumbSrc(g.a))}" alt="" draggable="false"></div>`;
+  $("calK").value = g.k; $("calKo").textContent = Math.round(g.k * 100) + "%";
+  $("calNote").textContent = S.rooms[g.r.id] ? `This room is adjusted: paintings show at ${Math.round(g.k * 100)}% of the original estimate.` : "This room uses the original estimate.";
+  placeCal(); dragCal();
+}
+function placeCal(){
+  const g = calGeom(), el = $("calPic"); if(!g || !el) return;
+  const hw = g.W / g.r.w / 2, hh = g.H / g.r.h / 2, pc = v => (v * 100).toFixed(3) + "%";
+  el.style.left = pc(g.x - hw); el.style.top = pc(g.cy - hh); el.style.width = pc(g.W / g.r.w); el.style.height = pc(g.H / g.r.h);
+}
+function setCal(patch){
+  const r = ROOMS.find(x => x.id === calRoom), c = Object.assign({}, calOf(r.id), patch);
+  if(typeof c.x === "number") c.x = r4(Math.min(Math.max(c.x, 0), 1));
+  if(typeof c.y === "number") c.y = r4(Math.min(Math.max(c.y, 0), 1));
+  if(typeof c.scale === "number") c.scale = Math.round(c.scale * 100) / 100;
+  S.rooms[r.id] = c;
+}
+function dragCal(){
+  const el = $("calPic"), box = $("calBox"); let sx, sy, ox, oy, on = false, moved = false;
+  el.addEventListener("pointerdown", e => { const g = calGeom(); on = true; moved = false; el.setPointerCapture(e.pointerId); sx = e.clientX; sy = e.clientY; ox = g.x; oy = g.cy; e.preventDefault(); });
+  el.addEventListener("pointermove", e => {
+    if(!on) return; const g = calGeom(), b = box.getBoundingClientRect();
+    const x = ox + (e.clientX - sx) / b.width, cy = oy + (e.clientY - sy) / b.height;
+    // save the centre across, and the bottom edge (rooms hung above furniture) or the centre (open walls)
+    setCal({x, y: g.r.an === "b" ? cy + g.H / g.r.h / 2 : cy}); moved = true; placeCal();
+  });
+  const end = () => { if(on && moved){ touched(); renderCal(); } on = false; };
+  el.addEventListener("pointerup", end); el.addEventListener("pointercancel", end);
+}
+$("calArt").addEventListener("change", e => { calId = e.target.value; drawCal(); });
+$("calRooms").addEventListener("click", e => { const b = e.target.closest("[data-calroom]"); if(!b) return; calRoom = b.dataset.calroom; renderCal(); });
+$("calK").addEventListener("input", e => {
+  const g = calGeom(); if(!g) return; const k = +e.target.value;
+  // keep the bottom edge (or centre) where it is while resizing
+  const bottom = g.r.an === "b" ? g.cy + g.H / g.r.h / 2 : g.cy;
+  setCal({scale: k, x: g.x, y: bottom}); $("calKo").textContent = Math.round(k * 100) + "%"; placeCal();
+});
+$("calK").addEventListener("change", () => { touched(); renderCal(); });
+$("calReset").addEventListener("click", () => { delete S.rooms[calRoom]; touched(); renderCal(); toast("Room reset to the original estimate"); });
+
 function renderSettings(){
-  renderPrintRows();
+  renderPrintRows(); renderCal();
   const c = conn();
   $("connInfo").textContent = `Saving to ${c.owner}/${c.repo} (${c.branch}).`;
   $("aboutImg").src = "images/about.jpg?t=" + Date.now();

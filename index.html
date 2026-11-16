@@ -448,7 +448,7 @@ dt{color:var(--soft)} dd{margin:0}
   const mail = subject => `mailto:${S.email}?subject=${encodeURIComponent(subject)}`;
 
   // Wording: the starting text lives in texts.js; changes made in the admin are saved in artworks.json under "text".
-  let OV = {}, PRINT_SIZES = [], EXH_RAW = [];
+  let OV = {}, PRINT_SIZES = [], EXH_RAW = [], ROOMCAL = {};
   const DEFS = Object.fromEntries((window.TEXTS || []).map(t => [t.k, t]));
   // exhibition wording: used if an older texts.js is still on the site
   Object.entries({ navExhibitions:"Exhibitions", exHeading:"Exhibitions", exIntro:"Where to see the paintings in person, and a look back at past shows.", exCurrentHeading:"On now", exUpcomingHeading:"Coming up", exPastHeading:"Past exhibitions",
@@ -502,6 +502,7 @@ dt{color:var(--soft)} dd{margin:0}
     const ord = A.banner || [];
     OV = A.text || {};
     EXH_RAW = Array.isArray(A.exhibitions) ? A.exhibitions : [];
+    ROOMCAL = A.rooms && typeof A.rooms === "object" && !Array.isArray(A.rooms) ? A.rooms : {};
     PRINT_SIZES = Array.isArray(A.printSizes) ? A.printSizes.filter(z => z && z.label && Number(z.price) > 0) : [];
     window.BANNER_ORDER = ord;
     A = (A.paintings || []).map(a => Object.assign({}, a, { featured: ord.includes(a.id) }));
@@ -882,11 +883,9 @@ dt{color:var(--soft)} dd{margin:0}
     curArt = a;
     ["dlgRoomBtn", "dlgRoomBtn2"].forEach(id => { const b = $(id); if(b) b.remove(); });
     if(artCm(a)){
-      // two ways in: on the photo (seen first on phones) and in the details beside the size (seen first on computers)
+      // the button sits in the details, under the size
       const ic = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="7" y="3" width="10" height="8"/><path d="M3 21v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5M3 18h18M5 21v1M19 21v1"/></svg>`;
-      $("dlgImg").insertAdjacentHTML("afterend", `<button type="button" class="roombtn" id="dlgRoomBtn">${ic}${esc(tx("btnRoom"))}</button>`);
       $("dlgDl").insertAdjacentHTML("afterend", `<button type="button" class="btn o roomlink" id="dlgRoomBtn2">${ic}${esc(tx("btnRoom"))}</button>`);
-      $("dlgRoomBtn").addEventListener("click", () => openRoom(a));
       $("dlgRoomBtn2").addEventListener("click", () => openRoom(a));
     }
     if(!dlg.open) dlg.showModal();
@@ -920,7 +919,11 @@ dt{color:var(--soft)} dd{margin:0}
   const roomSrc = (id, th) => (window.ROOM_IMG && window.ROOM_IMG[(th ? "t:" : "") + id]) || `images/rooms/${th ? "thumbs/" : ""}${id}.jpg`;
   const frameCm = () => rmFrame === "none" ? { face: 0, gap: 0 } : { face: THICK.find(t => t[0] === rmThick)[2], gap: GAP };
   const outerCm = cm => { const f = frameCm(), e = 2 * (f.face + f.gap); return { w: cm.w + e, h: cm.h + e }; };
-  const fits = (r, cm) => cm.w <= r.maxW && cm.h <= r.maxH;
+  // the admin can correct each room's scale and default spot; saved in artworks.json under "rooms"
+  const kOf = r => { const c = ROOMCAL[r.id], k = c ? +c.scale : 1; return k > .4 && k < 3 ? k : 1; };
+  const calNum = (r, key) => { const c = ROOMCAL[r.id], v = c ? c[key] : undefined; return typeof v === "number" && v >= 0 && v <= 1 ? v : null; };
+  // a room is offered when the painting fits in the photo; visitors can drag it anywhere
+  const fits = (r, cm) => cm.w * r.ppc * kOf(r) <= .92 * r.w && cm.h * r.ppc * kOf(r) <= .9 * r.h;
   const fmtCm = cm => `${Math.round(cm.w)} × ${Math.round(cm.h)} cm`;
   const camSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M4 7h3l2-2h6l2 2h3v12H4z"/><circle cx="12" cy="13" r="3.5"/></svg>`;
   // the painting with its frame; sizes are set by the caller
@@ -965,13 +968,14 @@ dt{color:var(--soft)} dd{margin:0}
   // room photo: everything in % of the photo, so it stays to scale at any screen size
   function placeRoom(){
     const r = ROOMS.find(x => x.id === rmRoom), el = $("phArt"); if(!r || !el) return;
-    const cm = artCm(curArt), o = outerCm(cm), f = frameCm(), W = o.w * r.ppc, H = o.h * r.ppc;
-    const def = { x: r.cx / r.w, y: (r.an === "b" ? r.y - H / 2 : r.y) / r.h }, p = rmPos[r.id] || def;
+    const ppc = r.ppc * kOf(r), cm = artCm(curArt), o = outerCm(cm), f = frameCm(), W = o.w * ppc, H = o.h * ppc;
+    const cx = calNum(r, "x"), cy = calNum(r, "y"), yy = cy === null ? r.y / r.h : cy;
+    const def = { x: cx === null ? r.cx / r.w : cx, y: r.an === "b" ? yy - H / r.h / 2 : yy }, p = rmPos[r.id] || def;
     const hw = W / r.w / 2, hh = H / r.h / 2, x = Math.min(Math.max(p.x, hw), 1 - hw), y = Math.min(Math.max(p.y, hh), 1 - hh);
     if(rmPos[r.id]) rmPos[r.id] = { x, y };
     const pc = v => (v * 100).toFixed(3) + "%";
     el.style.left = pc(x - hw); el.style.top = pc(y - hh); el.style.width = pc(W / r.w); el.style.height = pc(H / r.h);
-    el.style.padding = pc(f.face * r.ppc / r.w); el.querySelector(".gap").style.padding = pc(f.gap * r.ppc / r.w);
+    el.style.padding = pc(f.face * ppc / r.w); el.querySelector(".gap").style.padding = pc(f.gap * ppc / r.w);
   }
   // visitor's photo: pixels, from the wall width they set
   function placeOwn(){
