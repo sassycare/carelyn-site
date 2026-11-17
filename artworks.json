@@ -138,8 +138,8 @@
       "painted": "February 2026",
       "remarks": "Unframed",
       "sold": false,
-      "price": 450,
-      "buyUrl": "https://buy.stripe.com/14AeVdeWFglM5Rj4jCfIs0r",
+      "price": 290,
+      "buyUrl": "",
       "description": "",
       "prints": {
         "size": "",
@@ -156,7 +156,9 @@
       },
       "image": "images/moonrise.jpg",
       "thumb": "images/thumbs/moonrise.jpg",
-      "ratio": 1.2526
+      "ratio": 1.2526,
+      "linkPending": true,
+      "oldBuyUrl": "https://buy.stripe.com/14AeVdeWFglM5Rj4jCfIs0r"
     },
     {
       "id": "puddle-days",
@@ -225,8 +227,8 @@
       "painted": "May 2024",
       "remarks": "Unframed",
       "sold": false,
-      "price": 480,
-      "buyUrl": "https://buy.stripe.com/dRm4gz4i19Xo3Jb4jCfIs0o",
+      "price": 410,
+      "buyUrl": "",
       "description": "",
       "prints": {
         "size": "",
@@ -243,7 +245,9 @@
       },
       "image": "images/behind-the-glass.jpg",
       "thumb": "images/thumbs/behind-the-glass.jpg",
-      "ratio": 0.8292
+      "ratio": 0.8292,
+      "linkPending": true,
+      "oldBuyUrl": "https://buy.stripe.com/dRm4gz4i19Xo3Jb4jCfIs0o"
     },
     {
       "id": "quiet-morning",
@@ -312,7 +316,7 @@
       "painted": "October 2026",
       "remarks": "Natural",
       "sold": false,
-      "price": 1200,
+      "price": 733,
       "buyUrl": "https://buy.stripe.com/5kQ5kDcOxc5wcfH8zSfIs0y",
       "description": "",
       "prints": {
@@ -331,7 +335,9 @@
       "image": "images/wedding-day.jpg",
       "thumb": "images/thumbs/wedding-day.jpg",
       "ratio": 1.4423,
-      "framed": true
+      "framed": true,
+      "linkPending": true,
+      "oldBuyUrl": "https://buy.stripe.com/5kQ5kDcOxc5wcfH8zSfIs0y"
     },
     {
       "id": "island-swing",
@@ -342,7 +348,7 @@
       "painted": "October 2026",
       "remarks": "Natural",
       "sold": false,
-      "price": 950,
+      "price": 733,
       "buyUrl": "https://buy.stripe.com/7sY8wP01L1qS5RjcQ8fIs0h",
       "description": "",
       "prints": {
@@ -361,7 +367,9 @@
       "image": "images/island-swing.jpg",
       "thumb": "images/thumbs/island-swing.jpg",
       "ratio": 0.6492,
-      "framed": true
+      "framed": true,
+      "linkPending": true,
+      "oldBuyUrl": "https://buy.stripe.com/7sY8wP01L1qS5RjcQ8fIs0h"
     },
     {
       "id": "the-tropical-swingbed",
@@ -372,8 +380,8 @@
       "painted": "November 2026",
       "remarks": "Unframed",
       "sold": false,
-      "price": 200,
-      "buyUrl": "https://buy.stripe.com/aFafZh6q98Tk0wZ17qfIt1C",
+      "price": 194,
+      "buyUrl": "",
       "description": "",
       "prints": {
         "size": "",
@@ -390,7 +398,9 @@
       },
       "image": "images/the-tropical-swingbed-mwe5f3x8.jpg",
       "thumb": "images/thumbs/the-tropical-swingbed-mwe5f3x8.jpg",
-      "ratio": 1.348
+      "ratio": 1.348,
+      "linkPending": true,
+      "oldBuyUrl": "https://buy.stripe.com/aFafZh6q98Tk0wZ17qfIt1C"
     },
     {
       "id": "pastel-rain",
@@ -430,10 +440,11 @@
       "painted": "August 2025",
       "remarks": "With natural floating frame",
       "sold": false,
-      "price": 640,
+      "price": 485,
       "buyUrl": "https://buy.stripe.com/cNi9ATdSB1qS4NfaI0fIs0g",
       "description": "",
       "prints": {
+        "available": true,
         "size": "",
         "price": null,
         "buyUrl": "",
@@ -443,12 +454,13 @@
           "A3": "https://buy.stripe.com/5kQ4gz7ud0mO7ZraI0fIs1E",
           "A2": "https://buy.stripe.com/28E00jg0J0mOfrT8zSfIs1F",
           "A1": "https://buy.stripe.com/dRm8wP9ClglMenP5nGfIs1G"
-        },
-        "available": true
+        }
       },
       "image": "images/garden-roses.jpg",
       "thumb": "images/thumbs/garden-roses.jpg",
-      "ratio": 1.2143
+      "ratio": 1.2143,
+      "linkPending": true,
+      "oldBuyUrl": "https://buy.stripe.com/cNi9ATdSB1qS4NfaI0fIs0g"
     },
     {
       "id": "rain-garden",
@@ -488,8 +500,8 @@
       "painted": "September 2025",
       "remarks": "",
       "sold": false,
-      "price": 380,
-      "buyUrl": "https://buy.stripe.com/aFa14n01Lb1s2F7dUcfIs0a",
+      "price": 290,
+      "buyUrl": "",
       "description": "",
       "prints": {
         "size": "",
@@ -506,7 +518,9 @@
       },
       "image": "images/coral-poppies.jpg",
       "thumb": "images/thumbs/coral-poppies.jpg",
-      "ratio": 0.7968
+      "ratio": 0.7968,
+      "linkPending": true,
+      "oldBuyUrl": "https://buy.stripe.com/aFa14n01Lb1s2F7dUcfIs0a"
     },
     {
       "id": "meadow",
@@ -604,10 +618,11 @@
       "painted": "August 2025",
       "remarks": "With natural floating frame",
       "sold": false,
-      "price": 330,
+      "price": 244,
       "buyUrl": "https://buy.stripe.com/cNicN5eWFfhIcfH5nGfIs07",
       "description": "",
       "prints": {
+        "available": true,
         "size": "",
         "price": null,
         "buyUrl": "",
@@ -617,12 +632,13 @@
           "A3": "https://buy.stripe.com/00w28r4i12uW2F75nGfIs28",
           "A2": "https://buy.stripe.com/aFa4gz29Tb1s3Jb03mfIs29",
           "A1": "https://buy.stripe.com/fZu6oHeWF3z0bbD2bufIs2a"
-        },
-        "available": true
+        }
       },
       "image": "images/dusty-blooms.jpg",
       "thumb": "images/thumbs/dusty-blooms.jpg",
-      "ratio": 0.7512
+      "ratio": 0.7512,
+      "linkPending": true,
+      "oldBuyUrl": "https://buy.stripe.com/cNicN5eWFfhIcfH5nGfIs07"
     },
     {
       "id": "market-bouquet",
@@ -836,8 +852,8 @@
       "painted": "March 2026",
       "remarks": "",
       "sold": false,
-      "price": 280,
-      "buyUrl": "https://buy.stripe.com/cNifZhdSBedE93v6rKfIs0p",
+      "price": 194,
+      "buyUrl": "",
       "description": "",
       "prints": {
         "size": "",
@@ -854,7 +870,9 @@
       },
       "image": "images/blossom-night.jpg",
       "thumb": "images/thumbs/blossom-night.jpg",
-      "ratio": 0.7475
+      "ratio": 0.7475,
+      "linkPending": true,
+      "oldBuyUrl": "https://buy.stripe.com/cNifZhdSBedE93v6rKfIs0p"
     },
     {
       "id": "cottage-in-the-mist",
@@ -865,8 +883,8 @@
       "painted": "February 2026",
       "remarks": "",
       "sold": false,
-      "price": 320,
-      "buyUrl": "https://buy.stripe.com/5kQdR915Pc5w3Jb2bufIs0q",
+      "price": 290,
+      "buyUrl": "",
       "description": "",
       "prints": {
         "size": "",
@@ -883,7 +901,9 @@
       },
       "image": "images/cottage-in-the-mist.jpg",
       "thumb": "images/thumbs/cottage-in-the-mist.jpg",
-      "ratio": 1.2635
+      "ratio": 1.2635,
+      "linkPending": true,
+      "oldBuyUrl": "https://buy.stripe.com/5kQdR915Pc5w3Jb2bufIs0q"
     },
     {
       "id": "red-centre",
@@ -981,8 +1001,8 @@
       "painted": "March 2026",
       "remarks": "",
       "sold": false,
-      "price": 480,
-      "buyUrl": "https://buy.stripe.com/6oU00jbKtd9AcfH03mfIs0u",
+      "price": 290,
+      "buyUrl": "",
       "description": "",
       "prints": {
         "size": "",
@@ -999,7 +1019,9 @@
       },
       "image": "images/sun-through-the-pines.jpg",
       "thumb": "images/thumbs/sun-through-the-pines.jpg",
-      "ratio": 0.7902
+      "ratio": 0.7902,
+      "linkPending": true,
+      "oldBuyUrl": "https://buy.stripe.com/6oU00jbKtd9AcfH03mfIs0u"
     },
     {
       "id": "autumn-creek",
@@ -1068,8 +1090,8 @@
       "painted": "September 2026",
       "remarks": "",
       "sold": false,
-      "price": 280,
-      "buyUrl": "https://buy.stripe.com/14A28r7ud7Pg4Nf7vOfIs0s",
+      "price": 194,
+      "buyUrl": "",
       "description": "",
       "prints": {
         "size": "",
@@ -1086,7 +1108,9 @@
       },
       "image": "images/spring-dance.jpg",
       "thumb": "images/thumbs/spring-dance.jpg",
-      "ratio": 1.3599
+      "ratio": 1.3599,
+      "linkPending": true,
+      "oldBuyUrl": "https://buy.stripe.com/14A28r7ud7Pg4Nf7vOfIs0s"
     },
     {
       "id": "forest-falls",
@@ -1097,8 +1121,8 @@
       "painted": "September 2026",
       "remarks": "",
       "sold": false,
-      "price": 290,
-      "buyUrl": "https://buy.stripe.com/3cI28r3dX0mObbDdUcfIs04",
+      "price": 194,
+      "buyUrl": "",
       "description": "",
       "prints": {
         "available": true,
@@ -1115,7 +1139,9 @@
       },
       "image": "images/forest-falls.jpg",
       "thumb": "images/thumbs/forest-falls.jpg",
-      "ratio": 0.7537
+      "ratio": 0.7537,
+      "linkPending": true,
+      "oldBuyUrl": "https://buy.stripe.com/3cI28r3dX0mObbDdUcfIs04"
     },
     {
       "id": "the-long-road",
@@ -1126,8 +1152,8 @@
       "painted": "September 2026",
       "remarks": "",
       "sold": false,
-      "price": 220,
-      "buyUrl": "https://buy.stripe.com/5kQ5kD29T3z0gvX9DWfIs0v",
+      "price": 194,
+      "buyUrl": "",
       "description": "",
       "prints": {
         "size": "",
@@ -1144,7 +1170,9 @@
       },
       "image": "images/the-long-road.jpg",
       "thumb": "images/thumbs/the-long-road.jpg",
-      "ratio": 1.3099
+      "ratio": 1.3099,
+      "linkPending": true,
+      "oldBuyUrl": "https://buy.stripe.com/5kQ5kD29T3z0gvX9DWfIs0v"
     },
     {
       "id": "green-stillness",
@@ -1242,8 +1270,8 @@
       "painted": "November 2026",
       "remarks": "Unframed",
       "sold": false,
-      "price": 200,
-      "buyUrl": "https://buy.stripe.com/4gM3cv4i1b1s0wZ8zSfIt1I",
+      "price": 194,
+      "buyUrl": "",
       "description": "",
       "prints": {
         "size": "",
@@ -1260,7 +1288,9 @@
       },
       "image": "images/out-of-time-mwe7hc6u.jpg",
       "thumb": "images/thumbs/out-of-time-mwe7hc6u.jpg",
-      "ratio": 0.7518
+      "ratio": 0.7518,
+      "linkPending": true,
+      "oldBuyUrl": "https://buy.stripe.com/4gM3cv4i1b1s0wZ8zSfIt1I"
     },
     {
       "id": "ember",
@@ -1300,10 +1330,11 @@
       "painted": "December 2024",
       "remarks": "In frame with matting",
       "sold": false,
-      "price": 390,
+      "price": 277,
       "buyUrl": "https://buy.stripe.com/5kQ5kD01L6LcenP8zSfIs08",
       "description": "",
       "prints": {
+        "available": true,
         "size": "",
         "price": null,
         "buyUrl": "",
@@ -1313,12 +1344,13 @@
           "A3": "https://buy.stripe.com/3cI6oHbKt7Pg1B3bM4fIs3Z",
           "A2": "https://buy.stripe.com/fZu7sL3dX3z03Jb4jCfIs40",
           "A1": "https://buy.stripe.com/bJe7sL4i10mO0wZ6rKfIs41"
-        },
-        "available": true
+        }
       },
       "image": "images/soft-collage.jpg",
       "thumb": "images/thumbs/soft-collage.jpg",
-      "ratio": 1.0018
+      "ratio": 1.0018,
+      "linkPending": true,
+      "oldBuyUrl": "https://buy.stripe.com/5kQ5kD01L6LcenP8zSfIs08"
     },
     {
       "id": "copper-tide",
@@ -1329,7 +1361,7 @@
       "painted": "May 2024",
       "remarks": "With floating white frame",
       "sold": false,
-      "price": 1550,
+      "price": 1150,
       "buyUrl": "https://buy.stripe.com/3cI00jaGpd9Aa7zeYgfIs0l",
       "description": "",
       "prints": {
@@ -1347,7 +1379,9 @@
       },
       "image": "images/copper-tide-mwiqpsh8.jpg",
       "thumb": "images/thumbs/copper-tide-mwiqpsh8.jpg",
-      "ratio": 1.3555
+      "ratio": 1.3555,
+      "linkPending": true,
+      "oldBuyUrl": "https://buy.stripe.com/3cI00jaGpd9Aa7zeYgfIs0l"
     },
     {
       "id": "nebula",
@@ -1561,7 +1595,7 @@
       "painted": "March 2023",
       "remarks": "With black brushed aluminium floating frame",
       "sold": false,
-      "price": 420,
+      "price": 438,
       "buyUrl": "https://buy.stripe.com/8x24gzaGp0mOfrT4jCfIs0w",
       "description": "",
       "prints": {
@@ -1579,7 +1613,9 @@
       },
       "image": "images/the-monolith.jpg",
       "thumb": "images/thumbs/the-monolith.jpg",
-      "ratio": 0.7378
+      "ratio": 0.7378,
+      "linkPending": true,
+      "oldBuyUrl": "https://buy.stripe.com/8x24gzaGp0mOfrT4jCfIs0w"
     },
     {
       "id": "a-lovely-night",
@@ -1590,8 +1626,8 @@
       "painted": "October 2026",
       "remarks": "",
       "sold": false,
-      "price": 250,
-      "buyUrl": "https://buy.stripe.com/6oU8wPg0J3z0cfH9DWfIs0m",
+      "price": 140,
+      "buyUrl": "",
       "description": "",
       "prints": {
         "size": "",
@@ -1608,7 +1644,9 @@
       },
       "image": "images/a-lovely-night.jpg",
       "thumb": "images/thumbs/a-lovely-night.jpg",
-      "ratio": 0.8242
+      "ratio": 0.8242,
+      "linkPending": true,
+      "oldBuyUrl": "https://buy.stripe.com/6oU8wPg0J3z0cfH9DWfIs0m"
     },
     {
       "id": "summer-girl",
@@ -1619,8 +1657,8 @@
       "painted": "October 2025",
       "remarks": "",
       "sold": false,
-      "price": 1450,
-      "buyUrl": "https://buy.stripe.com/4gM7sL5m59Xo4NfcQ8fIs0j",
+      "price": 950,
+      "buyUrl": "",
       "description": "",
       "prints": {
         "size": "",
@@ -1637,7 +1675,9 @@
       },
       "image": "images/summer-girl.jpg",
       "thumb": "images/thumbs/summer-girl.jpg",
-      "ratio": 0.7378
+      "ratio": 0.7378,
+      "linkPending": true,
+      "oldBuyUrl": "https://buy.stripe.com/4gM7sL5m59Xo4NfcQ8fIs0j"
     },
     {
       "id": "mother-hen",
@@ -1677,8 +1717,8 @@
       "painted": "September 2026",
       "remarks": "",
       "sold": false,
-      "price": 200,
-      "buyUrl": "https://buy.stripe.com/dRm6oHg0Jb1s2F7g2kfIs0x",
+      "price": 194,
+      "buyUrl": "",
       "description": "",
       "prints": {
         "size": "",
@@ -1695,7 +1735,9 @@
       },
       "image": "images/under-the-trees.jpg",
       "thumb": "images/thumbs/under-the-trees.jpg",
-      "ratio": 0.7293
+      "ratio": 0.7293,
+      "linkPending": true,
+      "oldBuyUrl": "https://buy.stripe.com/dRm6oHg0Jb1s2F7g2kfIs0x"
     },
     {
       "id": "in-the-studio",
@@ -1706,8 +1748,8 @@
       "painted": "May 2024",
       "remarks": "",
       "sold": false,
-      "price": 1450,
-      "buyUrl": "https://buy.stripe.com/eVq7sLeWF6Lc7Zr6rKfIs0k",
+      "price": 950,
+      "buyUrl": "",
       "description": "",
       "prints": {
         "size": "",
@@ -1724,7 +1766,9 @@
       },
       "image": "images/in-the-studio.jpg",
       "thumb": "images/thumbs/in-the-studio.jpg",
-      "ratio": 0.7366
+      "ratio": 0.7366,
+      "linkPending": true,
+      "oldBuyUrl": "https://buy.stripe.com/eVq7sLeWF6Lc7Zr6rKfIs0k"
     },
     {
       "id": "afternoon-light",
@@ -1735,8 +1779,8 @@
       "painted": "March 2026",
       "remarks": "",
       "sold": false,
-      "price": 480,
-      "buyUrl": "https://buy.stripe.com/00wcN5cOxfhIdjL17qfIs0n",
+      "price": 290,
+      "buyUrl": "",
       "description": "",
       "prints": {
         "size": "",
@@ -1753,7 +1797,9 @@
       },
       "image": "images/afternoon-light.jpg",
       "thumb": "images/thumbs/afternoon-light.jpg",
-      "ratio": 1.2275
+      "ratio": 1.2275,
+      "linkPending": true,
+      "oldBuyUrl": "https://buy.stripe.com/00wcN5cOxfhIdjL17qfIs0n"
     },
     {
       "id": "summer-fruit",
@@ -1851,8 +1897,8 @@
       "painted": "October 2026",
       "remarks": "",
       "sold": false,
-      "price": 190,
-      "buyUrl": "https://buy.stripe.com/eVqcN529Tb1sa7z9DWfIs0t",
+      "price": 140,
+      "buyUrl": "",
       "description": "",
       "prints": {
         "size": "",
@@ -1869,7 +1915,9 @@
       },
       "image": "images/summer-portrait.jpg",
       "thumb": "images/thumbs/summer-portrait.jpg",
-      "ratio": 1.2346
+      "ratio": 1.2346,
+      "linkPending": true,
+      "oldBuyUrl": "https://buy.stripe.com/eVqcN529Tb1sa7z9DWfIs0t"
     },
     {
       "id": "by-the-old-bridge",
@@ -1909,8 +1957,8 @@
       "painted": "October 2026",
       "remarks": "",
       "sold": false,
-      "price": 200,
-      "buyUrl": "https://buy.stripe.com/5kQeVd15PfhI6VncQ8fIt1w",
+      "price": 194,
+      "buyUrl": "",
       "description": "",
       "prints": {
         "size": "",
@@ -1927,7 +1975,9 @@
       },
       "image": "images/yellow-mvepdzpf.jpg",
       "thumb": "images/thumbs/yellow-mvepdzpf.jpg",
-      "ratio": 0.7383
+      "ratio": 0.7383,
+      "linkPending": true,
+      "oldBuyUrl": "https://buy.stripe.com/5kQeVd15PfhI6VncQ8fIt1w"
     }
   ],
   "text": {
