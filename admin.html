@@ -130,6 +130,15 @@ button,input,select,textarea{font:inherit;color:inherit}
 .cal-ctl{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin-top:12px;font-size:.92rem}
 .cal-ctl input[type=range]{width:min(320px,70vw);accent-color:var(--ink)}
 .cal-ctl output{min-width:3.5em;font-weight:500}
+.pp-tbl{width:100%;border-collapse:collapse;font-size:.88rem;margin:8px 0 4px}
+.pp-tbl th{text-align:left;font-weight:500;color:var(--soft);border-bottom:1px solid var(--line);padding:6px 8px 6px 0}
+.pp-tbl td{border-bottom:1px solid var(--line);padding:6px 8px 6px 0;vertical-align:top}
+.pp-tbl td.n,.pp-tbl th.n{text-align:right;white-space:nowrap}
+.pp-sum{margin:14px 0 4px;font-weight:500}
+.pp-box{max-height:340px;overflow:auto}
+.pp-in{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px 18px;margin:14px 0 12px}
+.pp-in .f{margin:0}
+.pp-in input,.pp-in select{border:1px solid var(--line);background:var(--bg);padding:8px 10px;font:inherit;width:140px}
 .size span{color:var(--soft)}
 .out{font-size:.88rem;color:var(--soft);font-variant-numeric:tabular-nums}
 .out b{color:var(--ink);font-weight:500}
@@ -315,6 +324,18 @@ legend{padding:0 6px;font-size:.74rem;letter-spacing:.09em;text-transform:upperc
           <input type="file" id="aboutFile" accept="image/*">
           <div><button class="btn" type="button" id="aboutBtn" disabled>Upload about photo</button></div>
         </div></div>
+      </div>
+      <div class="calwrap" id="ppWrap">
+        <p class="sub" style="margin-top:20px">Price by size</p>
+        <p class="hint" style="margin-top:4px">Set a price per square inch and update every available original in one go. The area is width × height in inches. Sold paintings and paintings with no price (price on request) are left alone. Framed paintings are skipped and tagged “Price manually”, because the frame changes the price. Check the preview, then press Update prices. Nothing changes on the website until you press Publish changes.</p>
+        <div class="pp-in">
+          <div class="f"><label for="ppRate">Price per square inch (AUD)</label><input id="ppRate" type="number" min="0" step="0.01" placeholder="e.g. 1.20"></div>
+          <div class="f"><label for="ppRound">Round to</label><select id="ppRound"><option value="1">nearest $1</option><option value="5">nearest $5</option><option value="10" selected>nearest $10</option></select></div>
+        </div>
+        <label class="check"><input type="checkbox" id="ppPause" checked> Pause the Buy button on paintings whose price changes until their new Stripe links are imported (recommended: an old Stripe link keeps charging the old price)</label>
+        <div id="ppPrev"></div>
+        <div class="prbtns"><button class="btn primary" type="button" id="ppApply" disabled>Update prices</button><button class="btn" type="button" id="ppCsv" hidden>Download list for Stripe</button></div>
+        <p class="out" id="ppOut"></p>
       </div>
       <div class="calwrap">
         <p class="sub" style="margin-top:20px">See it on a wall: room sizes</p>
@@ -667,7 +688,7 @@ function renderGroups(){
         <button class="grip" type="button" aria-label="Drag to move ${esc(a.title)}">${GRIP}</button>
         <img src="${esc(thumbSrc(a))}" alt="" loading="lazy">
         <div class="ttl"><b>${esc(a.title)}</b><small>${esc(meta)}</small></div>
-        <div class="chips">${sizeMismatch(a) ? '<span class="chip ck" title="The size and the photo disagree about landscape or portrait">Check size</span>' : ""}${ch.has(a.id) ? '<span class="chip ch">Edited</span>' : ""}${inBanner.has(a.id) ? '<span class="chip bn">Banner</span>' : ""}<span class="chip ${a.sold ? "sd" : "av"}">${a.sold ? "Sold" : "Available"}</span></div>
+        <div class="chips">${a.priceManual && !a.sold ? '<span class="chip ck" title="Framed: set this price yourself">Price manually</span>' : ""}${a.linkPending && !a.sold ? '<span class="chip ck" title="The price changed: make a new Stripe link and import it">New link needed</span>' : ""}${sizeMismatch(a) ? '<span class="chip ck" title="The size and the photo disagree about landscape or portrait">Check size</span>' : ""}${ch.has(a.id) ? '<span class="chip ch">Edited</span>' : ""}${inBanner.has(a.id) ? '<span class="chip bn">Banner</span>' : ""}<span class="chip ${a.sold ? "sd" : "av"}">${a.sold ? "Sold" : "Available"}</span></div>
         <button class="btn edit" type="button" data-edit="${a.id}">Edit</button>
       </li>`;
     }).join("");
@@ -970,7 +991,14 @@ $("form").addEventListener("submit", e => {
   a.painted = $("fMonth").value && $("fYear").value ? `${$("fMonth").value} ${$("fYear").value}` : ($("fYear").value || "");
   a.remarks = $("fFrame").value.trim();
   a.sold = $("stS").checked;
+  const was = {price: a.price, buy: a.buyUrl || ""};
   a.price = a.sold ? null : num($("fPrice").value); a.buyUrl = a.sold ? "" : $("fBuy").value.trim();
+  if(!isNew && a.price !== was.price){
+    delete a.priceManual;                                  // the price has been set by hand
+    if(a.buyUrl && a.buyUrl === was.buy){ a.linkPending = true; a.oldBuyUrl = a.buyUrl; }   // the old link still charges the old price
+  }
+  if(a.buyUrl && a.buyUrl !== was.buy && a.buyUrl !== a.oldBuyUrl){ delete a.linkPending; delete a.oldBuyUrl; }
+  if(a.sold){ delete a.priceManual; delete a.linkPending; delete a.oldBuyUrl; }
   const pr = $("fPr").checked;
   if(S.printSizes.length){
     const links = {}; $("prLinks").querySelectorAll("input[data-sz]").forEach(i => { if(i.value.trim()) links[i.dataset.sz] = i.value.trim(); });
@@ -1115,7 +1143,7 @@ $("prCsv").addEventListener("change", async () => {
       if(a && sz.toLowerCase() === "original" && /^https:\/\//.test(url)){
         if(a.sold){ skipped++; return; }   // a sold painting keeps no buy link
         const pr = ci("price_aud") >= 0 ? Number(r[ci("price_aud")]) : NaN;
-        a.buyUrl = url; if(pr > 0) a.price = pr;
+        a.buyUrl = url; if(pr > 0) a.price = pr; delete a.linkPending; delete a.oldBuyUrl;
         origs++; touchedP.add(a.id); return;
       }
       if(!a || !sizes.has(sz) || !/^https:\/\//.test(url)){ skipped++; return; }
@@ -1127,6 +1155,65 @@ $("prCsv").addEventListener("change", async () => {
     $("prCsvOut").textContent = `Imported ${done + origs} link${done + origs === 1 ? "" : "s"} (${origs} original${origs === 1 ? "" : "s"}, ${done} print size${done === 1 ? "" : "s"}) for ${touchedP.size} painting${touchedP.size === 1 ? "" : "s"}.` + (skipped ? ` ${skipped} row${skipped === 1 ? " was" : "s were"} skipped (unknown painting or size, or not a link).` : "") + " Press Publish changes to put them on the website.";
   }catch(e){ $("prCsvOut").textContent = e.message; }
   $("prCsv").value = "";
+});
+
+/* ---------- price by size ---------- */
+// framed unless the framing text says otherwise ("Unframed", "No frame", ...)
+const isFramed = a => { const t = String(a.remarks || "").toLowerCase(); return /frame/.test(t) && !/unframed|no frame|not framed|without (a )?frame|frame not included|frameless/.test(t); };
+// width and height in inches, from "16 x 20 in · 41 x 51 cm" (or cm only)
+function sizeIn(a){
+  const t = String(a.size || "");
+  let m = t.match(/([\d.]+)\s*[x×]\s*([\d.]+)\s*(in\b|")/i);
+  if(m) return {w: +m[1], h: +m[2]};
+  if((m = t.match(/([\d.]+)\s*[x×]\s*([\d.]+)\s*cm/i))) return {w: m[1] / 2.54, h: m[2] / 2.54};
+  return null;
+}
+const money0 = n => "$" + Math.round(n).toLocaleString("en-AU");
+function ppPlan(){
+  const rate = +$("ppRate").value, step = +$("ppRound").value || 1;
+  const plan = {change: [], same: [], framed: [], skipped: []};
+  S.paintings.forEach(a => {
+    if(a.sold) return;
+    if(!(a.price > 0)){ plan.skipped.push([a, "no price (price on request)"]); return; }
+    if(isFramed(a)){ plan.framed.push(a); return; }
+    const z = sizeIn(a); if(!z || !(z.w > 0 && z.h > 0)){ plan.skipped.push([a, "no size"]); return; }
+    if(!(rate > 0)) return;
+    const area = z.w * z.h, np = Math.max(step, Math.round(area * rate / step) * step);
+    (np === a.price ? plan.same : plan.change).push({a, z, area, np});
+  });
+  return plan;
+}
+function renderPP(){
+  const p = ppPlan(), rate = +$("ppRate").value, pend = S.paintings.filter(a => a.linkPending && !a.sold);
+  $("ppCsv").hidden = !pend.length; $("ppCsv").textContent = `Download list for Stripe (${pend.length})`;
+  $("ppApply").disabled = !(rate > 0) || !(p.change.length || p.framed.some(a => !a.priceManual));
+  $("ppApply").textContent = p.change.length ? `Update ${p.change.length} price${p.change.length > 1 ? "s" : ""}` : "Update prices";
+  if(!(rate > 0)){ $("ppPrev").innerHTML = p.framed.length ? `<p class="out">${p.framed.length} framed painting${p.framed.length > 1 ? "s" : ""} will be tagged “Price manually”.</p>` : ""; return; }
+  const row = x => `<tr><td>${esc(x.a.title)}</td><td>${(+x.z.w.toFixed(1))} × ${(+x.z.h.toFixed(1))} in</td><td class="n">${Math.round(x.area)} sq in</td><td class="n">${money0(x.a.price)}</td><td class="n"><b>${money0(x.np)}</b></td></tr>`;
+  $("ppPrev").innerHTML =
+    `<p class="pp-sum">${p.change.length} price${p.change.length === 1 ? "" : "s"} will change${p.same.length ? `, ${p.same.length} already match` : ""}</p>` +
+    (p.change.length ? `<div class="pp-box"><table class="pp-tbl"><thead><tr><th>Painting</th><th>Size</th><th class="n">Area</th><th class="n">Now</th><th class="n">New</th></tr></thead><tbody>${p.change.map(row).join("")}</tbody></table></div>` : "") +
+    (p.framed.length ? `<p class="pp-sum">Framed, so set by hand (${p.framed.length})</p><p class="out">${p.framed.map(a => esc(a.title)).join(", ")}</p>` : "") +
+    (p.skipped.length ? `<p class="pp-sum">Left alone (${p.skipped.length})</p><p class="out">${p.skipped.map(([a, why]) => `${esc(a.title)} (${why})`).join(", ")}</p>` : "");
+}
+["ppRate", "ppRound"].forEach(id => $(id).addEventListener("input", renderPP));
+$("ppRound").addEventListener("change", renderPP);
+$("ppApply").addEventListener("click", () => {
+  const p = ppPlan(), pause = $("ppPause").checked; let paused = 0;
+  p.change.forEach(({a, np}) => {
+    a.price = np; delete a.priceManual;
+    if(a.buyUrl || a.oldBuyUrl){ a.linkPending = true; a.oldBuyUrl = a.oldBuyUrl || a.buyUrl; if(pause && a.buyUrl){ a.buyUrl = ""; paused++; } }
+  });
+  p.framed.forEach(a => { a.priceManual = true; });
+  touched(); renderGroups(); renderPP();
+  $("ppOut").textContent = `Updated ${p.change.length} price${p.change.length === 1 ? "" : "s"}` + (paused ? `, paused ${paused} Buy button${paused === 1 ? "" : "s"}` : "") + (p.framed.length ? `, tagged ${p.framed.length} framed painting${p.framed.length === 1 ? "" : "s"} “Price manually”` : "") + ". Press Publish changes to put the new prices on the website.";
+});
+$("ppCsv").addEventListener("click", () => {
+  const q = v => /[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : String(v);
+  const rows = [["id", "title", "new_price", "old_payment_link"]].concat(S.paintings.filter(a => a.linkPending && !a.sold).map(a => [a.id, a.title, a.price ?? "", a.oldBuyUrl || a.buyUrl || ""]));
+  const url = URL.createObjectURL(new Blob([rows.map(r => r.map(q).join(",")).join("\r\n") + "\r\n"], {type: "text/csv"}));
+  const el = document.createElement("a"); el.href = url; el.download = "price_changes.csv"; document.body.appendChild(el); el.click(); el.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 3000);
 });
 
 /* ---------- room sizes for "See it on a wall" ---------- */
@@ -1201,7 +1288,7 @@ $("calK").addEventListener("change", () => { touched(); renderCal(); });
 $("calReset").addEventListener("click", () => { delete S.rooms[calRoom]; touched(); renderCal(); toast("Room reset to the original estimate"); });
 
 function renderSettings(){
-  renderPrintRows(); renderCal();
+  renderPrintRows(); renderCal(); renderPP();
   const c = conn();
   $("connInfo").textContent = `Saving to ${c.owner}/${c.repo} (${c.branch}).`;
   $("aboutImg").src = "images/about.jpg?t=" + Date.now();
