@@ -424,7 +424,7 @@ legend{padding:0 6px;font-size:.74rem;letter-spacing:.09em;text-transform:upperc
       <div id="rmConfirm" hidden class="rmc"><span>Remove it? You can't undo this after publishing.</span><button class="btn" type="button" id="rmYes">Yes, remove</button><button class="btn quiet" type="button" id="rmNo">Keep it</button></div>
     </div>
   </form>
-  <div class="sh-foot"><button class="btn quiet" type="button" id="shCancel">Cancel</button><button class="btn primary" type="submit" form="form" id="saveBtn">Save painting</button></div>
+  <div class="sh-foot"><button class="btn quiet" type="button" id="coaBtn" style="margin-right:auto">Certificate</button><button class="btn quiet" type="button" id="shCancel">Cancel</button><button class="btn primary" type="submit" form="form" id="saveBtn">Save painting</button></div>
 </aside>
 
 <aside class="sheet" id="xsheet" hidden role="dialog" aria-modal="true" aria-labelledby="xsTitle">
@@ -478,6 +478,26 @@ legend{padding:0 6px;font-size:.74rem;letter-spacing:.09em;text-transform:upperc
   <div class="sh-foot"><button class="btn quiet" type="button" id="xsCancel">Cancel</button><button class="btn primary" type="submit" form="xform" id="xSave">Save exhibition</button></div>
 </aside>
 
+<dialog id="coaDlg" aria-labelledby="coaT" style="border:1px solid var(--line);padding:0;max-width:min(460px,94vw);background:var(--bg);color:var(--ink)">
+  <form method="dialog" id="coaForm" style="padding:22px 24px 20px;display:grid;gap:14px">
+    <h3 id="coaT" style="font-family:var(--serif,Newsreader,serif);font-weight:400;font-size:1.5rem;margin:0">Certificate of authenticity</h3>
+    <p class="out" style="margin:0">Makes a printable A4 certificate for <b id="coaName"></b>. In the print window choose “Save as PDF”, or print it and have Carelyn sign it. Nothing here is saved to the website.</p>
+    <fieldset style="border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center">
+      <legend class="lbl" style="padding:0;margin-bottom:6px">This certificate is for</legend>
+      <label class="check"><input type="radio" name="coaKind" value="original" id="coaOrig" checked> The original painting</label>
+      <label class="check"><input type="radio" name="coaKind" value="print" id="coaPrint"> A print</label>
+    </fieldset>
+    <div class="f" id="coaSizeRow" hidden><label for="coaSize">Print size</label><select id="coaSize" style="border:1px solid var(--line);background:var(--bg);padding:8px 10px;font:inherit"></select></div>
+    <div class="f"><label for="coaWho">Collector's name (optional)</label><input id="coaWho" type="text" autocomplete="off" placeholder="Who bought it"></div>
+    <div class="two">
+      <div class="f"><label for="coaDate">Date of issue</label><input id="coaDate" type="date"></div>
+      <div class="f"><label for="coaNo">Certificate number</label><input id="coaNo" type="text"></div>
+    </div>
+    <div class="f"><label for="coaNote">Extra note (optional)</label><input id="coaNote" type="text" placeholder="e.g. Signed and titled on the reverse"></div>
+    <label class="check"><input type="checkbox" id="coaPic" checked> Include the photo of the painting</label>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px"><button class="btn quiet" type="button" id="coaCancel">Cancel</button><button class="btn primary" type="button" id="coaGo">Create certificate</button></div>
+  </form>
+</dialog>
 <div class="pub" id="pub" hidden role="dialog" aria-modal="true" aria-labelledby="pubH"><div>
   <h3 id="pubH">Publish changes</h3>
   <p style="margin:0;color:var(--soft);font-size:.92rem" id="pubIntro">These changes go to the website now. They usually appear within a minute or two.</p>
@@ -1159,6 +1179,102 @@ $("prCsv").addEventListener("change", async () => {
     $("prCsvOut").textContent = `Imported ${done + origs} link${done + origs === 1 ? "" : "s"} (${origs} original${origs === 1 ? "" : "s"}, ${done} print size${done === 1 ? "" : "s"}) for ${touchedP.size} painting${touchedP.size === 1 ? "" : "s"}.` + (skipped ? ` ${skipped} row${skipped === 1 ? " was" : "s were"} skipped (unknown painting or size, or not a link).` : "") + " Press Publish changes to put them on the website.";
   }catch(e){ $("prCsvOut").textContent = e.message; }
   $("prCsv").value = "";
+});
+
+/* ---------- certificate of authenticity: made in the browser, only from the admin, never saved to the website ---------- */
+const coaNumber = a => {
+  let h = 0; for(const c of a.id) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+  const y = (String(a.painted || "").match(/\d{4}/) || [String(new Date().getFullYear())])[0];
+  return `CM-${y}-${(h % 0xFFFF).toString(16).toUpperCase().padStart(4, "0")}`;
+};
+const coaDay = iso => { const [y, m, d] = iso.split("-").map(Number); return new Intl.DateTimeFormat("en-AU", {day: "numeric", month: "long", year: "numeric", timeZone: "UTC"}).format(new Date(Date.UTC(y, m - 1, d))); };
+$("coaBtn").addEventListener("click", () => {
+  if(!editing || isNew){ toast("Save the painting first, then make its certificate"); return; }
+  const a = editing;
+  $("coaName").textContent = a.title; $("coaWho").value = ""; $("coaNote").value = "";
+  $("coaDate").value = new Intl.DateTimeFormat("en-CA", {timeZone: "Australia/Sydney"}).format(new Date());
+  $("coaPic").checked = true; $("coaOrig").checked = true;
+  $("coaSize").innerHTML = S.printSizes.map(z => `<option value="${esc(z.id)}">${esc(z.label)}${z.dims ? " · " + esc(z.dims) : ""}</option>`).join("");
+  $("coaPrint").disabled = !S.printSizes.length;
+  coaKind(); $("coaDlg").showModal();
+});
+// original or print: show the size choice and give prints their own number (e.g. CM-2026-1EB6-A3)
+function coaKind(){
+  const pr = $("coaPrint").checked, a = editing; if(!a) return;
+  $("coaSizeRow").hidden = !pr;
+  $("coaNo").value = coaNumber(a) + (pr && $("coaSize").value ? "-" + $("coaSize").value : "");
+}
+["coaOrig", "coaPrint", "coaSize"].forEach(id => $(id).addEventListener("change", coaKind));
+$("coaCancel").addEventListener("click", () => $("coaDlg").close());
+$("coaGo").addEventListener("click", () => {
+  const a = editing; if(!a) return;
+  const pic = $("coaPic").checked ? (pendingImg[a.id] ? pendingImg[a.id].url : new URL(a.image || thumbSrc(a), location.href).href) : "";
+  const isPrint = $("coaPrint").checked, z = isPrint ? S.printSizes.find(x => x.id === $("coaSize").value) : null;
+  const kind = isPrint ? `Fine art print${z ? ", " + z.label : ""}` : "Original painting";
+  const no = $("coaNo").value.trim(), issued = $("coaDate").value ? coaDay($("coaDate").value) : "", who = $("coaWho").value.trim(), note = $("coaNote").value.trim();
+  const line = (...xs) => xs.filter(Boolean).map(esc).join(" · ");
+  const meta = [isPrint ? line(z ? `Print size ${z.label}` : "Print", z && z.dims ? z.dims : "") : "",
+    isPrint ? line(`From the original ${String(a.medium || "acrylic on canvas").toLowerCase()}`, a.size || "", a.painted ? "painted " + a.painted : "")
+            : line(a.medium || "Acrylic on canvas", a.size ? a.size + " (width × height)" : ""),
+    isPrint ? "" : line(a.painted ? "Painted " + a.painted : "", a.remarks),
+    [no ? `Certificate <b>${esc(no)}</b>` : "", issued ? "Issued " + esc(issued) : ""].filter(Boolean).join(" · "), line(who ? "Collector: " + who : "", note)].filter(Boolean).join("<br>");
+  const seal = `<svg viewBox="0 0 120 120" width="34mm" height="34mm" aria-hidden="true"><defs><path id="c" d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0"/></defs>
+<circle cx="60" cy="60" r="57" fill="none" stroke="#7B2E1F" stroke-width="1.2"/><circle cx="60" cy="60" r="52" fill="none" stroke="#7B2E1F" stroke-width=".5"/><circle cx="60" cy="60" r="33" fill="none" stroke="#7B2E1F" stroke-width=".5"/>
+<text font-family="Hanken Grotesk, sans-serif" font-size="7.2" letter-spacing="2.6" fill="#7B2E1F"><textPath href="#c">${isPrint ? "AUTHENTIC PRINT" : "ORIGINAL WORK"} · CARELYN MADASCHI · ${esc(no || "")} ·</textPath></text>
+<text x="60" y="68" text-anchor="middle" font-family="Newsreader, serif" font-style="italic" font-size="26" fill="#7B2E1F">CM</text></svg>`;
+  const corner = `<svg viewBox="0 0 40 40" width="13mm" height="13mm" aria-hidden="true"><path d="M2 38 V2 H38" fill="none" stroke="#7B2E1F" stroke-width="1"/><path d="M7 38 V7 H38" fill="none" stroke="#7B2E1F" stroke-width=".4"/><circle cx="7" cy="7" r="1.6" fill="#7B2E1F"/></svg>`;
+  const html = `<!doctype html><html lang="en-AU"><head><meta charset="utf-8"><title>Certificate of authenticity: ${esc(a.title)}${isPrint && z ? " (" + esc(z.label) + " print)" : ""}</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300;1,6..72,400&family=Hanken+Grotesk:wght@300;400;500&display=swap">
+<style>
+@page{size:A4;margin:0}
+*{box-sizing:border-box}
+html,body{margin:0;background:#D9D4CB;color:#2A2420;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{padding-top:44px}
+.p{width:210mm;height:297mm;margin:10mm auto;background:#F3EBDD;padding:12mm;position:relative;box-shadow:0 2px 14px rgba(0,0,0,.18)}
+.c{position:absolute;line-height:0}.c1{top:9mm;left:9mm}.c2{top:9mm;right:9mm;transform:scaleX(-1)}.c3{bottom:9mm;left:9mm;transform:scaleY(-1)}.c4{bottom:9mm;right:9mm;transform:scale(-1,-1)}
+.in{height:100%;padding:16mm 18mm 12mm;display:flex;flex-direction:column;align-items:center;text-align:center}
+.k{font:400 8.5pt/1 'Hanken Grotesk',sans-serif;letter-spacing:.34em;text-transform:uppercase;color:#7B2E1F;margin:0}
+h1{font:300 32pt/1.05 Newsreader,serif;margin:5mm 0 2mm}
+.orn{color:#7B2E1F;font:400 13pt Newsreader,serif;margin:0 0 3mm;letter-spacing:.6em}
+.kind{font:500 9pt/1 'Hanken Grotesk',sans-serif;letter-spacing:.26em;text-transform:uppercase;margin:0 0 7mm;color:#2A2420}
+.img{height:72mm;margin:0 0 8mm;display:flex;align-items:center;justify-content:center}.img img{max-height:100%;max-width:150mm;border:2.4mm solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.25)}
+.t{font:italic 400 18pt/1.2 Newsreader,serif;margin:0 0 4mm}
+.meta{font:300 10.5pt/1.75 Newsreader,serif;margin:0 0 6mm}.meta b{font-weight:400}
+.st{font:italic 300 10.5pt/1.6 Newsreader,serif;max-width:150mm;margin:0 0 auto;color:#3D3530}
+.foot{width:100%;display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:8mm;margin-top:8mm}
+.sig{border-top:0.3mm solid #2A2420;padding-top:2mm;font:400 8.5pt 'Hanken Grotesk',sans-serif;color:#5A5048}
+.ft{margin:6mm 0 0;font:400 7.5pt 'Hanken Grotesk',sans-serif;letter-spacing:.16em;color:#7B2E1F}
+.bar{position:fixed;top:0;left:0;right:0;z-index:2;background:#2A2420;color:#fff;font:400 13px/1.4 'Hanken Grotesk',sans-serif;padding:10px 16px;display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap}
+.bar button{font:inherit;background:#fff;color:#2A2420;border:0;padding:6px 14px;cursor:pointer}
+@media print{html,body{background:#fff;padding:0}.p{margin:0;box-shadow:none}.bar{display:none}}
+</style></head><body>
+<div class="bar">Choose “Save as PDF” as the printer to keep a copy, or print it for Carelyn to sign. <button onclick="print()">Print or save as PDF</button></div>
+<div class="p"><span class="c c1">${corner}</span><span class="c c2">${corner}</span><span class="c c3">${corner}</span><span class="c c4">${corner}</span>
+<div class="in">
+  <p class="k">Carelyn Madaschi · Fine Art</p>
+  <h1>Certificate of Authenticity</h1>
+  <p class="orn">◆ ◆ ◆</p>
+  <p class="kind">${esc(kind)}</p>
+  ${pic ? `<div class="img"><img src="${esc(pic)}" alt=""></div>` : ""}
+  <p class="t">${esc(a.title)}</p>
+  <p class="meta">${meta}</p>
+  <p class="st">${isPrint
+    ? "I certify that this is an authentic print of my original painting described above, produced and approved by me. It is a reproduction, not the original painting. Copyright in the image, including the right to reproduce it, remains with the artist."
+    : "I certify that the artwork described above is an original painting created by me. It is a unique work, painted by hand, and is not a print or a reproduction. Copyright in the image, including the right to reproduce it, remains with the artist."}</p>
+  <div class="foot"><div class="sig">Carelyn Madaschi, artist</div>${seal}<div class="sig">Date</div></div>
+  <p class="ft">CARELYNMADASCHI.COM · @SASSYCARE_ART · BOWRAL, NSW</p>
+</div></div>
+<script>
+  const go = () => setTimeout(() => print(), 300);
+  Promise.all([document.fonts ? document.fonts.ready : 0, ...[...document.images].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; }))]).then(go);
+<\/script>
+</body></html>`;
+  // open it as its own page, made in the browser; nothing is uploaded
+  const url = URL.createObjectURL(new Blob([html], {type: "text/html"}));
+  const w = window.open(url, "_blank");
+  if(!w){ toast("Your browser blocked the certificate window. Allow pop-ups for this page and try again."); URL.revokeObjectURL(url); return; }
+  setTimeout(() => URL.revokeObjectURL(url), 120000);
+  $("coaDlg").close();
 });
 
 /* ---------- price by size ---------- */
