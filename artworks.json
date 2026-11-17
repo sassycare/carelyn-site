@@ -316,6 +316,7 @@
       "buyUrl": "https://buy.stripe.com/5kQ5kDcOxc5wcfH8zSfIs0y",
       "description": "",
       "prints": {
+        "available": true,
         "size": "",
         "price": null,
         "buyUrl": "",
@@ -325,12 +326,12 @@
           "A3": "https://buy.stripe.com/5kQ8wPcOxb1sgvX7vOfIs1p",
           "A2": "https://buy.stripe.com/6oUbJ19ClglMbbDaI0fIs1q",
           "A1": "https://buy.stripe.com/6oUdR915P4D4gvX9DWfIs1r"
-        },
-        "available": true
+        }
       },
       "image": "images/wedding-day.jpg",
       "thumb": "images/thumbs/wedding-day.jpg",
-      "ratio": 1.4423
+      "ratio": 1.4423,
+      "framed": true
     },
     {
       "id": "island-swing",
@@ -359,7 +360,8 @@
       },
       "image": "images/island-swing.jpg",
       "thumb": "images/thumbs/island-swing.jpg",
-      "ratio": 0.6492
+      "ratio": 0.6492,
+      "framed": true
     },
     {
       "id": "the-tropical-swingbed",
@@ -1557,12 +1559,13 @@
       "size": "16 x 24 in · 41 x 61 cm",
       "medium": "Acrylic on canvas",
       "painted": "March 2023",
-      "remarks": "With black floating frame",
+      "remarks": "With black brushed aluminium floating frame",
       "sold": false,
       "price": 420,
       "buyUrl": "https://buy.stripe.com/8x24gzaGp0mOfrT4jCfIs0w",
       "description": "",
       "prints": {
+        "available": true,
         "size": "",
         "price": null,
         "buyUrl": "",
@@ -1572,8 +1575,7 @@
           "A3": "https://buy.stripe.com/dRm4gz5m5fhIbbD9DWfIt0A",
           "A2": "https://buy.stripe.com/3cIeVd4i14D40wZ6rKfIt0B",
           "A1": "https://buy.stripe.com/9B67sL7ud2uW7Zr6rKfIt0C"
-        },
-        "available": true
+        }
       },
       "image": "images/the-monolith.jpg",
       "thumb": "images/thumbs/the-monolith.jpg",
