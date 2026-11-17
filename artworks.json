@@ -339,12 +339,13 @@
       "size": "22.6 x 34.4 in · 57.5 x 87.5 cm",
       "medium": "Acrylic on wood",
       "painted": "October 2026",
-      "remarks": "",
+      "remarks": "Natural",
       "sold": false,
       "price": 950,
       "buyUrl": "https://buy.stripe.com/7sY8wP01L1qS5RjcQ8fIs0h",
       "description": "",
       "prints": {
+        "available": true,
         "size": "",
         "price": null,
         "buyUrl": "",
@@ -354,8 +355,7 @@
           "A3": "https://buy.stripe.com/eVq6oHcOx0mO93v5nGfIs1u",
           "A2": "https://buy.stripe.com/eVq7sL01L5H8gvXaI0fIs1v",
           "A1": "https://buy.stripe.com/fZueVddSBb1s4Nf3fyfIs1w"
-        },
-        "available": true
+        }
       },
       "image": "images/island-swing.jpg",
       "thumb": "images/thumbs/island-swing.jpg",
