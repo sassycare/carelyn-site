@@ -327,8 +327,9 @@ legend{padding:0 6px;font-size:.74rem;letter-spacing:.09em;text-transform:upperc
       </div>
       <div class="calwrap" id="ppWrap">
         <p class="sub" style="margin-top:20px">Price by size</p>
-        <p class="hint" style="margin-top:4px">Set a price per square inch and update every available original in one go. The area is width × height in inches. Sold paintings and paintings with no price (price on request) are left alone. Framed paintings are skipped and tagged “Price manually”, because the frame changes the price. Check the preview, then press Update prices. Nothing changes on the website until you press Publish changes.</p>
+        <p class="hint" style="margin-top:4px">Set a base amount and a price per square inch, and update every available original in one go. Price = base amount + (width × height in inches × price per square inch), then rounded. Sold paintings and paintings with no price (price on request) are left alone. Framed paintings are skipped and tagged “Price manually”, because the frame changes the price. Check the preview, then press Update prices. Nothing changes on the website until you press Publish changes.</p>
         <div class="pp-in">
+          <div class="f"><label for="ppBase">Base amount (AUD)</label><input id="ppBase" type="number" min="0" step="1" value="50"></div>
           <div class="f"><label for="ppRate">Price per square inch (AUD)</label><input id="ppRate" type="number" min="0" step="0.01" placeholder="e.g. 1.20"></div>
           <div class="f"><label for="ppRound">Round to</label><select id="ppRound"><option value="1">nearest $1</option><option value="5">nearest $5</option><option value="10" selected>nearest $10</option></select></div>
         </div>
@@ -1176,13 +1177,13 @@ function sizeIn(a){
 }
 const money0 = n => "$" + Math.round(n).toLocaleString("en-AU");
 function ppPlan(){
-  const rate = +$("ppRate").value, step = +$("ppRound").value || 1;
+  const rate = +$("ppRate").value, step = +$("ppRound").value || 1, base = Math.max(0, +$("ppBase").value || 0);
   const plan = {rows: [], change: [], same: [], framed: [], skipped: []};
   S.paintings.forEach(a => {
     if(a.sold) return;
     if(!(a.price > 0)){ plan.skipped.push([a, "no price (price on request)"]); return; }
     const z = sizeIn(a); if(!z || !(z.w > 0 && z.h > 0)){ plan.skipped.push([a, "no size"]); return; }
-    const area = z.w * z.h, np = rate > 0 ? Math.max(step, Math.round(area * rate / step) * step) : null, fr = isFramed(a);
+    const area = z.w * z.h, np = rate > 0 ? Math.max(step, Math.round((base + area * rate) / step) * step) : null, fr = isFramed(a);
     const x = {a, z, area, np, fr}; plan.rows.push(x);
     if(fr) plan.framed.push(a); else if(np !== null) (np === a.price ? plan.same : plan.change).push(x);
   });
@@ -1210,7 +1211,7 @@ $("ppPrev").addEventListener("change", e => {
   touched(); renderGroups(); renderPP();
   const box = $("ppPrev").querySelector(".pp-box"); if(box) box.scrollTop = st;
 });
-["ppRate", "ppRound"].forEach(id => $(id).addEventListener("input", renderPP));
+["ppBase", "ppRate", "ppRound"].forEach(id => $(id).addEventListener("input", renderPP));
 $("ppRound").addEventListener("change", renderPP);
 $("ppApply").addEventListener("click", () => {
   const p = ppPlan(), pause = $("ppPause").checked; let paused = 0;
