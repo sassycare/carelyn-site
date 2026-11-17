@@ -390,6 +390,7 @@ legend{padding:0 6px;font-size:.74rem;letter-spacing:.09em;text-transform:upperc
       <div class="f"><label for="fYear">Painted (year)</label><select id="fYear"></select></div>
     </div>
     <div class="f"><label for="fFrame">Framing</label><input id="fFrame" type="text" placeholder="e.g. Natural floating frame, or Unframed"></div>
+    <label class="check"><input type="checkbox" id="fFramed"> Sold with a frame (Price by size leaves its price for you to set)</label>
     <fieldset>
       <legend>Original</legend>
       <div class="seg" role="radiogroup" aria-label="Original status">
@@ -619,7 +620,7 @@ function parseSize(s){
 }
 
 /* ---------- change tracking ---------- */
-const FIELDS = {title:"title", theme:"group", size:"size", medium:"medium", painted:"painted date", remarks:"framing", sold:"status", price:"price", buyUrl:"payment link", description:"description", prints:"prints"};
+const FIELDS = {framed: "framed", priceManual: "price tag", linkPending: "Stripe link tag", title:"title", theme:"group", size:"size", medium:"medium", painted:"painted date", remarks:"framing", sold:"status", price:"price", buyUrl:"payment link", description:"description", prints:"prints"};
 function changes(){
   if(!S) return [];
   const out = [], o = origById(), now = new Set(S.paintings.map(a => a.id));
@@ -940,7 +941,7 @@ function openEditor(id){
   $("fTitle").value = a.title; $("fGroup").value = a.theme; $("fMedium").value = a.medium || "";
   const sz = parseSize(a.size); $("fW").value = sz.w; $("fH").value = sz.h; $("fU").value = sz.u; $("fNote").value = sz.note;
   const [m, y] = (a.painted || "").split(" "); $("fMonth").value = MONTHS.includes(m) ? m : ""; $("fYear").value = y || (/^\d{4}$/.test(m || "") ? m : "");
-  $("fFrame").value = a.remarks || "";
+  $("fFrame").value = a.remarks || ""; $("fFramed").checked = isFramed(a);
   $("stA").checked = !a.sold; $("stS").checked = !!a.sold;
   $("fPrice").value = a.price ?? ""; $("fBuy").value = a.buyUrl || "";
   const p = a.prints || {}; $("fPr").checked = !!p.available; $("fPrSize").value = p.size || ""; $("fPrPrice").value = p.price ?? ""; $("fPrBuy").value = p.buyUrl || "";
@@ -990,6 +991,8 @@ $("form").addEventListener("submit", e => {
   a.size = sizeText(+$("fW").value, +$("fH").value, $("fU").value, $("fNote").value.trim());
   a.painted = $("fMonth").value && $("fYear").value ? `${$("fMonth").value} ${$("fYear").value}` : ($("fYear").value || "");
   a.remarks = $("fFrame").value.trim();
+  if($("fFramed").checked !== guessFramed(a) || typeof a.framed === "boolean") a.framed = $("fFramed").checked;
+  if(!$("fFramed").checked) delete a.priceManual;
   a.sold = $("stS").checked;
   const was = {price: a.price, buy: a.buyUrl || ""};
   a.price = a.sold ? null : num($("fPrice").value); a.buyUrl = a.sold ? "" : $("fBuy").value.trim();
@@ -1159,7 +1162,10 @@ $("prCsv").addEventListener("change", async () => {
 
 /* ---------- price by size ---------- */
 // framed unless the framing text says otherwise ("Unframed", "No frame", ...)
-const isFramed = a => { const t = String(a.remarks || "").toLowerCase(); return /frame/.test(t) && !/unframed|no frame|not framed|without (a )?frame|frame not included|frameless/.test(t); };
+// a painting's own "framed" setting (ticked in its editor or in the preview) always wins;
+// otherwise guess from the Framing text: "Natural floating frame", "Oak floater", "Black tray" count as framed
+const guessFramed = a => { const t = String(a.remarks || "").toLowerCase(); return /frame|float|tray|surround|timber|oak|walnut|moulding|molding/.test(t) && !/unframed|no frame|not framed|without (a )?frame|frame not included|frameless|unfloated/.test(t); };
+const isFramed = a => typeof a.framed === "boolean" ? a.framed : guessFramed(a);
 // width and height in inches, from "16 x 20 in · 41 x 51 cm" (or cm only)
 function sizeIn(a){
   const t = String(a.size || "");
@@ -1171,15 +1177,14 @@ function sizeIn(a){
 const money0 = n => "$" + Math.round(n).toLocaleString("en-AU");
 function ppPlan(){
   const rate = +$("ppRate").value, step = +$("ppRound").value || 1;
-  const plan = {change: [], same: [], framed: [], skipped: []};
+  const plan = {rows: [], change: [], same: [], framed: [], skipped: []};
   S.paintings.forEach(a => {
     if(a.sold) return;
     if(!(a.price > 0)){ plan.skipped.push([a, "no price (price on request)"]); return; }
-    if(isFramed(a)){ plan.framed.push(a); return; }
     const z = sizeIn(a); if(!z || !(z.w > 0 && z.h > 0)){ plan.skipped.push([a, "no size"]); return; }
-    if(!(rate > 0)) return;
-    const area = z.w * z.h, np = Math.max(step, Math.round(area * rate / step) * step);
-    (np === a.price ? plan.same : plan.change).push({a, z, area, np});
+    const area = z.w * z.h, np = rate > 0 ? Math.max(step, Math.round(area * rate / step) * step) : null, fr = isFramed(a);
+    const x = {a, z, area, np, fr}; plan.rows.push(x);
+    if(fr) plan.framed.push(a); else if(np !== null) (np === a.price ? plan.same : plan.change).push(x);
   });
   return plan;
 }
@@ -1188,14 +1193,23 @@ function renderPP(){
   $("ppCsv").hidden = !pend.length; $("ppCsv").textContent = `Download list for Stripe (${pend.length})`;
   $("ppApply").disabled = !(rate > 0) || !(p.change.length || p.framed.some(a => !a.priceManual));
   $("ppApply").textContent = p.change.length ? `Update ${p.change.length} price${p.change.length > 1 ? "s" : ""}` : "Update prices";
-  if(!(rate > 0)){ $("ppPrev").innerHTML = p.framed.length ? `<p class="out">${p.framed.length} framed painting${p.framed.length > 1 ? "s" : ""} will be tagged “Price manually”.</p>` : ""; return; }
-  const row = x => `<tr><td>${esc(x.a.title)}</td><td>${(+x.z.w.toFixed(1))} × ${(+x.z.h.toFixed(1))} in</td><td class="n">${Math.round(x.area)} sq in</td><td class="n">${money0(x.a.price)}</td><td class="n"><b>${money0(x.np)}</b></td></tr>`;
+  const row = x => `<tr${x.fr ? ' style="color:var(--soft)"' : ""}><td><input type="checkbox" data-framed="${esc(x.a.id)}"${x.fr ? " checked" : ""} aria-label="${esc(x.a.title)} is framed"></td>
+    <td>${esc(x.a.title)}${x.a.remarks ? `<br><small style="color:var(--soft)">${esc(x.a.remarks)}</small>` : ""}</td><td>${(+x.z.w.toFixed(1))} × ${(+x.z.h.toFixed(1))} in</td><td class="n">${Math.round(x.area)} sq in</td>
+    <td class="n">${money0(x.a.price)}</td><td class="n">${x.fr ? "set by hand" : x.np === null ? "" : x.np === x.a.price ? "no change" : `<b>${money0(x.np)}</b>`}</td></tr>`;
   $("ppPrev").innerHTML =
-    `<p class="pp-sum">${p.change.length} price${p.change.length === 1 ? "" : "s"} will change${p.same.length ? `, ${p.same.length} already match` : ""}</p>` +
-    (p.change.length ? `<div class="pp-box"><table class="pp-tbl"><thead><tr><th>Painting</th><th>Size</th><th class="n">Area</th><th class="n">Now</th><th class="n">New</th></tr></thead><tbody>${p.change.map(row).join("")}</tbody></table></div>` : "") +
-    (p.framed.length ? `<p class="pp-sum">Framed, so set by hand (${p.framed.length})</p><p class="out">${p.framed.map(a => esc(a.title)).join(", ")}</p>` : "") +
+    (rate > 0 ? `<p class="pp-sum">${p.change.length} price${p.change.length === 1 ? "" : "s"} will change${p.same.length ? `, ${p.same.length} already match` : ""}, ${p.framed.length} framed painting${p.framed.length === 1 ? "" : "s"} skipped</p>` : `<p class="pp-sum">Enter a price per square inch to see the new prices</p>`) +
+    `<p class="out">Tick <b>Framed</b> for every painting sold with a frame. Framed paintings are skipped and tagged “Price manually”. The tick is saved with the painting, so next time it's remembered.</p>` +
+    (p.rows.length ? `<div class="pp-box"><table class="pp-tbl"><thead><tr><th>Framed</th><th>Painting</th><th>Size</th><th class="n">Area</th><th class="n">Now</th><th class="n">New</th></tr></thead><tbody>${p.rows.map(row).join("")}</tbody></table></div>` : "") +
     (p.skipped.length ? `<p class="pp-sum">Left alone (${p.skipped.length})</p><p class="out">${p.skipped.map(([a, why]) => `${esc(a.title)} (${why})`).join(", ")}</p>` : "");
 }
+$("ppPrev").addEventListener("change", e => {
+  const id = e.target.dataset && e.target.dataset.framed; if(!id) return;
+  const a = S.paintings.find(x => x.id === id); if(!a) return;
+  a.framed = e.target.checked; if(!a.framed) delete a.priceManual;
+  const st = $("ppPrev").querySelector(".pp-box") ? $("ppPrev").querySelector(".pp-box").scrollTop : 0;
+  touched(); renderGroups(); renderPP();
+  const box = $("ppPrev").querySelector(".pp-box"); if(box) box.scrollTop = st;
+});
 ["ppRate", "ppRound"].forEach(id => $(id).addEventListener("input", renderPP));
 $("ppRound").addEventListener("change", renderPP);
 $("ppApply").addEventListener("click", () => {
