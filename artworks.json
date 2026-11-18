@@ -1972,36 +1972,94 @@
       "scale": 1.1
     }
   },
+  "postage": {
+    "unframed": {
+      "AU": 20,
+      "NZ": "",
+      "NA": "",
+      "EAS": "",
+      "ASIA": "",
+      "ME": ""
+    },
+    "framed": {
+      "AU": 30,
+      "NZ": "",
+      "NA": "",
+      "EAS": "",
+      "ASIA": "",
+      "ME": ""
+    }
+  },
   "printSizes": [
     {
       "id": "A5",
       "label": "A5",
       "dims": "148 x 210 mm",
-      "price": 35
+      "price": 35,
+      "postage": {
+        "AU": 12,
+        "NZ": 22,
+        "NA": 30,
+        "EAS": 35,
+        "ASIA": 27,
+        "ME": 45
+      }
     },
     {
       "id": "A4",
       "label": "A4",
       "dims": "210 x 297 mm",
-      "price": 45
+      "price": 45,
+      "postage": {
+        "AU": 12,
+        "NZ": 22,
+        "NA": 30,
+        "EAS": 35,
+        "ASIA": 27,
+        "ME": 45
+      }
     },
     {
       "id": "A3",
       "label": "A3",
       "dims": "297 x 420 mm",
-      "price": 85
+      "price": 85,
+      "postage": {
+        "AU": 16,
+        "NZ": 45,
+        "NA": 72,
+        "EAS": 79,
+        "ASIA": 65,
+        "ME": 100
+      }
     },
     {
       "id": "A2",
       "label": "A2",
       "dims": "420 x 594 mm",
-      "price": 150
+      "price": 150,
+      "postage": {
+        "AU": 20,
+        "NZ": 75,
+        "NA": 120,
+        "EAS": 135,
+        "ASIA": 106,
+        "ME": 175
+      }
     },
     {
       "id": "A1",
       "label": "A1",
       "dims": "594 x 841 mm",
-      "price": 250
+      "price": 250,
+      "postage": {
+        "AU": 25,
+        "NZ": 75,
+        "NA": 120,
+        "EAS": 135,
+        "ASIA": 106,
+        "ME": 175
+      }
     }
   ]
 }
