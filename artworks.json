@@ -1995,13 +1995,13 @@
       "id": "A2",
       "label": "A2",
       "dims": "420 x 594 mm",
-      "price": 175
+      "price": 150
     },
     {
       "id": "A1",
       "label": "A1",
       "dims": "594 x 841 mm",
-      "price": 295
+      "price": 250
     }
   ]
 }
