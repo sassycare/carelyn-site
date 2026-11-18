@@ -110,6 +110,18 @@ button,input,select,textarea{font:inherit;color:inherit}
 .szrow{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px}
 .szwarn{color:#9A3B1F;font-size:.88rem}
 .chip.ck{border-color:#9A3B1F;color:#9A3B1F}
+.rg-wrap{overflow-x:auto;margin:10px 0 4px;-webkit-overflow-scrolling:touch}
+.rg{border-collapse:collapse;font-size:.85rem}
+.rg th{font-weight:500;color:var(--soft);text-align:left;padding:4px 6px 6px 0;vertical-align:bottom;line-height:1.2;min-width:66px}
+.rg th:first-child,.rg td:first-child{min-width:74px;padding-right:10px;color:var(--ink);font-weight:400}
+.rg td{padding:3px 6px 3px 0}
+.rg input{width:66px;border:1px solid var(--line);background:var(--panel);padding:7px 6px;border-radius:0;font:inherit}
+.rg-ed{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 10px;margin:4px 0}
+.rg-ed label{display:flex;flex-direction:column;gap:3px;font-size:.8rem;color:var(--soft)}
+.rg-ed input{border:1px solid var(--line);background:var(--bg);padding:8px 10px;border-radius:0;font:inherit;width:100%;min-width:0}
+@media (max-width:640px){.rg-ed{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.post-grid{display:grid;grid-template-columns:110px 90px 90px;gap:8px 10px;align-items:center;margin:10px 0 4px}
+.post-grid input{border:1px solid var(--line);background:var(--panel);padding:8px 10px;border-radius:0;width:100%;min-width:0;font:inherit}
 .fixbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;border:1px solid #9A3B1F;background:#FBF3EF;padding:12px 14px;margin:0 0 18px;font-size:.92rem}
 .fixbar[hidden]{display:none}
 .fixbar p{margin:0;flex:1 1 320px}
@@ -200,11 +212,11 @@ legend{padding:0 6px;font-size:.74rem;letter-spacing:.09em;text-transform:upperc
 @media (max-width:640px){.tabs{gap:4px 16px;flex-wrap:wrap}.tabs button{font-size:1.05rem;white-space:nowrap}}
 
 /* print sizes */
-.prrow{display:grid;grid-template-columns:90px minmax(0,1fr) 90px auto;gap:8px;align-items:center;margin:0 0 8px}
+.prrow{display:grid;grid-template-columns:80px minmax(0,1fr) 90px 86px;gap:8px;align-items:center;margin:0 0 8px}
 .prrow input{border:1px solid var(--line);background:var(--panel);padding:8px 10px;border-radius:0;width:100%;min-width:0;font:inherit}
 .prhead{font-size:.74rem;letter-spacing:.09em;text-transform:uppercase;color:var(--soft);font-weight:600;margin-bottom:6px}
 .prbtns{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 4px}
-@media (max-width:640px){.prrow{grid-template-columns:70px minmax(0,1fr) 70px auto}.prrow .btn.quiet{padding-inline:2px}}
+@media (max-width:640px){.prrow{grid-template-columns:52px minmax(0,1fr) 64px 62px}.prhead span{font-size:.62rem;letter-spacing:.06em}.prrow input{padding:8px 5px;font-size:.92rem}.prrow .btn.quiet{padding-inline:2px}}
 
 /* exhibitions */
 .xrow{display:grid;grid-template-columns:64px minmax(0,1fr) auto auto;align-items:center;gap:14px;padding:10px 6px;border-bottom:1px solid var(--line)}
@@ -305,10 +317,16 @@ legend{padding:0 6px;font-size:.74rem;letter-spacing:.09em;text-transform:upperc
     <div class="settings">
       <div>
         <p class="sub" style="margin-top:20px">Print sizes and prices</p>
-        <p class="hint" style="margin-top:4px">Every painting that offers prints uses this list. Changing a price here only changes what the website shows: a Stripe link keeps the price it was made with, so after changing a price, make new links with the print script and import them below.</p>
+        <p class="hint" style="margin-top:4px">Every painting that offers prints uses this list. Postage for each size is set by region in the table below. Changing a price or postage here only changes the website and the next links made: a Stripe link keeps the price it was made with, so after changing a price or postage, run sync_links.py and import the file it makes below.</p>
         <div class="prhead prrow" aria-hidden="true"><span>Size</span><span>Dimensions</span><span>Price</span><span></span></div>
         <div id="prList"></div>
         <div class="prbtns"><button class="btn" type="button" id="prAdd">Add a size</button></div>
+        <p class="sub" style="margin-top:26px">Print postage by region</p>
+        <p class="hint" style="margin-top:4px">What a buyer pays to have each size posted to them. Visitors pick their region on the website before they buy, and each region gets its own Stripe link that only accepts addresses there. Leave a box empty and that size can't be bought online in that region (buyers are asked to email instead). Anywhere outside these regions always emails you.</p>
+        <div class="rg-wrap"><table class="rg" id="ppTbl"></table></div>
+        <p class="sub" style="margin-top:26px">Postage for original paintings</p>
+        <p class="hint" style="margin-top:4px">Used for every original unless its own editor says otherwise. Framed or unframed follows the painting's “Sold with a frame” tick. Leave a box empty and originals can't be bought online in that region (buyers are asked to email instead).</p>
+        <div class="rg-wrap"><table class="rg" id="poTbl"></table></div>
         <p class="sub" style="margin-top:26px">Print payment links</p>
         <p class="hint" style="margin-top:4px">Turn prints on for every painting, then import the CSV a Stripe script made (columns id, size, payment_link). Each painting gets one link per print size, and a row with the size "original" sets the original's price and payment link. Nothing goes live until you press Publish changes.</p>
         <div class="f-stack">
@@ -400,8 +418,11 @@ legend{padding:0 6px;font-size:.74rem;letter-spacing:.09em;text-transform:upperc
       </div>
       <div class="two" id="saleRow">
         <div class="f"><label for="fPrice">Price (AUD)</label><input id="fPrice" type="number" min="0" step="1" placeholder="Empty = price on request"></div>
-        <div class="f"><label for="fBuy">Stripe payment link</label><input id="fBuy" type="url" placeholder="https://buy.stripe.com/…"></div>
+        <div class="f"><label for="fBuy">Stripe payment link (Australia)</label><input id="fBuy" type="url" placeholder="https://buy.stripe.com/…"></div>
       </div>
+      <span class="lbl" style="margin-top:6px">Postage for this painting</span>
+      <div class="rg-ed" id="postRow"><label>Australia<input type="number" min="0" step="1" data-ep="AU"></label><label>New Zealand<input type="number" min="0" step="1" data-ep="NZ"></label><label>US & Canada<input type="number" min="0" step="1" data-ep="NA"></label><label>Europe, Africa & South America<input type="number" min="0" step="1" data-ep="EAS"></label><label>Asia<input type="number" min="0" step="1" data-ep="ASIA"></label><label>Middle East<input type="number" min="0" step="1" data-ep="ME"></label></div>
+      <span class="out" id="postOut">Leave a box empty to use the postage in Settings (shown in grey).</span>
     </fieldset>
     <fieldset>
       <legend>Prints</legend>
@@ -518,9 +539,55 @@ const MONTHS = ["January","February","March","April","May","June","July","August
 const GROUPS = (window.THEMES || []).map(t => ({id: t.id, label: t.label}));
 const BASE_LABEL = Object.fromEntries(GROUPS.map(g => [g.id, g.label]));
 const DEFAULT_PRINTS = [
-  {id: "A5", label: "A5", dims: "148 x 210 mm", price: 50}, {id: "A4", label: "A4", dims: "210 x 297 mm", price: 70},
-  {id: "A3", label: "A3", dims: "297 x 420 mm", price: 110}, {id: "A2", label: "A2", dims: "420 x 594 mm", price: 210},
-  {id: "A1", label: "A1", dims: "594 x 841 mm", price: 345}];
+  {id: "A5", label: "A5", dims: "148 x 210 mm", price: 50, postage: 12}, {id: "A4", label: "A4", dims: "210 x 297 mm", price: 70, postage: 12},
+  {id: "A3", label: "A3", dims: "297 x 420 mm", price: 110, postage: 16}, {id: "A2", label: "A2", dims: "420 x 594 mm", price: 210, postage: 20},
+  {id: "A1", label: "A1", dims: "594 x 841 mm", price: 345, postage: 25}];
+// postage for originals: Australia and International, unframed and framed ("" = not offered)
+// shipping regions (the same list as the website and sync_links.py); anywhere else always emails
+const REGIONS = [{"id":"AU","name":"Australia"},{"id":"NZ","name":"New Zealand"},{"id":"NA","name":"US & Canada"},{"id":"EAS","name":"Europe, Africa & South America"},{"id":"ASIA","name":"Asia"},{"id":"ME","name":"Middle East"}];
+const RIDS = REGIONS.map(r => r.id);
+const pn = v => v === "" || v == null || !(Number(v) >= 0) ? "" : Number(v);
+// earlier versions stored {au, intl}; "intl" becomes the starting value for every overseas region
+function regionMap(src, au, intl){
+  const o = {}; RIDS.forEach(R => { o[R] = pn(src && src[R] !== undefined ? src[R] : (R === "AU" ? au : intl)); }); return o;
+}
+function normPostage(p){
+  p = p && typeof p === "object" ? p : {};
+  if(p.unframed || p.framed) return {unframed: regionMap(p.unframed, "", ""), framed: regionMap(p.framed, "", "")};
+  const au = p.au || {}, it = p.intl || {};
+  return {unframed: regionMap(null, au.unframed !== undefined ? au.unframed : 20, it.unframed), framed: regionMap(null, au.framed !== undefined ? au.framed : 30, it.framed)};
+}
+function normSizePostage(z){
+  if(z.postage && typeof z.postage === "object") z.postage = regionMap(z.postage, "", "");
+  else z.postage = regionMap(null, z.postage !== undefined ? z.postage : POSTAGE_BEFORE[z.id], z.postageIntl);
+  delete z.postageIntl;
+}
+function normPaintingPostage(a){
+  if(!a.postage || typeof a.postage !== "object") return;
+  const o = {};
+  if("au" in a.postage || "intl" in a.postage){ RIDS.forEach(R => { const v = pn(R === "AU" ? a.postage.au : a.postage.intl); if(v !== "") o[R] = v; }); }
+  else RIDS.forEach(R => { const v = pn(a.postage[R]); if(v !== "") o[R] = v; });
+  if(Object.keys(o).length) a.postage = o; else delete a.postage;
+}
+const rgHead = first => `<thead><tr><th>${first}</th>${REGIONS.map(r => `<th>${esc(r.name)}</th>`).join("")}</tr></thead>`;
+function renderPostage(){
+  $("poTbl").innerHTML = rgHead("") + `<tbody>${["unframed", "framed"].map(k => `<tr><td>${k === "framed" ? "Framed" : "Unframed"}</td>${REGIONS.map(r => `<td><input type="number" min="0" step="1" data-po="${k}.${r.id}" aria-label="${k}, ${esc(r.name)}" placeholder="—" value="${esc(S.postage[k][r.id] ?? "")}"></td>`).join("")}</tr>`).join("")}</tbody>`;
+  renderPP_tbl();
+}
+function renderPP_tbl(){
+  $("ppTbl").innerHTML = rgHead("Size") + `<tbody>${S.printSizes.map((z, i) => `<tr><td>${esc(z.label || "(new size)")}</td>${REGIONS.map(r => `<td><input type="number" min="0" step="1" data-pp="${i}|${r.id}" aria-label="${esc(z.label)} to ${esc(r.name)}" placeholder="—" value="${esc((z.postage || {})[r.id] ?? "")}"></td>`).join("")}</tr>`).join("")}</tbody>`;
+}
+document.addEventListener("input", e => {
+  const pp = e.target.dataset && e.target.dataset.pp; if(!pp) return;
+  const [i, R] = pp.split("|"), z = S.printSizes[+i]; if(!z) return;
+  z.postage = z.postage || {}; z.postage[R] = e.target.value === "" ? "" : +e.target.value; touched();
+});
+document.addEventListener("input", e => {
+  const po = e.target.dataset && e.target.dataset.po; if(!po) return;
+  const [z, k] = po.split("."); S.postage[z][k] = e.target.value === "" ? "" : +e.target.value; touched();
+});
+// postage the print script has always used, for sizes saved before postage could be set here
+const POSTAGE_BEFORE = {A5: 12, A4: 12, A3: 16, A2: 20, A1: 25};
 const TX = () => window.TEXTS || [];
 const txDef = t => typeof t.def === "function" ? t.def() : (t.def == null ? "" : t.def);
 const txSet = v => typeof v === "string" && v.trim() !== "";
@@ -589,7 +656,9 @@ async function load(){
   d.banner = d.banner || [];
   d.text = (d.text && typeof d.text === "object" && !Array.isArray(d.text)) ? d.text : {};
   d.printSizes = Array.isArray(d.printSizes) ? d.printSizes : clone(DEFAULT_PRINTS);
+  d.printSizes.forEach(normSizePostage); d.paintings.forEach(normPaintingPostage);
   d.rooms = d.rooms && typeof d.rooms === "object" && !Array.isArray(d.rooms) ? d.rooms : {};
+  d.postage = normPostage(d.postage);
   d.exhibitions = Array.isArray(d.exhibitions) ? d.exhibitions : [];
   ORIG = clone(d);
   S = clone(d);
@@ -603,6 +672,8 @@ async function load(){
       dr.data.text = dr.data.text || {};
       dr.data.printSizes = Array.isArray(dr.data.printSizes) ? dr.data.printSizes : clone(ORIG.printSizes);
       dr.data.rooms = dr.data.rooms && typeof dr.data.rooms === "object" && !Array.isArray(dr.data.rooms) ? dr.data.rooms : clone(ORIG.rooms);
+      dr.data.postage = dr.data.postage ? normPostage(dr.data.postage) : clone(ORIG.postage);
+      (dr.data.printSizes || []).forEach(normSizePostage); (dr.data.paintings || []).forEach(normPaintingPostage);
       // new exhibition photos are not kept between visits, so drop the unsent ones
       dr.data.exhibitions = (Array.isArray(dr.data.exhibitions) ? dr.data.exhibitions : clone(ORIG.exhibitions)).map(e => { delete e.coverPid; e.photos = (e.photos || []).filter(p => !p.pid); return e; });
       S = dr.data;
@@ -641,7 +712,7 @@ function parseSize(s){
 }
 
 /* ---------- change tracking ---------- */
-const FIELDS = {framed: "framed", priceManual: "price tag", linkPending: "Stripe link tag", title:"title", theme:"group", size:"size", medium:"medium", painted:"painted date", remarks:"framing", sold:"status", price:"price", buyUrl:"payment link", description:"description", prints:"prints"};
+const FIELDS = {buyLinks: "regional links", postage: "postage", framed: "framed", priceManual: "price tag", linkPending: "Stripe link tag", title:"title", theme:"group", size:"size", medium:"medium", painted:"painted date", remarks:"framing", sold:"status", price:"price", buyUrl:"payment link", description:"description", prints:"prints"};
 function changes(){
   if(!S) return [];
   const out = [], o = origById(), now = new Set(S.paintings.map(a => a.id));
@@ -659,6 +730,7 @@ function changes(){
   if(S.banner.join() !== ORIG.banner.join()) out.push(`Cover banner: ${S.banner.length} paintings, new selection or order`);
   if(JSON.stringify(S.printSizes) !== JSON.stringify(ORIG.printSizes)) out.push("Print sizes and prices");
   if(JSON.stringify(S.rooms) !== JSON.stringify(ORIG.rooms)) out.push("See it on a wall: room sizes");
+  if(JSON.stringify(S.postage) !== JSON.stringify(ORIG.postage)) out.push("Postage for original paintings");
   {
     const oe = Object.fromEntries(ORIG.exhibitions.map(e => [e.id, e])), ne = new Set(S.exhibitions.map(e => e.id));
     S.exhibitions.forEach(e => { if(!oe[e.id]) out.push(`Exhibition ${e.title}: new`); else if(JSON.stringify(e) !== JSON.stringify(oe[e.id])) out.push(`Exhibition ${e.title}: changed`); });
@@ -965,8 +1037,10 @@ function openEditor(id){
   $("fFrame").value = a.remarks || ""; $("fFramed").checked = isFramed(a);
   $("stA").checked = !a.sold; $("stS").checked = !!a.sold;
   $("fPrice").value = a.price ?? ""; $("fBuy").value = a.buyUrl || "";
+  document.querySelectorAll("[data-ep]").forEach(i => { i.value = a.postage && a.postage[i.dataset.ep] !== undefined ? a.postage[i.dataset.ep] : ""; }); postHint();
+  { const n = Object.keys(a.buyLinks || {}).filter(R => R !== "AU" && a.buyLinks[R]).length; $("postOut").textContent = "Leave a box empty to use the postage in Settings (shown in grey)." + (n ? ` This painting also has Stripe links for ${n} other region${n > 1 ? "s" : ""}, from sync_links.py.` : ""); }
   const p = a.prints || {}; $("fPr").checked = !!p.available; $("fPrSize").value = p.size || ""; $("fPrPrice").value = p.price ?? ""; $("fPrBuy").value = p.buyUrl || "";
-  $("prLinks").innerHTML = S.printSizes.map(z => `<div class="f"><label for="pl_${esc(z.id)}">${esc(z.label)} print link · ${esc(money(z.price))}</label><input id="pl_${esc(z.id)}" data-sz="${esc(z.id)}" type="url" placeholder="https://buy.stripe.com/…" value="${esc((p.links || {})[z.id] || "")}"></div>`).join("");
+  $("prLinks").innerHTML = S.printSizes.map(z => `<div class="f"><label for="pl_${esc(z.id)}">${esc(z.label)} print link (Australia) · ${esc(money(z.price))}</label><input id="pl_${esc(z.id)}" data-sz="${esc(z.id)}" type="url" placeholder="https://buy.stripe.com/…" value="${esc(typeof (p.links || {})[z.id] === "object" ? ((p.links || {})[z.id].AU || "") : ((p.links || {})[z.id] || ""))}"></div>`).join("");
   $("fBanner").checked = !isNew && S.banner.includes(a.id);
   $("fDesc").value = a.description || "";
   $("dangerBox").hidden = isNew; $("rmConfirm").hidden = true; $("rmBtn").hidden = false;
@@ -990,6 +1064,12 @@ function syncForm(){
   const sized = S.printSizes.length > 0; $("prLinks").hidden = !sized; $("prLegacy").hidden = sized;
 }
 ["fW","fH","fU","fNote"].forEach(id => $(id).addEventListener("input", syncForm));
+// show what Settings would charge, as the placeholder
+function postHint(){
+  const fr = $("fFramed").checked ? "framed" : "unframed";
+  document.querySelectorAll("[data-ep]").forEach(i => { const v = S.postage[fr][i.dataset.ep]; i.placeholder = v === "" || v == null ? "email only" : "$" + v; });
+}
+$("fFramed").addEventListener("change", postHint);
 $("fSwap").addEventListener("click", () => { const w = $("fW").value; $("fW").value = $("fH").value; $("fH").value = w; syncForm(); });
 ["stA","stS","fPr"].forEach(id => $(id).addEventListener("change", syncForm));
 $("fFile").addEventListener("change", async () => {
@@ -1023,9 +1103,15 @@ $("form").addEventListener("submit", e => {
   }
   if(a.buyUrl && a.buyUrl !== was.buy && a.buyUrl !== a.oldBuyUrl){ delete a.linkPending; delete a.oldBuyUrl; }
   if(a.sold){ delete a.priceManual; delete a.linkPending; delete a.oldBuyUrl; }
+  { const o = {}; document.querySelectorAll("[data-ep]").forEach(i => { if(i.value !== "") o[i.dataset.ep] = +i.value; });
+    if(Object.keys(o).length) a.postage = o; else delete a.postage; }
+  if(a.sold) delete a.buyLinks; else if(a.buyLinks && typeof a.buyLinks === "object"){ if(a.buyUrl) a.buyLinks.AU = a.buyUrl; else delete a.buyLinks.AU; }
   const pr = $("fPr").checked;
   if(S.printSizes.length){
-    const links = {}; $("prLinks").querySelectorAll("input[data-sz]").forEach(i => { if(i.value.trim()) links[i.dataset.sz] = i.value.trim(); });
+    const prev = (a.prints && a.prints.links) || {}, links = {};
+    $("prLinks").querySelectorAll("input[data-sz]").forEach(i => { const v = i.value.trim(), o = prev[i.dataset.sz];
+      if(o && typeof o === "object"){ const m = Object.assign({}, o); if(v) m.AU = v; else delete m.AU; if(Object.keys(m).length) links[i.dataset.sz] = m; }
+      else if(v) links[i.dataset.sz] = v; });
     const old = a.prints || {}; a.prints = {available: pr, size: old.size || "", price: old.price ?? null, buyUrl: old.buyUrl || "", links};
   } else a.prints = {available: pr, size: pr ? $("fPrSize").value.trim() : "", price: pr ? num($("fPrPrice").value) : null, buyUrl: pr ? $("fPrBuy").value.trim() : "", links: (a.prints && a.prints.links) || {}};
   a.description = $("fDesc").value.trim();
@@ -1093,7 +1179,10 @@ $("pubYes").onclick = async () => {
     const text = {}; Object.keys(S.text).forEach(k => { if(txSet(S.text[k])) text[k] = S.text[k]; });
     if(Object.keys(text).length) out.text = text;
     if(Object.keys(S.rooms).length) out.rooms = S.rooms;
-    out.printSizes = S.printSizes.filter(z => z.label && Number(z.price) > 0).map(z => ({id: z.id, label: z.label.trim(), dims: (z.dims || "").trim(), price: Number(z.price)}));
+    out.postage = S.postage;
+    out.printSizes = S.printSizes.filter(z => z.label && Number(z.price) > 0).map(z => { const o = {id: z.id, label: z.label.trim(), dims: (z.dims || "").trim(), price: Number(z.price)};
+      const po = {}; RIDS.forEach(R => { const v = pn((z.postage || {})[R]); if(v !== "") po[R] = v; }); if(Object.keys(po).length) o.postage = po;
+      return o; });
     const r = await putFile("artworks.json", b64text(JSON.stringify(out, null, 2) + "\n"), `Update paintings (${changes().length} changes)`, SHA);
     SHA = r.content.sha;
     for(const id of ids){ URL.revokeObjectURL(pendingImg[id].url); delete pendingImg[id]; }
@@ -1119,13 +1208,14 @@ addEventListener("beforeunload", e => { if(Object.keys(pendingImg).length || Obj
 /* ---------- settings ---------- */
 let aboutStaged = null;
 function renderPrintRows(){
+  setTimeout(renderPP_tbl);
   $("prList").innerHTML = S.printSizes.map((z, i) => `<div class="prrow" data-i="${i}"><input data-f="label" type="text" aria-label="Size name" value="${esc(z.label)}"><input data-f="dims" type="text" aria-label="Dimensions" value="${esc(z.dims || "")}"><input data-f="price" type="number" min="0" step="1" aria-label="Price" value="${esc(z.price ?? "")}"><button class="btn quiet" type="button" data-del="${i}">Remove</button></div>`).join("") || `<p class="hint">No sizes yet. The website falls back to a single print price per painting.</p>`;
 }
 $("prList").addEventListener("input", e => {
   const r = e.target.closest(".prrow"); if(!r || !e.target.dataset.f) return;
   const z = S.printSizes[+r.dataset.i], f = e.target.dataset.f;
   z[f] = f === "price" ? (e.target.value === "" ? "" : +e.target.value) : e.target.value;
-  touched();
+  touched(); if(f === "label") renderPP_tbl();
 });
 $("prList").addEventListener("click", e => {
   const b = e.target.closest("[data-del]"); if(!b) return;
@@ -1134,7 +1224,7 @@ $("prList").addEventListener("click", e => {
 $("prAdd").onclick = () => {
   let id = "size-" + (S.printSizes.length + 1), n = S.printSizes.length + 1;
   while(S.printSizes.some(z => z.id === id)) id = "size-" + (++n);
-  S.printSizes.push({id, label: "", dims: "", price: ""}); renderPrintRows(); touched();
+  S.printSizes.push({id, label: "", dims: "", price: "", postage: regionMap(null, "", "")}); renderPrintRows(); touched();
   const l = $("prList").querySelectorAll('input[data-f="label"]'); l[l.length - 1].focus();
 };
 $("prAll").onclick = () => {
@@ -1160,6 +1250,8 @@ $("prCsv").addEventListener("change", async () => {
     const rows = parseCsv((await f.text()).replace(/^\uFEFF/, "")), head = rows.shift().map(h => h.trim().toLowerCase());
     const ci = n => head.indexOf(n);
     if(ci("id") < 0 || ci("size") < 0 || ci("payment_link") < 0) throw new Error("The file needs the columns id, size and payment_link.");
+    const ri = ci("region"), regionOf = r => { const v = ri >= 0 ? (r[ri] || "").trim().toUpperCase() : ""; return RIDS.includes(v) ? v : "AU"; };
+    const origMap = {}, printMap = {};   // the file lists every current link, so each painting/size gets exactly the regions in it
     const by = Object.fromEntries(S.paintings.map(a => [a.id, a])), sizes = new Set(S.printSizes.map(z => z.id));
     let done = 0, skipped = 0, origs = 0; const touchedP = new Set();
     rows.forEach(r => {
@@ -1167,14 +1259,17 @@ $("prCsv").addEventListener("change", async () => {
       if(a && sz.toLowerCase() === "original" && /^https:\/\//.test(url)){
         if(a.sold){ skipped++; return; }   // a sold painting keeps no buy link
         const pr = ci("price_aud") >= 0 ? Number(r[ci("price_aud")]) : NaN;
-        a.buyUrl = url; if(pr > 0) a.price = pr; delete a.linkPending; delete a.oldBuyUrl;
+        (origMap[a.id] = origMap[a.id] || {})[regionOf(r)] = url; if(pr > 0) a.price = pr; delete a.linkPending; delete a.oldBuyUrl;
         origs++; touchedP.add(a.id); return;
       }
       if(!a || !sizes.has(sz) || !/^https:\/\//.test(url)){ skipped++; return; }
       a.prints = Object.assign({size: "", price: null, buyUrl: ""}, a.prints || {});
-      a.prints.links = Object.assign({}, a.prints.links || {}); a.prints.links[sz] = url; a.prints.available = true;
+      ((printMap[a.id] = printMap[a.id] || {})[sz] = printMap[a.id][sz] || {})[regionOf(r)] = url; a.prints.available = true;
       done++; touchedP.add(a.id);
     });
+    Object.entries(origMap).forEach(([id, m]) => { const a = by[id]; a.buyLinks = m; a.buyUrl = m.AU || ""; });
+    Object.entries(printMap).forEach(([id, sz]) => { const a = by[id]; a.prints.links = Object.assign({}, a.prints.links || {});
+      Object.entries(sz).forEach(([k, m]) => { a.prints.links[k] = ri >= 0 ? m : Object.assign(typeof a.prints.links[k] === "object" ? a.prints.links[k] : {}, m); }); });
     touched(); renderGroups();
     $("prCsvOut").textContent = `Imported ${done + origs} link${done + origs === 1 ? "" : "s"} (${origs} original${origs === 1 ? "" : "s"}, ${done} print size${done === 1 ? "" : "s"}) for ${touchedP.size} painting${touchedP.size === 1 ? "" : "s"}.` + (skipped ? ` ${skipped} row${skipped === 1 ? " was" : "s were"} skipped (unknown painting or size, or not a link).` : "") + " Press Publish changes to put them on the website.";
   }catch(e){ $("prCsvOut").textContent = e.message; }
@@ -1333,7 +1428,8 @@ $("ppApply").addEventListener("click", () => {
   const p = ppPlan(), pause = $("ppPause").checked; let paused = 0;
   p.change.forEach(({a, np}) => {
     a.price = np; delete a.priceManual;
-    if(a.buyUrl || a.oldBuyUrl){ a.linkPending = true; a.oldBuyUrl = a.oldBuyUrl || a.buyUrl; if(pause && a.buyUrl){ a.buyUrl = ""; paused++; } }
+    const hasLink = a.buyUrl || Object.values(a.buyLinks || {}).some(Boolean);
+    if(hasLink || a.oldBuyUrl){ a.linkPending = true; a.oldBuyUrl = a.oldBuyUrl || a.buyUrl || Object.values(a.buyLinks || {}).find(Boolean); if(pause && hasLink){ a.buyUrl = ""; a.buyLinks = {}; paused++; } }
   });
   p.framed.forEach(a => { a.priceManual = true; });
   touched(); renderGroups(); renderPP();
@@ -1419,7 +1515,7 @@ $("calK").addEventListener("change", () => { touched(); renderCal(); });
 $("calReset").addEventListener("click", () => { delete S.rooms[calRoom]; touched(); renderCal(); toast("Room reset to the original estimate"); });
 
 function renderSettings(){
-  renderPrintRows(); renderCal(); renderPP();
+  renderPrintRows(); renderCal(); renderPP(); renderPostage();
   const c = conn();
   $("connInfo").textContent = `Saving to ${c.owner}/${c.repo} (${c.branch}).`;
   $("aboutImg").src = "images/about.jpg?t=" + Date.now();

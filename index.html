@@ -142,6 +142,9 @@ section{padding:clamp(40px,7vw,96px) 0}
 .pr small{display:block;color:var(--soft);font-size:.82rem}
 .pr b{font-family:var(--serif);font-weight:400;font-size:1.25rem}
 .pr .btn{margin:0;padding:8px 12px;font-size:.9rem}
+.ship{display:flex;align-items:center;gap:10px;margin:0 0 6px;font-size:.92rem;color:var(--soft)}
+.ship select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);padding:7px 10px;max-width:100%}
+.post{margin:8px 0 0;color:var(--soft);font-size:.9rem}
 
 footer{border-top:1px solid var(--line);padding:32px 0 48px;font-size:.92rem;color:var(--soft)}
 footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px 28px}
@@ -448,7 +451,7 @@ dt{color:var(--soft)} dd{margin:0}
   const mail = subject => `mailto:${S.email}?subject=${encodeURIComponent(subject)}`;
 
   // Wording: the starting text lives in texts.js; changes made in the admin are saved in artworks.json under "text".
-  let OV = {}, PRINT_SIZES = [], EXH_RAW = [], ROOMCAL = {};
+  let OV = {}, PRINT_SIZES = [], EXH_RAW = [], ROOMCAL = {}, POSTAGE = null;
   const DEFS = Object.fromEntries((window.TEXTS || []).map(t => [t.k, t]));
   // exhibition wording: used if an older texts.js is still on the site
   Object.entries({ navExhibitions:"Exhibitions", exHeading:"Exhibitions", exIntro:"Where to see the paintings in person, and a look back at past shows.", exCurrentHeading:"On now", exUpcomingHeading:"Coming up", exPastHeading:"Past exhibitions",
@@ -467,6 +470,41 @@ dt{color:var(--soft)} dd{margin:0}
   const raw = k => { const o = OV[k]; if(typeof o === "string" && o.trim()) return o; const d = DEFS[k] && DEFS[k].def; return typeof d === "function" ? d() : (d == null ? "" : d); };
   const tx = (k, extra) => { const v = Object.assign({ year: new Date().getFullYear(), artistName: raw("artistName"), location: raw("location"), shipsTo: raw("shipsTo"), instagram: raw("instagram") }, extra || {}); return raw(k).replace(/\{(\w+)\}/g, (m, n) => v[n] === undefined ? m : v[n]); };
   const hasPrints = a => a.prints && a.prints.available;
+  /* ---------- shipping regions: the visitor picks where it's posted to; each region has its own Stripe link ---------- */
+  const REGIONS = [{"id":"AU","name":"Australia","countries":["AU"]},{"id":"NZ","name":"New Zealand","countries":["NZ"]},{"id":"NA","name":"US & Canada","countries":["US","CA"]},{"id":"EAS","name":"Europe, Africa & South America","countries":["AD","AL","AT","BA","BE","BG","CH","CY","CZ","DE","DK","EE","ES","FI","FO","FR","GB","GG","GI","GR","HR","HU","IE","IM","IS","IT","JE","LI","LT","LU","LV","MC","MD","ME","MK","MT","NL","NO","PL","PT","RO","RS","SE","SI","SK","SM","UA","VA","XK","AO","BF","BI","BJ","BW","CD","CF","CG","CI","CM","CV","DJ","DZ","EG","ER","ET","GA","GH","GM","GN","GQ","GW","KE","KM","LR","LS","LY","MA","MG","ML","MR","MU","MW","MZ","NA","NE","NG","RE","RW","SC","SH","SL","SN","SO","SS","ST","SZ","TD","TG","TN","TZ","UG","YT","ZA","ZM","ZW","AR","BO","BR","CL","CO","EC","FK","GF","GY","PE","PY","SR","UY","VE"]},{"id":"ASIA","name":"Asia","countries":["AF","BD","BN","BT","CN","HK","ID","IN","JP","KG","KH","KR","KZ","LA","LK","MM","MN","MO","MV","MY","NP","PH","PK","SG","TH","TJ","TL","TM","TW","UZ","VN"]},{"id":"ME","name":"Middle East","countries":["AE","BH","IL","IQ","JO","KW","LB","OM","PS","QA","SA","TR","YE"]}];
+  const RIDS = REGIONS.map(r => r.id).concat("OTHER");
+  [["shipTo", "Ship to"], ["region_AU", "Australia"], ["region_NZ", "New Zealand"], ["region_NA", "US & Canada"], ["region_EAS", "Europe, Africa & South America"],
+   ["region_ASIA", "Asia"], ["region_ME", "Middle East"], ["region_OTHER", "Somewhere else"], ["postTo", "+ {amount} postage to {region}"], ["postShort", "+ {amount} postage"],
+   ["postAskRegion", "Buying online isn't set up for {region} yet. Email and Carelyn will arrange postage."],
+   ["postAsk", "Tell Carelyn where you are and she'll quote postage."]].forEach(([k, d]) => { if(!DEFS[k]) DEFS[k] = { k: k, def: d }; });
+  const regionOfCountry = c => { const r = REGIONS.find(x => x.countries.includes(c)); return r ? r.id : "OTHER"; };
+  function guessRegion(){
+    try{
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+      if(/^Australia\//.test(tz)) return "AU";
+      if(/^Pacific\/(Auckland|Chatham)$/.test(tz)) return "NZ";
+      if(/^(Asia\/(Dubai|Riyadh|Qatar|Kuwait|Bahrain|Muscat|Jerusalem|Tel_Aviv|Amman|Beirut|Baghdad|Aden|Gaza|Hebron)|Europe\/Istanbul)$/.test(tz)) return "ME";
+      if(/^(Europe|Africa)\//.test(tz)) return "EAS";
+      if(/^America\/(Sao_Paulo|Argentina\/|Buenos_Aires|Santiago|Bogota|Lima|Caracas|Montevideo|La_Paz|Asuncion|Guayaquil|Recife|Fortaleza|Manaus|Belem)/.test(tz)) return "EAS";
+      if(/^America\/(New_York|Chicago|Denver|Phoenix|Los_Angeles|Anchorage|Boise|Detroit|Indiana|Kentucky|Toronto|Vancouver|Edmonton|Winnipeg|Halifax|St_Johns|Regina|Montreal)/.test(tz)) return "NA";
+      if(/^Asia\//.test(tz)) return "ASIA";
+      for(const l of (navigator.languages || [navigator.language || ""])){ const m = /-([A-Z]{2})\b/.exec(l || ""); if(m) return regionOfCountry(m[1]); }
+    }catch(_){}
+    return "AU";
+  }
+  let shipR = (() => { try{ const v = localStorage.getItem("cm-ship"); if(RIDS.includes(v)) return v; }catch(_){} return guessRegion(); })();
+  const regionName = id => tx("region_" + id);
+  const framedA = a => typeof a.framed === "boolean" ? a.framed : (/frame|float|tray|surround|timber|oak|walnut|moulding|molding/i.test(a.remarks || "") && !/unframed|no frame|not framed|without (a )?frame|frame not included|frameless|unfloated/i.test(a.remarks || ""));
+  const postNum = v => v === "" || v == null || !(Number(v) >= 0) ? null : Number(v);
+  // postage for an original: the painting's own setting, else Settings (framed or unframed)
+  function postOrig(a, R){
+    const own = a.postage && typeof a.postage === "object" ? postNum(a.postage[R]) : null; if(own !== null) return own;
+    const p = POSTAGE && POSTAGE[framedA(a) ? "framed" : "unframed"]; return p && typeof p === "object" ? postNum(p[R]) : null;
+  }
+  const postPrint = (z, R) => z.postage && typeof z.postage === "object" ? postNum(z.postage[R]) : (R === "AU" ? postNum(z.postage) : null);
+  // links: one per region; older single links count as Australia
+  const origLink = (a, R) => (a.buyLinks && a.buyLinks[R]) || (R === "AU" ? a.buyUrl || "" : "");
+  const printLink = (a, z, R) => { const l = ((a.prints || {}).links || {})[z.id]; return typeof l === "string" ? (R === "AU" ? l : "") : (l && l[R]) || ""; };
 
   function applyStatic(){
     ["artistName", "tagline", "location", "email", "instagram", "shipsTo"].forEach(k => { if(DEFS[k]) S[k] = raw(k); });
@@ -502,6 +540,7 @@ dt{color:var(--soft)} dd{margin:0}
     const ord = A.banner || [];
     OV = A.text || {};
     EXH_RAW = Array.isArray(A.exhibitions) ? A.exhibitions : [];
+    POSTAGE = A.postage && typeof A.postage === "object" ? A.postage : null;
     ROOMCAL = A.rooms && typeof A.rooms === "object" && !Array.isArray(A.rooms) ? A.rooms : {};
     PRINT_SIZES = Array.isArray(A.printSizes) ? A.printSizes.filter(z => z && z.label && Number(z.price) > 0) : [];
     window.BANNER_ORDER = ord;
@@ -857,9 +896,10 @@ dt{color:var(--soft)} dd{margin:0}
       out += `<div class="opt"><span>${esc(tx("lblOriginal"))}</span><span class="s">${esc(tx("lblSold"))}</span></div>
         <a class="btn o" href="${mail("Commission similar to " + a.title)}">${esc(tx("btnSimilar"))}</a>`;
     } else if(a.price){
+      const R = shipR, link = R !== "OTHER" ? origLink(a, R) : "", po = R !== "OTHER" ? postOrig(a, R) : null;
       out += `<div class="opt"><span>${esc(tx("lblOriginal"))}</span><b>${money(a.price)}</b></div>` +
-        (a.buyUrl ? `<a class="btn" href="${esc(a.buyUrl)}" target="_blank" rel="noopener">${esc(tx("btnBuyOriginal"))}</a>`
-                  : `<a class="btn" href="${mail("I'd like to buy " + a.title)}">${esc(tx("btnAskOriginal"))}</a>`);
+        (link && po !== null ? `<p class="post">${esc(tx("postTo", { amount: money(po), region: regionName(R) }))}</p><a class="btn" href="${esc(link)}" target="_blank" rel="noopener">${esc(tx("btnBuyOriginal"))}</a>`
+          : `<p class="post">${esc(R === "OTHER" ? tx("postAsk") : tx("postAskRegion", { region: regionName(R) }))}</p><a class="btn" href="${mail("I'd like to buy " + a.title + (R === "OTHER" ? "" : " (posting to " + regionName(R) + ")"))}">${esc(tx("btnAskOriginal"))}</a>`);
     } else {
       out += `<div class="opt"><span>${esc(tx("lblOriginal"))}</span><span class="s">${esc(tx("lblPriceOnRequest"))}</span></div>
         <a class="btn" href="${mail("Enquiry about " + a.title)}">${esc(tx("btnEnquire"))}</a>`;
@@ -868,16 +908,18 @@ dt{color:var(--soft)} dd{margin:0}
       const p = a.prints, links = p.links || {};
       if(PRINT_SIZES.length){
         out += `<div class="opt" style="margin-top:22px"><span>${esc(tx("lblPrintsHeading"))}</span><span class="s">${esc(tx("notePrints"))}</span></div><div class="prs">` +
-          PRINT_SIZES.map(z => `<div class="pr"><span>${esc(z.label)}${z.dims ? `<small>${esc(z.dims)}</small>` : ""}</span><b>${money(z.price)}</b>` +
-            (links[z.id] ? `<a class="btn o" href="${esc(links[z.id])}" target="_blank" rel="noopener">${esc(tx("btnBuy"))}</a>`
-                         : `<a class="btn o" href="${mail("Print (" + z.label + ") of " + a.title)}">${esc(tx("btnAskSize"))}</a>`) + `</div>`).join("") + `</div>`;
+          PRINT_SIZES.map(z => { const R = shipR, l = R !== "OTHER" ? printLink(a, z, R) : "", po = R !== "OTHER" ? postPrint(z, R) : null, ok = l && po !== null;
+            return `<div class="pr"><span>${esc(z.label)}${z.dims ? `<small>${esc(z.dims)}</small>` : ""}${ok ? `<small>${esc(tx("postShort", { amount: money(po) }))}</small>` : ""}</span><b>${money(z.price)}</b>` +
+            (ok ? `<a class="btn o" href="${esc(l)}" target="_blank" rel="noopener">${esc(tx("btnBuy"))}</a>`
+                : `<a class="btn o" href="${mail("Print (" + z.label + ") of " + a.title + (R === "OTHER" ? "" : ", posting to " + regionName(R)))}">${esc(tx("btnAskSize"))}</a>`) + `</div>`; }).join("") + `</div>`;
       } else {
         out += `<div class="opt" style="margin-top:22px"><span>${esc(tx("lblPrint"))}${p.size ? ", " + esc(p.size) : ""}</span>${p.price ? `<b>${money(p.price)}</b>` : ""}</div>` +
           (p.buyUrl ? `<a class="btn o" href="${esc(p.buyUrl)}" target="_blank" rel="noopener">${esc(tx("btnBuyPrint"))}</a>`
                     : `<a class="btn o" href="${mail("Print of " + a.title)}">${esc(tx("btnAskPrint"))}</a>`);
       }
     }
-    const canBuy = (!a.sold && !held && a.price && a.buyUrl) || (hasPrints(a) && (a.prints.buyUrl || Object.values(a.prints.links || {}).some(Boolean)));
+    const canBuy = (!a.sold && !held && a.price && origLink(a, shipR)) || (hasPrints(a) && (a.prints.buyUrl || PRINT_SIZES.some(z => printLink(a, z, shipR))));
+    if(!a.sold || hasPrints(a)) out = `<div class="ship"><label for="shipSel">${esc(tx("shipTo"))}</label><select id="shipSel">${RIDS.map(id => `<option value="${id}"${id === shipR ? " selected" : ""}>${esc(regionName(id))}</option>`).join("")}</select></div>` + out;
     out += `<p class="note">${canBuy ? esc(tx("noteStripe")) + " " : ""}${esc(tx("noteShips"))} <a href="${mail("Question about " + a.title)}">${esc(tx("noteAsk"))}</a></p>`;
     $("dlgOptions").innerHTML = out;
     curArt = a;
@@ -1028,6 +1070,12 @@ dt{color:var(--soft)} dd{margin:0}
   });
   $("rmClose").addEventListener("click", () => rmDlg.close());
   let rmT; addEventListener("resize", () => { clearTimeout(rmT); rmT = setTimeout(() => { if(rmDlg.open && rmRoom === "own") placeOwn(); }, 150); });
+  // changing "Ship to" redraws the pop-up with that region's postage and links, and is remembered
+  document.addEventListener("change", e => {
+    if(e.target.id !== "shipSel" || !curArt) return;
+    shipR = e.target.value; try{ localStorage.setItem("cm-ship", shipR); }catch(_){}
+    const y = $("dlg").scrollTop; openArt(curArt.id); $("dlg").scrollTop = y;
+  });
   const closeArt = () => { if(rmDlg.open) rmDlg.close(); if(dlg.open) dlg.close(); };
   dlg.addEventListener("close", () => {
     if(location.hash.startsWith("#art/")) try{ history.replaceState(null, "", location.pathname + location.search + ($("xdlg").open && curShow ? "#show/" + curShow : "#work")); }catch(_){}

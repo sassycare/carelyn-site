@@ -98,6 +98,20 @@
   add(RM, "roomRef_bedroom", "Size guide for the bedroom photo", "The bedside table is about 55 cm wide.");
   add(RM, "roomOwnTip", "Your wall: tip for judging width", "Tip: a standard door is about 82 cm wide and a three-seater sofa about 2.2 m.", {multi: true});
 
+  const SH = "Shipping regions";
+  add(SH, "shipTo", "Label above the region choice", "Ship to");
+  add(SH, "region_AU", "Region name: Australia", "Australia");
+  add(SH, "region_NZ", "Region name: New Zealand", "New Zealand");
+  add(SH, "region_NA", "Region name: US and Canada", "US & Canada");
+  add(SH, "region_EAS", "Region name: Europe, Africa and South America", "Europe, Africa & South America");
+  add(SH, "region_ASIA", "Region name: Asia", "Asia");
+  add(SH, "region_ME", "Region name: Middle East", "Middle East");
+  add(SH, "region_OTHER", "Region name: anywhere else", "Somewhere else");
+  add(SH, "postTo", "Under the original's price. {amount} and {region} are filled in", "+ {amount} postage to {region}");
+  add(SH, "postShort", "Under each print size. {amount} is filled in", "+ {amount} postage");
+  add(SH, "postAskRegion", "When a region can't buy online yet. {region} is filled in", "Buying online isn't set up for {region} yet. Email and Carelyn will arrange postage.", {multi: true});
+  add(SH, "postAsk", "When the visitor picks Somewhere else", "Tell Carelyn where you are and she'll quote postage.", {multi: true});
+
   const G = "Group names and descriptions";
   (window.THEMES || []).forEach(t => {
     add(G, "group_" + t.id + "_label", "Group name: " + t.label, t.label);
