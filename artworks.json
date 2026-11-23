@@ -73,9 +73,10 @@
         },
         "available": true
       },
-      "image": "images/under-the-umbrella.jpg",
-      "thumb": "images/thumbs/under-the-umbrella.jpg",
-      "ratio": 0.83
+      "image": "images/under-the-umbrella-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/under-the-umbrella-mwsmqwlg.jpg",
+      "ratio": 0.83,
+      "wm": 1
     },
     {
       "id": "together-by-the-water",
@@ -137,9 +138,10 @@
         },
         "available": true
       },
-      "image": "images/together-by-the-water.jpg",
-      "thumb": "images/thumbs/together-by-the-water.jpg",
-      "ratio": 1.4151
+      "image": "images/together-by-the-water-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/together-by-the-water-mwsmqwlg.jpg",
+      "ratio": 1.4151,
+      "wm": 1
     },
     {
       "id": "autumn-piano",
@@ -201,9 +203,10 @@
         },
         "available": true
       },
-      "image": "images/autumn-piano.jpg",
-      "thumb": "images/thumbs/autumn-piano.jpg",
-      "ratio": 1.3245
+      "image": "images/autumn-piano-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/autumn-piano-mwsmqwlg.jpg",
+      "ratio": 1.3245,
+      "wm": 1
     },
     {
       "id": "kite-weather",
@@ -265,9 +268,10 @@
         },
         "available": true
       },
-      "image": "images/kite-weather.jpg",
-      "thumb": "images/thumbs/kite-weather.jpg",
-      "ratio": 1.1905
+      "image": "images/kite-weather-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/kite-weather-mwsmqwlg.jpg",
+      "ratio": 1.1905,
+      "wm": 1
     },
     {
       "id": "moonrise",
@@ -329,9 +333,10 @@
         },
         "available": true
       },
-      "image": "images/moonrise.jpg",
-      "thumb": "images/thumbs/moonrise.jpg",
-      "ratio": 1.2526
+      "image": "images/moonrise-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/moonrise-mwsmqwlg.jpg",
+      "ratio": 1.2526,
+      "wm": 1
     },
     {
       "id": "puddle-days",
@@ -393,9 +398,10 @@
         },
         "available": true
       },
-      "image": "images/puddle-days.jpg",
-      "thumb": "images/thumbs/puddle-days.jpg",
-      "ratio": 1.2024
+      "image": "images/puddle-days-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/puddle-days-mwsmqwlg.jpg",
+      "ratio": 1.2024,
+      "wm": 1
     },
     {
       "id": "by-the-lighthouse",
@@ -457,9 +463,10 @@
         },
         "available": true
       },
-      "image": "images/by-the-lighthouse.jpg",
-      "thumb": "images/thumbs/by-the-lighthouse.jpg",
-      "ratio": 1.3201
+      "image": "images/by-the-lighthouse-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/by-the-lighthouse-mwsmqwlg.jpg",
+      "ratio": 1.3201,
+      "wm": 1
     },
     {
       "id": "behind-the-glass",
@@ -521,9 +528,10 @@
         },
         "available": true
       },
-      "image": "images/behind-the-glass.jpg",
-      "thumb": "images/thumbs/behind-the-glass.jpg",
-      "ratio": 0.8292
+      "image": "images/behind-the-glass-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/behind-the-glass-mwsmqwlg.jpg",
+      "ratio": 0.8292,
+      "wm": 1
     },
     {
       "id": "quiet-morning",
@@ -585,9 +593,10 @@
         },
         "available": true
       },
-      "image": "images/quiet-morning.jpg",
-      "thumb": "images/thumbs/quiet-morning.jpg",
-      "ratio": 1.359
+      "image": "images/quiet-morning-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/quiet-morning-mwsmqwlg.jpg",
+      "ratio": 1.359,
+      "wm": 1
     },
     {
       "id": "bantayan-island",
@@ -649,9 +658,10 @@
         },
         "available": true
       },
-      "image": "images/bantayan-island.jpg",
-      "thumb": "images/thumbs/bantayan-island.jpg",
-      "ratio": 1.278
+      "image": "images/bantayan-island-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/bantayan-island-mwsmqwlg.jpg",
+      "ratio": 1.278,
+      "wm": 1
     },
     {
       "id": "wedding-day",
@@ -713,10 +723,11 @@
           }
         }
       },
-      "image": "images/wedding-day.jpg",
-      "thumb": "images/thumbs/wedding-day.jpg",
+      "image": "images/wedding-day-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/wedding-day-mwsmqwlg.jpg",
       "ratio": 1.4423,
-      "framed": true
+      "framed": true,
+      "wm": 1
     },
     {
       "id": "island-swing",
@@ -778,10 +789,11 @@
           }
         }
       },
-      "image": "images/island-swing.jpg",
-      "thumb": "images/thumbs/island-swing.jpg",
+      "image": "images/island-swing-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/island-swing-mwsmqwlg.jpg",
       "ratio": 0.6492,
-      "framed": true
+      "framed": true,
+      "wm": 1
     },
     {
       "id": "the-tropical-swingbed",
@@ -843,9 +855,10 @@
           }
         }
       },
-      "image": "images/the-tropical-swingbed-mwe5f3x8.jpg",
-      "thumb": "images/thumbs/the-tropical-swingbed-mwe5f3x8.jpg",
-      "ratio": 1.348
+      "image": "images/the-tropical-swingbed-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/the-tropical-swingbed-mwsmqwlg.jpg",
+      "ratio": 1.3483,
+      "wm": 1
     },
     {
       "id": "pastel-rain",
@@ -907,9 +920,10 @@
         },
         "available": true
       },
-      "image": "images/pastel-rain.jpg",
-      "thumb": "images/thumbs/pastel-rain.jpg",
-      "ratio": 1.3298
+      "image": "images/pastel-rain-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/pastel-rain-mwsmqwlg.jpg",
+      "ratio": 1.3298,
+      "wm": 1
     },
     {
       "id": "garden-roses",
@@ -971,9 +985,10 @@
           }
         }
       },
-      "image": "images/garden-roses.jpg",
-      "thumb": "images/thumbs/garden-roses.jpg",
-      "ratio": 1.2143
+      "image": "images/garden-roses-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/garden-roses-mwsmqwlg.jpg",
+      "ratio": 1.2143,
+      "wm": 1
     },
     {
       "id": "rain-garden",
@@ -1035,9 +1050,10 @@
         },
         "available": true
       },
-      "image": "images/rain-garden.jpg",
-      "thumb": "images/thumbs/rain-garden.jpg",
-      "ratio": 0.9732
+      "image": "images/rain-garden-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/rain-garden-mwsmqwlg.jpg",
+      "ratio": 0.9732,
+      "wm": 1
     },
     {
       "id": "coral-poppies",
@@ -1099,9 +1115,10 @@
         },
         "available": true
       },
-      "image": "images/coral-poppies.jpg",
-      "thumb": "images/thumbs/coral-poppies.jpg",
-      "ratio": 0.7968
+      "image": "images/coral-poppies-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/coral-poppies-mwsmqwlg.jpg",
+      "ratio": 0.7968,
+      "wm": 1
     },
     {
       "id": "meadow",
@@ -1163,9 +1180,10 @@
         },
         "available": true
       },
-      "image": "images/meadow.jpg",
-      "thumb": "images/thumbs/meadow.jpg",
-      "ratio": 1.5185
+      "image": "images/meadow-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/meadow-mwsmqwlg.jpg",
+      "ratio": 1.5185,
+      "wm": 1
     },
     {
       "id": "yellow-poppies",
@@ -1227,9 +1245,10 @@
         },
         "available": true
       },
-      "image": "images/yellow-poppies.jpg",
-      "thumb": "images/thumbs/yellow-poppies.jpg",
-      "ratio": 1.3782
+      "image": "images/yellow-poppies-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/yellow-poppies-mwsmqwlg.jpg",
+      "ratio": 1.3782,
+      "wm": 1
     },
     {
       "id": "rainy-window",
@@ -1291,9 +1310,10 @@
         },
         "available": true
       },
-      "image": "images/rainy-window.jpg",
-      "thumb": "images/thumbs/rainy-window.jpg",
-      "ratio": 0.9878
+      "image": "images/rainy-window-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/rainy-window-mwsmqwlg.jpg",
+      "ratio": 0.9878,
+      "wm": 1
     },
     {
       "id": "dusty-blooms",
@@ -1355,9 +1375,10 @@
           }
         }
       },
-      "image": "images/dusty-blooms.jpg",
-      "thumb": "images/thumbs/dusty-blooms.jpg",
-      "ratio": 0.7512
+      "image": "images/dusty-blooms-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/dusty-blooms-mwsmqwlg.jpg",
+      "ratio": 0.7512,
+      "wm": 1
     },
     {
       "id": "market-bouquet",
@@ -1419,9 +1440,10 @@
         },
         "available": true
       },
-      "image": "images/market-bouquet.jpg",
-      "thumb": "images/thumbs/market-bouquet.jpg",
-      "ratio": 0.7476
+      "image": "images/market-bouquet-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/market-bouquet-mwsmqwlg.jpg",
+      "ratio": 0.7476,
+      "wm": 1
     },
     {
       "id": "harbour-in-the-rain",
@@ -1483,9 +1505,10 @@
         },
         "available": true
       },
-      "image": "images/harbour-in-the-rain.jpg",
-      "thumb": "images/thumbs/harbour-in-the-rain.jpg",
-      "ratio": 1.3355
+      "image": "images/harbour-in-the-rain-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/harbour-in-the-rain-mwsmqwlg.jpg",
+      "ratio": 1.3355,
+      "wm": 1
     },
     {
       "id": "rose-city",
@@ -1547,9 +1570,10 @@
         },
         "available": true
       },
-      "image": "images/rose-city.jpg",
-      "thumb": "images/thumbs/rose-city.jpg",
-      "ratio": 1.2954
+      "image": "images/rose-city-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/rose-city-mwsmqwlg.jpg",
+      "ratio": 1.2954,
+      "wm": 1
     },
     {
       "id": "evening-rooftops",
@@ -1611,9 +1635,10 @@
         },
         "available": true
       },
-      "image": "images/evening-rooftops.jpg",
-      "thumb": "images/thumbs/evening-rooftops.jpg",
-      "ratio": 1.2077
+      "image": "images/evening-rooftops-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/evening-rooftops-mwsmqwlg.jpg",
+      "ratio": 1.2077,
+      "wm": 1
     },
     {
       "id": "city-reflections",
@@ -1675,9 +1700,10 @@
         },
         "available": true
       },
-      "image": "images/city-reflections.jpg",
-      "thumb": "images/thumbs/city-reflections.jpg",
-      "ratio": 1.3621
+      "image": "images/city-reflections-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/city-reflections-mwsmqwlg.jpg",
+      "ratio": 1.3621,
+      "wm": 1
     },
     {
       "id": "monochrome-skyline",
@@ -1739,9 +1765,10 @@
           }
         }
       },
-      "image": "images/monochrome-skyline.jpg",
-      "thumb": "images/thumbs/monochrome-skyline.jpg",
-      "ratio": 1.3421
+      "image": "images/monochrome-skyline-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/monochrome-skyline-mwsmqwlg.jpg",
+      "ratio": 1.3421,
+      "wm": 1
     },
     {
       "id": "mauve-skyline",
@@ -1803,9 +1830,10 @@
           }
         }
       },
-      "image": "images/mauve-skyline.jpg",
-      "thumb": "images/thumbs/mauve-skyline.jpg",
-      "ratio": 1.2282
+      "image": "images/mauve-skyline-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/mauve-skyline-mwsmqwlg.jpg",
+      "ratio": 1.2282,
+      "wm": 1
     },
     {
       "id": "blossom-night",
@@ -1867,9 +1895,10 @@
         },
         "available": true
       },
-      "image": "images/blossom-night.jpg",
-      "thumb": "images/thumbs/blossom-night.jpg",
-      "ratio": 0.7475
+      "image": "images/blossom-night-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/blossom-night-mwsmqwlg.jpg",
+      "ratio": 0.7475,
+      "wm": 1
     },
     {
       "id": "cottage-in-the-mist",
@@ -1931,9 +1960,10 @@
         },
         "available": true
       },
-      "image": "images/cottage-in-the-mist.jpg",
-      "thumb": "images/thumbs/cottage-in-the-mist.jpg",
-      "ratio": 1.2635
+      "image": "images/cottage-in-the-mist-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/cottage-in-the-mist-mwsmqwlg.jpg",
+      "ratio": 1.2635,
+      "wm": 1
     },
     {
       "id": "red-centre",
@@ -1995,9 +2025,10 @@
         },
         "available": true
       },
-      "image": "images/red-centre.jpg",
-      "thumb": "images/thumbs/red-centre.jpg",
-      "ratio": 1.3312
+      "image": "images/red-centre-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/red-centre-mwsmqwlg.jpg",
+      "ratio": 1.3312,
+      "wm": 1
     },
     {
       "id": "pink-bench",
@@ -2059,9 +2090,10 @@
         },
         "available": true
       },
-      "image": "images/pink-bench.jpg",
-      "thumb": "images/thumbs/pink-bench.jpg",
-      "ratio": 1.2596
+      "image": "images/pink-bench-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/pink-bench-mwsmqwlg.jpg",
+      "ratio": 1.2596,
+      "wm": 1
     },
     {
       "id": "the-road-home",
@@ -2123,9 +2155,10 @@
         },
         "available": true
       },
-      "image": "images/the-road-home.jpg",
-      "thumb": "images/thumbs/the-road-home.jpg",
-      "ratio": 1.3531
+      "image": "images/the-road-home-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/the-road-home-mwsmqwlg.jpg",
+      "ratio": 1.3531,
+      "wm": 1
     },
     {
       "id": "sun-through-the-pines",
@@ -2187,9 +2220,10 @@
         },
         "available": true
       },
-      "image": "images/sun-through-the-pines.jpg",
-      "thumb": "images/thumbs/sun-through-the-pines.jpg",
-      "ratio": 0.7902
+      "image": "images/sun-through-the-pines-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/sun-through-the-pines-mwsmqwlg.jpg",
+      "ratio": 0.7902,
+      "wm": 1
     },
     {
       "id": "autumn-creek",
@@ -2251,9 +2285,10 @@
         },
         "available": true
       },
-      "image": "images/autumn-creek.jpg",
-      "thumb": "images/thumbs/autumn-creek.jpg",
-      "ratio": 1.3037
+      "image": "images/autumn-creek-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/autumn-creek-mwsmqwlg.jpg",
+      "ratio": 1.3037,
+      "wm": 1
     },
     {
       "id": "afternoon-by-the-lake",
@@ -2315,9 +2350,10 @@
           }
         }
       },
-      "image": "images/afternoon-by-the-lake.jpg",
-      "thumb": "images/thumbs/afternoon-by-the-lake.jpg",
-      "ratio": 1.2519
+      "image": "images/afternoon-by-the-lake-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/afternoon-by-the-lake-mwsmqwlg.jpg",
+      "ratio": 1.2519,
+      "wm": 1
     },
     {
       "id": "spring-dance",
@@ -2379,9 +2415,10 @@
         },
         "available": true
       },
-      "image": "images/spring-dance.jpg",
-      "thumb": "images/thumbs/spring-dance.jpg",
-      "ratio": 1.3599
+      "image": "images/spring-dance-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/spring-dance-mwsmqwlg.jpg",
+      "ratio": 1.3599,
+      "wm": 1
     },
     {
       "id": "forest-falls",
@@ -2443,9 +2480,10 @@
           }
         }
       },
-      "image": "images/forest-falls.jpg",
-      "thumb": "images/thumbs/forest-falls.jpg",
-      "ratio": 0.7537
+      "image": "images/forest-falls-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/forest-falls-mwsmqwlg.jpg",
+      "ratio": 0.7537,
+      "wm": 1
     },
     {
       "id": "the-long-road",
@@ -2507,9 +2545,10 @@
         },
         "available": true
       },
-      "image": "images/the-long-road.jpg",
-      "thumb": "images/thumbs/the-long-road.jpg",
-      "ratio": 1.3099
+      "image": "images/the-long-road-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/the-long-road-mwsmqwlg.jpg",
+      "ratio": 1.3099,
+      "wm": 1
     },
     {
       "id": "green-stillness",
@@ -2571,9 +2610,10 @@
         },
         "available": true
       },
-      "image": "images/green-stillness.jpg",
-      "thumb": "images/thumbs/green-stillness.jpg",
-      "ratio": 1.2424
+      "image": "images/green-stillness-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/green-stillness-mwsmqwlg.jpg",
+      "ratio": 1.2424,
+      "wm": 1
     },
     {
       "id": "pastel-hills",
@@ -2635,9 +2675,10 @@
         },
         "available": true
       },
-      "image": "images/pastel-hills.jpg",
-      "thumb": "images/thumbs/pastel-hills.jpg",
-      "ratio": 0.7393
+      "image": "images/pastel-hills-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/pastel-hills-mwsmqwlg.jpg",
+      "ratio": 0.7393,
+      "wm": 1
     },
     {
       "id": "jacaranda-avenue",
@@ -2699,9 +2740,10 @@
         },
         "available": true
       },
-      "image": "images/jacaranda-avenue.jpg",
-      "thumb": "images/thumbs/jacaranda-avenue.jpg",
-      "ratio": 1.6064
+      "image": "images/jacaranda-avenue-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/jacaranda-avenue-mwsmqwlg.jpg",
+      "ratio": 1.6064,
+      "wm": 1
     },
     {
       "id": "out-of-time",
@@ -2763,9 +2805,10 @@
           }
         }
       },
-      "image": "images/out-of-time-mwe7hc6u.jpg",
-      "thumb": "images/thumbs/out-of-time-mwe7hc6u.jpg",
-      "ratio": 0.7518
+      "image": "images/out-of-time-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/out-of-time-mwsmqwlg.jpg",
+      "ratio": 0.7517,
+      "wm": 1
     },
     {
       "id": "ember",
@@ -2827,9 +2870,10 @@
         },
         "available": true
       },
-      "image": "images/ember.jpg",
-      "thumb": "images/thumbs/ember.jpg",
-      "ratio": 0.7561
+      "image": "images/ember-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/ember-mwsmqwlg.jpg",
+      "ratio": 0.7561,
+      "wm": 1
     },
     {
       "id": "soft-collage",
@@ -2891,9 +2935,10 @@
           }
         }
       },
-      "image": "images/soft-collage.jpg",
-      "thumb": "images/thumbs/soft-collage.jpg",
-      "ratio": 1.0018
+      "image": "images/soft-collage-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/soft-collage-mwsmqwlg.jpg",
+      "ratio": 1.0018,
+      "wm": 1
     },
     {
       "id": "copper-tide",
@@ -2955,9 +3000,10 @@
           }
         }
       },
-      "image": "images/copper-tide-mwiqpsh8.jpg",
-      "thumb": "images/thumbs/copper-tide-mwiqpsh8.jpg",
-      "ratio": 1.3555
+      "image": "images/copper-tide-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/copper-tide-mwsmqwlg.jpg",
+      "ratio": 1.3555,
+      "wm": 1
     },
     {
       "id": "nebula",
@@ -3019,9 +3065,10 @@
         },
         "available": true
       },
-      "image": "images/nebula.jpg",
-      "thumb": "images/thumbs/nebula.jpg",
-      "ratio": 1.3667
+      "image": "images/nebula-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/nebula-mwsmqwlg.jpg",
+      "ratio": 1.3667,
+      "wm": 1
     },
     {
       "id": "blue-hour",
@@ -3083,9 +3130,10 @@
         },
         "available": true
       },
-      "image": "images/blue-hour.jpg",
-      "thumb": "images/thumbs/blue-hour.jpg",
-      "ratio": 1.2674
+      "image": "images/blue-hour-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/blue-hour-mwsmqwlg.jpg",
+      "ratio": 1.2674,
+      "wm": 1
     },
     {
       "id": "solar-flare",
@@ -3147,9 +3195,10 @@
         },
         "available": true
       },
-      "image": "images/solar-flare.jpg",
-      "thumb": "images/thumbs/solar-flare.jpg",
-      "ratio": 0.7476
+      "image": "images/solar-flare-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/solar-flare-mwsmqwlg.jpg",
+      "ratio": 0.7476,
+      "wm": 1
     },
     {
       "id": "deep-blue",
@@ -3211,9 +3260,10 @@
         },
         "available": true
       },
-      "image": "images/deep-blue.jpg",
-      "thumb": "images/thumbs/deep-blue.jpg",
-      "ratio": 0.7329
+      "image": "images/deep-blue-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/deep-blue-mwsmqwlg.jpg",
+      "ratio": 0.7329,
+      "wm": 1
     },
     {
       "id": "golden-reflection",
@@ -3275,9 +3325,10 @@
         },
         "available": true
       },
-      "image": "images/golden-reflection.jpg",
-      "thumb": "images/thumbs/golden-reflection.jpg",
-      "ratio": 1.3158
+      "image": "images/golden-reflection-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/golden-reflection-mwsmqwlg.jpg",
+      "ratio": 1.3158,
+      "wm": 1
     },
     {
       "id": "smash",
@@ -3339,9 +3390,10 @@
         },
         "available": true
       },
-      "image": "images/smash.jpg",
-      "thumb": "images/thumbs/smash.jpg",
-      "ratio": 0.7402
+      "image": "images/smash-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/smash-mwsmqwlg.jpg",
+      "ratio": 0.7402,
+      "wm": 1
     },
     {
       "id": "two-boats",
@@ -3403,9 +3455,10 @@
         },
         "available": true
       },
-      "image": "images/two-boats.jpg",
-      "thumb": "images/thumbs/two-boats.jpg",
-      "ratio": 1.4991
+      "image": "images/two-boats-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/two-boats-mwsmqwlg.jpg",
+      "ratio": 1.4991,
+      "wm": 1
     },
     {
       "id": "the-monolith",
@@ -3467,9 +3520,10 @@
           }
         }
       },
-      "image": "images/the-monolith.jpg",
-      "thumb": "images/thumbs/the-monolith.jpg",
-      "ratio": 0.7378
+      "image": "images/the-monolith-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/the-monolith-mwsmqwlg.jpg",
+      "ratio": 0.7378,
+      "wm": 1
     },
     {
       "id": "a-lovely-night",
@@ -3531,9 +3585,10 @@
         },
         "available": true
       },
-      "image": "images/a-lovely-night.jpg",
-      "thumb": "images/thumbs/a-lovely-night.jpg",
-      "ratio": 0.8242
+      "image": "images/a-lovely-night-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/a-lovely-night-mwsmqwlg.jpg",
+      "ratio": 0.8242,
+      "wm": 1
     },
     {
       "id": "summer-girl",
@@ -3595,9 +3650,10 @@
         },
         "available": true
       },
-      "image": "images/summer-girl.jpg",
-      "thumb": "images/thumbs/summer-girl.jpg",
-      "ratio": 0.7378
+      "image": "images/summer-girl-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/summer-girl-mwsmqwlg.jpg",
+      "ratio": 0.7378,
+      "wm": 1
     },
     {
       "id": "mother-hen",
@@ -3659,9 +3715,10 @@
         },
         "available": true
       },
-      "image": "images/mother-hen.jpg",
-      "thumb": "images/thumbs/mother-hen.jpg",
-      "ratio": 1.2615
+      "image": "images/mother-hen-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/mother-hen-mwsmqwlg.jpg",
+      "ratio": 1.2615,
+      "wm": 1
     },
     {
       "id": "under-the-trees",
@@ -3723,9 +3780,10 @@
         },
         "available": true
       },
-      "image": "images/under-the-trees.jpg",
-      "thumb": "images/thumbs/under-the-trees.jpg",
-      "ratio": 0.7293
+      "image": "images/under-the-trees-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/under-the-trees-mwsmqwlg.jpg",
+      "ratio": 0.7293,
+      "wm": 1
     },
     {
       "id": "in-the-studio",
@@ -3787,9 +3845,10 @@
         },
         "available": true
       },
-      "image": "images/in-the-studio.jpg",
-      "thumb": "images/thumbs/in-the-studio.jpg",
-      "ratio": 0.7366
+      "image": "images/in-the-studio-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/in-the-studio-mwsmqwlg.jpg",
+      "ratio": 0.7366,
+      "wm": 1
     },
     {
       "id": "afternoon-light",
@@ -3851,9 +3910,10 @@
         },
         "available": true
       },
-      "image": "images/afternoon-light.jpg",
-      "thumb": "images/thumbs/afternoon-light.jpg",
-      "ratio": 1.2275
+      "image": "images/afternoon-light-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/afternoon-light-mwsmqwlg.jpg",
+      "ratio": 1.2275,
+      "wm": 1
     },
     {
       "id": "summer-fruit",
@@ -3915,9 +3975,10 @@
         },
         "available": true
       },
-      "image": "images/summer-fruit.jpg",
-      "thumb": "images/thumbs/summer-fruit.jpg",
-      "ratio": 1.3465
+      "image": "images/summer-fruit-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/summer-fruit-mwsmqwlg.jpg",
+      "ratio": 1.3465,
+      "wm": 1
     },
     {
       "id": "lost-in-a-book",
@@ -3979,9 +4040,10 @@
         },
         "available": true
       },
-      "image": "images/lost-in-a-book.jpg",
-      "thumb": "images/thumbs/lost-in-a-book.jpg",
-      "ratio": 0.6476
+      "image": "images/lost-in-a-book-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/lost-in-a-book-mwsmqwlg.jpg",
+      "ratio": 0.6476,
+      "wm": 1
     },
     {
       "id": "wings",
@@ -4043,9 +4105,10 @@
         },
         "available": true
       },
-      "image": "images/wings.jpg",
-      "thumb": "images/thumbs/wings.jpg",
-      "ratio": 0.7854
+      "image": "images/wings-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/wings-mwsmqwlg.jpg",
+      "ratio": 0.7854,
+      "wm": 1
     },
     {
       "id": "summer-portrait",
@@ -4107,9 +4170,10 @@
         },
         "available": true
       },
-      "image": "images/summer-portrait.jpg",
-      "thumb": "images/thumbs/summer-portrait.jpg",
-      "ratio": 1.2346
+      "image": "images/summer-portrait-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/summer-portrait-mwsmqwlg.jpg",
+      "ratio": 1.2346,
+      "wm": 1
     },
     {
       "id": "by-the-old-bridge",
@@ -4171,9 +4235,10 @@
         },
         "available": true
       },
-      "image": "images/by-the-old-bridge.jpg",
-      "thumb": "images/thumbs/by-the-old-bridge.jpg",
-      "ratio": 1.0118
+      "image": "images/by-the-old-bridge-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/by-the-old-bridge-mwsmqwlg.jpg",
+      "ratio": 1.0118,
+      "wm": 1
     },
     {
       "id": "yellow",
@@ -4235,9 +4300,10 @@
           }
         }
       },
-      "image": "images/yellow-mvepdzpf.jpg",
-      "thumb": "images/thumbs/yellow-mvepdzpf.jpg",
-      "ratio": 0.7383
+      "image": "images/yellow-mwsmqwlg.jpg",
+      "thumb": "images/thumbs/yellow-mwsmqwlg.jpg",
+      "ratio": 0.7383,
+      "wm": 1
     }
   ],
   "text": {
