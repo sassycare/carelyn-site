@@ -343,6 +343,12 @@ legend{padding:0 6px;font-size:.74rem;letter-spacing:.09em;text-transform:upperc
           <div><button class="btn" type="button" id="aboutBtn" disabled>Upload about photo</button></div>
         </div></div>
       </div>
+      <div>
+        <p class="sub" style="margin-top:20px">Watermark</p>
+        <p class="hint" style="margin-top:4px">Every painting photo on the website shows “Carelyn Madaschi” and the web address across the middle, so it can't be reused as a clean copy. New photos you add get it automatically. Keep the original photos on your computer: the website only has the watermarked copies.</p>
+        <p class="hint" id="wmOut" style="margin-top:8px"></p>
+        <div><button class="btn" type="button" id="wmBtn" hidden>Add the watermark</button></div>
+      </div>
       <div class="calwrap" id="ppWrap">
         <p class="sub" style="margin-top:20px">Price by size</p>
         <p class="hint" style="margin-top:4px">Set a base amount and a price per square inch, and update every available original in one go. Price = base amount + (width × height in inches × price per square inch), then rounded. Sold paintings and paintings with no price (price on request) are left alone. Framed paintings are skipped and tagged “Price manually”, because the frame changes the price. Check the preview, then press Update prices. Nothing changes on the website until you press Publish changes.</p>
@@ -516,6 +522,7 @@ legend{padding:0 6px;font-size:.74rem;letter-spacing:.09em;text-transform:upperc
     </div>
     <div class="f"><label for="coaNote">Extra note (optional)</label><input id="coaNote" type="text" placeholder="e.g. Signed and titled on the reverse"></div>
     <label class="check"><input type="checkbox" id="coaPic" checked> Include the photo of the painting</label>
+    <div class="f" id="coaFileRow"><label for="coaFile">Photo without the watermark</label><input id="coaFile" type="file" accept="image/*"><p class="hint" id="coaFileHint" style="margin:4px 0 0"></p></div>
     <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px"><button class="btn quiet" type="button" id="coaCancel">Cancel</button><button class="btn primary" type="button" id="coaGo">Create certificate</button></div>
   </form>
 </dialog>
@@ -1004,16 +1011,31 @@ $("txList").addEventListener("click", e => {
 function loadImage(file){
   return new Promise((res, rej) => { const url = URL.createObjectURL(file), im = new Image(); im.onload = () => res(im); im.onerror = () => rej(new Error("That file isn't a photo this browser can read. Try a JPEG or PNG.")); im.src = url; });
 }
-function jpeg(im, max, q){
+// Watermark (style B): her name large and see-through across the middle, the web address underneath
+const WM_NAME = "Carelyn Madaschi", WM_SITE = "CARELYNMADASCHI.COM";
+async function wmFonts(){ try{ await Promise.all([document.fonts.load('italic 400 60px "Newsreader"'), document.fonts.load('500 20px "Hanken Grotesk"')]); }catch(_){} }
+function watermark(c){
+  const g = c.getContext("2d"), W = c.width, H = c.height, big = W * .085, small = W * .022;
+  g.save(); g.textAlign = "center"; g.fillStyle = "rgba(255,255,255,.47)";
+  g.shadowColor = "rgba(0,0,0,.26)"; g.shadowBlur = Math.max(2, W * .006);
+  g.textBaseline = "alphabetic"; g.font = `italic 400 ${big}px "Newsreader", Georgia, serif`; g.fillText(WM_NAME, W / 2, H / 2 + big * .25);
+  g.font = `500 ${small}px "Hanken Grotesk", Arial, sans-serif`; g.fillText(WM_SITE, W / 2, H / 2 + big * .25 + small * 2.4);
+  g.restore();
+}
+function jpeg(im, max, q, mark){
   const s = Math.min(1, max / Math.max(im.naturalWidth, im.naturalHeight));
   const c = document.createElement("canvas"); c.width = Math.round(im.naturalWidth * s); c.height = Math.round(im.naturalHeight * s);
   const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height); g.drawImage(im, 0, 0, c.width, c.height);
+  if(mark) watermark(c);
   return new Promise(res => c.toBlob(b => res(b), "image/jpeg", q));
 }
-async function prepare(file){
-  const im = await loadImage(file);
-  const big = await jpeg(im, 1800, .86), small = await jpeg(im, 760, .78);
-  return {image: {b64: b64(await big.arrayBuffer())}, thumb: {b64: b64(await small.arrayBuffer())}, url: URL.createObjectURL(small), ratio: +(im.naturalWidth / im.naturalHeight).toFixed(4)};
+// painting photos get the watermark; exhibition photos don't (mark = false)
+async function prepare(file, mark){
+  const im = await loadImage(file); if(mark) await wmFonts();
+  const big = await jpeg(im, 1800, .86, mark), small = await jpeg(im, 760, .78, mark);
+  const out = {image: {b64: b64(await big.arrayBuffer())}, thumb: {b64: b64(await small.arrayBuffer())}, url: URL.createObjectURL(small), ratio: +(im.naturalWidth / im.naturalHeight).toFixed(4), marked: !!mark};
+  if(mark) out.clean = URL.createObjectURL(await jpeg(im, 1800, .9));   // unmarked copy, kept only on this page (for certificates)
+  return out;
 }
 const slug = t => (t.toLowerCase().normalize("NFKD").replace(/[^\w\s-]/g, "").trim().replace(/[\s_]+/g, "-").replace(/-+/g, "-") || "painting").slice(0, 60);
 
@@ -1075,7 +1097,7 @@ $("fSwap").addEventListener("click", () => { const w = $("fW").value; $("fW").va
 $("fFile").addEventListener("change", async () => {
   const f = $("fFile").files[0]; staged = null; if(!f) return;
   $("fileOut").textContent = "Preparing photo…"; $("saveBtn").disabled = true;
-  try{ staged = await prepare(f); $("shImg").src = staged.url; $("shImg").hidden = false; $("fileOut").textContent = "Photo ready. It uploads when you publish."; syncForm(); }
+  try{ staged = await prepare(f, true); $("shImg").src = staged.url; $("shImg").hidden = false; $("fileOut").textContent = "Photo ready. It uploads when you publish."; syncForm(); }
   catch(e){ $("fileOut").textContent = e.message; }
   $("saveBtn").disabled = false;
 });
@@ -1155,7 +1177,7 @@ $("pubYes").onclick = async () => {
       const img = `images/${id}-${stamp}.jpg`, th = `images/thumbs/${id}-${stamp}.jpg`;
       await putFile(img, p.image.b64, `Photo for ${a.title}`);
       await putFile(th, p.thumb.b64, `Thumbnail for ${a.title}`);
-      a.image = img; a.thumb = th; a.ratio = p.ratio;
+      a.image = img; a.thumb = th; a.ratio = p.ratio; if(p.marked) a.wm = 1; else delete a.wm;
     }
     // exhibition photos
     const xs = [];
@@ -1288,7 +1310,9 @@ $("coaBtn").addEventListener("click", () => {
   const a = editing;
   $("coaName").textContent = a.title; $("coaWho").value = ""; $("coaNote").value = "";
   $("coaDate").value = new Intl.DateTimeFormat("en-CA", {timeZone: "Australia/Sydney"}).format(new Date());
-  $("coaPic").checked = true; $("coaOrig").checked = true;
+  $("coaPic").checked = true; $("coaOrig").checked = true; $("coaFile").value = ""; coaClean = null;
+  const hasClean = pendingImg[a.id] && pendingImg[a.id].clean;
+  $("coaFileHint").textContent = hasClean ? "Not needed: the photo you just added is used without its watermark." : a.wm ? "The website's photo has the watermark across it. Choose the original photo from your computer so the certificate shows it clean." : "Optional. Leave empty to use the website's photo.";
   $("coaSize").innerHTML = S.printSizes.map(z => `<option value="${esc(z.id)}">${esc(z.label)}${z.dims ? " · " + esc(z.dims) : ""}</option>`).join("");
   $("coaPrint").disabled = !S.printSizes.length;
   coaKind(); $("coaDlg").showModal();
@@ -1300,10 +1324,16 @@ function coaKind(){
   $("coaNo").value = coaNumber(a) + (pr && $("coaSize").value ? "-" + $("coaSize").value : "");
 }
 ["coaOrig", "coaPrint", "coaSize"].forEach(id => $(id).addEventListener("change", coaKind));
+let coaClean = null;
+$("coaFile").addEventListener("change", async () => {
+  const f = $("coaFile").files[0]; coaClean = null; if(!f) return;
+  try{ coaClean = URL.createObjectURL(await jpeg(await loadImage(f), 1800, .9)); $("coaFileHint").textContent = "Using this photo on the certificate."; }
+  catch(e){ $("coaFileHint").textContent = e.message; }
+});
 $("coaCancel").addEventListener("click", () => $("coaDlg").close());
 $("coaGo").addEventListener("click", () => {
   const a = editing; if(!a) return;
-  const pic = $("coaPic").checked ? (pendingImg[a.id] ? pendingImg[a.id].url : new URL(a.image || thumbSrc(a), location.href).href) : "";
+  const pic = !$("coaPic").checked ? "" : coaClean || (pendingImg[a.id] ? pendingImg[a.id].clean || pendingImg[a.id].url : new URL(a.image || thumbSrc(a), location.href).href);
   const isPrint = $("coaPrint").checked, z = isPrint ? S.printSizes.find(x => x.id === $("coaSize").value) : null;
   const kind = isPrint ? `Fine art print${z ? ", " + z.label : ""}` : "Original painting";
   const no = $("coaNo").value.trim(), issued = $("coaDate").value ? coaDay($("coaDate").value) : "", who = $("coaWho").value.trim(), note = $("coaNote").value.trim();
@@ -1514,7 +1544,27 @@ $("calK").addEventListener("input", e => {
 $("calK").addEventListener("change", () => { touched(); renderCal(); });
 $("calReset").addEventListener("click", () => { delete S.rooms[calRoom]; touched(); renderCal(); toast("Room reset to the original estimate"); });
 
+const wmTodo = () => S.paintings.filter(a => !a.wm && !pendingImg[a.id] && (a.image || a.thumb));
+function renderWm(){
+  const n = wmTodo().length, staged = S.paintings.filter(a => pendingImg[a.id] && pendingImg[a.id].marked && !a.wm && (a.image || a.thumb)).length;
+  $("wmOut").textContent = n ? `${n} painting photo${n === 1 ? " doesn't" : "s don't"} have the watermark yet.` : staged ? `${staged} photo${staged === 1 ? "" : "s"} watermarked and ready. Press Publish changes to put ${staged === 1 ? "it" : "them"} on the website.` : "Every painting photo has the watermark.";
+  $("wmBtn").hidden = !n; $("wmBtn").textContent = `Add the watermark to ${n} photo${n === 1 ? "" : "s"}`;
+}
+$("wmBtn").addEventListener("click", async () => {
+  const list = wmTodo(); if(!list.length) return; const b = $("wmBtn"); b.disabled = true; let k = 0, bad = [];
+  for(const a of list){
+    b.textContent = `Adding the watermark ${++k} of ${list.length}…`;
+    try{
+      const r = await fetch(new URL(a.image || a.thumb, location.href).href, {cache: "no-store"});
+      if(!r.ok) throw new Error(r.status);
+      pendingImg[a.id] = await prepare(await r.blob(), true);
+    }catch(e){ bad.push(a.title || a.id); }
+  }
+  b.disabled = false; renderWm(); refreshStatus(); renderGroups();
+  toast(bad.length ? `Couldn't load ${bad.length} photo${bad.length === 1 ? "" : "s"}: ${bad.slice(0, 3).join(", ")}${bad.length > 3 ? "…" : ""}. The rest are ready; press Publish changes.` : "Done. Check a few, then press Publish changes.");
+});
 function renderSettings(){
+  renderWm();
   renderPrintRows(); renderCal(); renderPP(); renderPostage();
   const c = conn();
   $("connInfo").textContent = `Saving to ${c.owner}/${c.repo} (${c.branch}).`;
