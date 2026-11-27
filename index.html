@@ -100,6 +100,19 @@ h2{font-family:var(--serif);font-weight:300;font-size:clamp(1.8rem,3.4vw,2.6rem)
 section{padding:clamp(40px,7vw,96px) 0}
 
 .tabs{display:flex;flex-wrap:wrap;gap:6px 36px;margin:0 0 30px}
+.wtop{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px 36px;margin:0 0 30px}
+.wtop .tabs{margin:0}
+.search{position:relative;flex:0 1 320px;min-width:0}
+.search svg{position:absolute;left:0;top:50%;width:18px;height:18px;transform:translateY(-50%);fill:none;stroke:var(--soft);stroke-width:1.6;stroke-linecap:round;pointer-events:none}
+.search input{width:100%;box-sizing:border-box;font:inherit;font-size:16px;color:var(--ink);background:transparent;border:0;border-bottom:1px solid var(--line);border-radius:0;padding:8px 30px 8px 28px;outline:none;-webkit-appearance:none;appearance:none}
+.search input::-webkit-search-cancel-button{display:none}
+.search input::placeholder{color:var(--soft);opacity:1}
+.search input:focus{border-bottom-color:var(--ink)}
+.search button{position:absolute;right:0;top:50%;transform:translateY(-50%);width:30px;height:30px;border:0;background:none;color:var(--soft);font-size:1.4rem;line-height:1;cursor:pointer;padding:0}
+.search button:hover{color:var(--ink)}
+.found{margin:0 0 clamp(22px,3vw,34px);color:var(--soft);font-family:var(--serif);font-style:italic;font-size:1.1rem}
+.found button{font:inherit;font-family:var(--sans);font-style:normal;font-size:.85rem;color:var(--ink);background:none;border:0;padding:0;margin-left:10px;text-decoration:underline;text-underline-offset:4px;cursor:pointer}
+@media (max-width:640px){.search{flex-basis:100%}}
 .tabs button{font:inherit;font-family:var(--serif);font-size:clamp(1.25rem,2.4vw,1.6rem);font-weight:300;color:var(--soft);background:none;border:0;padding:0 0 6px;cursor:pointer;border-bottom:1px solid transparent}
 .tabs button:hover{color:var(--ink)}
 .tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
@@ -355,7 +368,14 @@ dt{color:var(--soft)} dd{margin:0}
   <section id="work">
     <div class="wrap">
       <h2 data-tx="workHeading">Work</h2>
-      <div class="tabs" id="tabs" role="tablist" aria-label="View"></div>
+      <div class="wtop">
+        <div class="tabs" id="tabs" role="tablist" aria-label="View"></div>
+        <div class="search" role="search">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>
+          <input id="q" type="search" autocomplete="off" spellcheck="false" enterkeyhint="search">
+          <button type="button" id="qClear" hidden>&times;</button>
+        </div>
+      </div>
       <div class="filters" id="filters" role="group" aria-label="Filter paintings"></div>
       <div id="groups"></div>
     </div>
@@ -476,7 +496,10 @@ dt{color:var(--soft)} dd{margin:0}
   [["shipTo", "Ship to"], ["region_AU", "Australia"], ["region_NZ", "New Zealand"], ["region_NA", "US & Canada"], ["region_EAS", "Europe, Africa & South America"],
    ["region_ASIA", "Asia"], ["region_ME", "Middle East"], ["region_OTHER", "Somewhere else"], ["postTo", "+ {amount} postage to {region}"], ["postShort", "+ {amount} postage"],
    ["postAskRegion", "Buying online isn't set up for {region} yet. Email and Carelyn will arrange postage."],
-   ["postAsk", "Tell Carelyn where you are and she'll quote postage."]].forEach(([k, d]) => { if(!DEFS[k]) DEFS[k] = { k: k, def: d }; });
+   ["postAsk", "Tell Carelyn where you are and she'll quote postage."],
+   ["searchLabel", "Search paintings"], ["searchPlaceholder", "Search, e.g. rain, poppies, Sydney"],
+   ["searchOne", "1 painting matches “{q}”."], ["searchCount", "{n} paintings match “{q}”."],
+   ["searchNone", "Nothing matches “{q}”. Try another word, or ask about a commission."], ["searchClear", "Clear search"]].forEach(([k, d]) => { if(!DEFS[k]) DEFS[k] = { k: k, def: d }; });
   const regionOfCountry = c => { const r = REGIONS.find(x => x.countries.includes(c)); return r ? r.id : "OTHER"; };
   function guessRegion(){
     try{
@@ -657,6 +680,36 @@ dt{color:var(--soft)} dd{margin:0}
     renderFilters(); render();
   });
 
+  // Search: every word typed must match the start of a word in the painting's title, keywords, group, size or framing
+  const fold = t => String(t || "").toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
+  const stem = w => w.length > 4 && w.endsWith("ies") ? w.slice(0, -3) + "y" : w.length > 5 && w.endsWith("ed") ? w.slice(0, -2) : (w.length > 3 && w.endsWith("s") && !w.endsWith("ss") ? w.slice(0, -1) : w);
+  const SYN = {color: "colour", colors: "colour", colored: "coloured", colorful: "colourful", gray: "grey", kid: "child", kids: "child", mum: "mother", mom: "mother", mommy: "mother", dad: "father", daddy: "father", sunrise: "morning", painting: "", paintings: "", art: ""};
+  const STOP = new Set(["a", "an", "and", "the", "of", "in", "on", "with", "by", "to", "for"]);
+  const hay = new Map();
+  const hayOf = a => {
+    if(!hay.has(a)){
+      const kw = Array.isArray(a.keywords) ? a.keywords.join(" ") : (a.keywords || "");
+      const words = fold([a.title, kw, themeLabel[a.theme] || a.theme, a.remarks, a.size, a.medium, a.painted, a.sold ? "sold" : "available original", hasPrints(a) ? "prints print" : ""].join(" ")).split(" ");
+      hay.set(a, words.map(stem));
+    }
+    return hay.get(a);
+  };
+  let query = "";
+  const qWords = () => {
+    const ws = fold(query).split(" ").filter(Boolean).map(w => SYN[w] !== undefined ? SYN[w] : w).filter(Boolean);
+    const keep = ws.filter(w => !STOP.has(w));
+    return (keep.length ? keep : ws).map(stem);
+  };
+  const matches = (a, ws) => { const h = hayOf(a); return ws.every(w => h.some(x => x.startsWith(w))); };
+  const qIn = $("q"), qClear = $("qClear");
+  qIn.placeholder = tx("searchPlaceholder"); qIn.setAttribute("aria-label", tx("searchLabel")); qClear.setAttribute("aria-label", tx("searchClear"));
+  let qT = 0;
+  const setQuery = v => { query = v; qClear.hidden = !v; render(); };
+  qIn.addEventListener("input", () => { clearTimeout(qT); qT = setTimeout(() => setQuery(qIn.value.trim()), 120); });
+  qIn.addEventListener("keydown", e => { if(e.key === "Escape" && qIn.value){ e.preventDefault(); qIn.value = ""; setQuery(""); } if(e.key === "Enter") qIn.blur(); });
+  const clearQ = () => { qIn.value = ""; setQuery(""); qIn.focus(); };
+  qClear.addEventListener("click", clearQ);
+
   let view = "all";
   function renderTabs(){
     const n = A.filter(a => !a.sold).length;
@@ -671,7 +724,7 @@ dt{color:var(--soft)} dd{margin:0}
   $("tabs").addEventListener("click", e => { const b = e.target.closest("button"); if(b) setView(b.dataset.view); });
   $("navAvail").addEventListener("click", e => { e.preventDefault(); try{ history.replaceState(null, "", "#available"); }catch(_){} setView("available", true); });
   function render(){
-    $("filters").hidden = view === "available";
+    $("filters").hidden = view === "available" || !!query;
     if(!A.length){
       $("filters").hidden = true;
       $("groups").innerHTML = `<p class="soon">New paintings are on their way. In the meantime, see recent work on <a href="https://instagram.com/${esc(S.instagram)}">@${esc(S.instagram)}</a>.</p>`;
@@ -686,6 +739,15 @@ dt{color:var(--soft)} dd{margin:0}
         <div class="m"><span><i>${esc(a.title)}</i>${a.size ? "<br>" + esc(a.size) : ""}${view === "available" ? `<small class="g">${esc(themeLabel[a.theme] || "")}</small>` : ""}</span>${right}</div>
       </a>`;
     };
+    const ws = query ? qWords() : [];
+    if(ws.length){
+      const list = A.filter(a => (view === "available" ? !a.sold : okShow(a)) && matches(a, ws));
+      const say = tx(list.length ? (list.length === 1 ? "searchOne" : "searchCount") : "searchNone", { n: list.length, q: query });
+      const keepView = view, inner = list.map(a => card(a).replace('</span>', `${keepView === "available" ? "" : `<small class="g">${esc(themeLabel[a.theme] || "")}</small>`}</span>`)).join("");
+      $("groups").innerHTML = `<p class="found" role="status">${esc(say)}<button type="button" data-qc>${esc(tx("searchClear"))}</button></p>` + (list.length ? `<div class="grid">${inner}</div>` : "");
+      const b = $("groups").querySelector("[data-qc]"); if(b) b.onclick = clearQ;
+      return;
+    }
     if(view === "available"){
       const list = A.filter(a => !a.sold);
       $("groups").innerHTML = `<p class="avail-intro">${esc(tx("availIntro", { n: list.length }))}</p><div class="grid">${list.map(card).join("")}</div>`;

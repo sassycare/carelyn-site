@@ -36,6 +36,12 @@
   add(C, "filterAll", "Filter button: everything", "All");
   add(C, "filterAvailable", "Filter button: available", "Available");
   add(C, "filterPrints", "Filter button: prints", "Prints");
+  add(C, "searchPlaceholder", "Search box: grey hint text", "Search, e.g. rain, poppies, Sydney");
+  add(C, "searchLabel", "Search box: name read out by screen readers", "Search paintings");
+  add(C, "searchOne", "Search: one result", "1 painting matches \u201c{q}\u201d.", {hint: "{q} becomes what the visitor typed."});
+  add(C, "searchCount", "Search: several results", "{n} paintings match \u201c{q}\u201d.", {hint: "{n} becomes the number found, {q} what the visitor typed."});
+  add(C, "searchNone", "Search: nothing found", "Nothing matches \u201c{q}\u201d. Try another word, or ask about a commission.", {multi: true});
+  add(C, "searchClear", "Search: clear button", "Clear search");
   add(C, "emptyFilter", "Message when no painting matches", "Nothing matches right now. Choose \"All\" or ask about a commission.", {multi: true});
 
   const X = "Exhibitions";
